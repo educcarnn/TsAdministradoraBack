@@ -1,9 +1,9 @@
 import { PoolConfig } from "pg";
 
 export const dbConfig: PoolConfig = {
-  user: "educc", 
-  host: "localhost",
-  database: "tsadministradora", 
-  password: "1234", 
+  user: "tsadministradoback", 
+  host: "dpg-cjd6o0s5kgrc73avnndg-a.oregon-postgres.render.com",
+  database: "tsadministradoback", 
+  password: "M76iYdAFvTmHIKVF0FgFz9YD64QYS2bs", 
   port: 5432,
 };

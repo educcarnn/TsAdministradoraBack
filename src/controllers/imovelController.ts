@@ -3,11 +3,11 @@ import { Pool, QueryResult } from 'pg'; // Importe o Pool e QueryResult do pacot
 import { Imovel } from '../models/imovel';
 
 // Configuração do banco de dados
-const dbConfig = {
-  user: 'educc',
-  host: 'localhost',
-  database: 'tsadministradora',
-  password: '1234',
+ const dbConfig = {
+  user: "tsadministradoback", 
+  host: "dpg-cjd6o0s5kgrc73avnndg-a.oregon-postgres.render.com",
+  database: "tsadministradoback", 
+  password: "M76iYdAFvTmHIKVF0FgFz9YD64QYS2bs", 
   port: 5432,
 };
 
