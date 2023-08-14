@@ -3,15 +3,17 @@ import { Pool, QueryResult } from 'pg'; // Importe o Pool e QueryResult do pacot
 import { Imovel } from '../models/imovel';
 
 // Configuração do banco de dados
- const dbConfig = {
-  user: "tsadministradoback", 
-  host: "dpg-cjd6o0s5kgrc73avnndg-a.oregon-postgres.render.com",
-  database: "tsadministradoback", 
-  password: "M76iYdAFvTmHIKVF0FgFz9YD64QYS2bs", 
+const dbConfig = {
+  user: 'tsadministradoback',
+  host: 'dpg-cjd6o0s5kgrc73avnndg-a.oregon-postgres.render.com',
+  database: 'tsadministradoback',
+  password: 'M76iYdAFvTmHIKVF0FgFz9YD64QYS2bs',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false // Ignorar a verificação do certificado SSL, use apenas em ambiente de desenvolvimento
+  }
 };
 
-// Crie uma nova instância de Pool com as configurações
 const pool = new Pool(dbConfig);
 
 // Função para registrar um novo imóvel
