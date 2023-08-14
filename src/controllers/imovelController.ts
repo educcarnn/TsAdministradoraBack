@@ -1,31 +1,43 @@
 import { Request, Response } from 'express';
-import { Imovel } from '../models/imovel'; // Certifique-se de importar o modelo correto
+import { Pool, QueryResult } from 'pg'; // Importe o Pool e QueryResult do pacote 'pg'
+import { Imovel } from '../models/imovel';
 
-// Crie um array para armazenar os imóveis cadastrados
-const imoveisCadastrados: Imovel[] = [];
+// Configuração do banco de dados
+const dbConfig = {
+  user: 'educc',
+  host: 'localhost',
+  database: 'tsadministradora',
+  password: '1234',
+  port: 5432,
+};
+
+// Crie uma nova instância de Pool com as configurações
+const pool = new Pool(dbConfig);
 
 // Função para registrar um novo imóvel
-export const registrarImovel = (req: Request, res: Response) => {
-  // Lógica para registrar o imóvel
+export const registrarImovel = async (req: Request, res: Response) => {
   try {
     const { id, inquilino, proprietario, numeroImovel } = req.body;
 
-    // Crie um novo imóvel com base nos dados da solicitação
     const novoImovel: Imovel = {
       id,
       inquilino,
       proprietario,
-      numeroImovel,
+      numeroImovel // Mantenha como string
     };
 
-    // Salve o imóvel no banco de dados ou na fonte de dados apropriada
-    // Exemplo: imovelRepository.create(novoImovel);
+    // Execute a query para inserir o novo imóvel no banco de dados
+    const query = `
+      INSERT INTO imoveis (id, inquilino, proprietario, numero_imovel)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `;
 
- 
-    imoveisCadastrados.push(novoImovel);
+    const values = [novoImovel.id, novoImovel.inquilino, novoImovel.proprietario, novoImovel.numeroImovel];
 
+    const result: QueryResult = await pool.query(query, values);
 
-    res.status(201).json(novoImovel);
+    res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Erro ao registrar imóvel:', error);
     res.status(500).json({ error: 'Erro ao registrar imóvel' });
@@ -33,15 +45,18 @@ export const registrarImovel = (req: Request, res: Response) => {
 };
 
 // Função para obter todos os imóveis
-export const obterImoveis = (req: Request, res: Response) => {
-  // Lógica para obter todos os imóveis
+export const obterImoveis = async (req: Request, res: Response) => {
   try {
-    // Retorna a lista de imóveis cadastrados como resposta
-    res.status(200).json(imoveisCadastrados);
+    // Execute a query para obter todos os imóveis do banco de dados
+    const query = `
+      SELECT * FROM imoveis;
+    `;
+
+    const result: QueryResult = await pool.query(query);
+
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error('Erro ao obter imóveis:', error);
     res.status(500).json({ error: 'Erro ao obter imóveis' });
   }
 };
-
-// Outras funções de controle de imóvel, se necessário

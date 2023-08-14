@@ -1,8 +1,8 @@
 
 export interface Imovel {
-    id: string;
+    id: number;
     inquilino: string;
     proprietario: string;
-    numeroImovel: number;
+    numeroImovel: string;
   }
   
