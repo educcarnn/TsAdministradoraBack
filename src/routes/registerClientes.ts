@@ -1,6 +1,6 @@
 import express from 'express';
 import { registrarCliente, obterClientes } from '../controllers/clienteController';
-import { registrarImovel, obterImoveis } from '../controllers/imovelController';
+import { registrarImovel, obterImoveis } from '../controllers/aluguelController';
 
 const router = express.Router();
 
@@ -9,7 +9,12 @@ router.post('/clientes', registrarCliente);
 router.get('/clientes', obterClientes);
 
 // Rotas para Imóveis
-router.post('/imoveis', registrarImovel);
-router.get('/imoveis', obterImoveis);
+
+
+// Rotas para Contratos
+
+// Rotas para Aluguel
+router.post('/aluguel', registrarImovel);
+router.get('/aluguel', obterImoveis);
 
 export default router;
