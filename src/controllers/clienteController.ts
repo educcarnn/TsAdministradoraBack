@@ -3,14 +3,15 @@ import { Pool } from "pg";
 import { PessoaFisica } from "../models/pessoaFisica";
 import { PessoaJuridica } from "../models/pessoaJuridica";
 
-const pool = new Pool({
-  user: "educc",
-  host: "localhost",
-  database: "tsadministradora",
-  password: "1234",
-  port: 5432,
-});
+const dbConfig = {
+  connectionString:
+    "postgres://tsadministradoback:M76iYdAFvTmHIKVF0FgFz9YD64QYS2bs@dpg-cjd6o0s5kgrc73avnndg-a.oregon-postgres.render.com/tsadministradoback",
+  ssl: {
+    rejectUnauthorized: false, // Configuração para permitir conexões SSL não verificadas
+  },
+};
 
+const pool = new Pool(dbConfig);
 
 export const cadastrarPessoaFisica = async (req: Request, res: Response) => {
   const data: PessoaFisica = req.body;
