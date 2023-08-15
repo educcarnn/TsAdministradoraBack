@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import registerClientes from "./routes/registerClientes";
+import routes from "./routes/routes";
 
 const app = express();
 
@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 
-app.use('/', registerClientes); 
+app.use('/', routes); 
 
 
 
