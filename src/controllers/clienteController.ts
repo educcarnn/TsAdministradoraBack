@@ -33,10 +33,10 @@ export const cadastrarPessoaJuridica = async (req: Request, res: Response) => {
   try {
     const client = await pool.connect();
     const query = `
-      INSERT INTO tabela_pessoas_juridicas (tipo, funcao, inquilino, cnpj, razao_social, nome_fantasia, endereco, data_abertura_empresa, novo_socio_administrador, telefone, email
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      INSERT INTO tabela_pessoas_juridicas (tipo, funcao, cnpj, razao_social, nome_fantasia, endereco, data_abertura_empresa, novo_socio_administrador, telefone, email
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
-    const values = [data.tipo, data.funcao, data.inquilino, data.cnpj, data.razaoSocial, data.nomeFantasia, data.endereco, data.dataAberturaEmpresa, data.novoSocioAdministrador, data.telefone,data.email,];
+    const values = [data.tipo, data.funcao, data.cnpj, data.razaoSocial, data.nomeFantasia, data.endereco, data.dataAberturaEmpresa, data.novoSocioAdministrador, data.telefone, data.email];
     await client.query(query, values);
     client.release();
     res

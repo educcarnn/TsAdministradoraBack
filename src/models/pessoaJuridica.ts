@@ -1,7 +1,6 @@
 export interface PessoaJuridica {
     tipo: 'Jurídica';
     funcao: string[];
-    inquilino: boolean;
     cnpj: string;
     razaoSocial: string;
     nomeFantasia: string;

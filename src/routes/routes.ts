@@ -14,6 +14,7 @@ const router = express.Router();
 
     router.get('/obter-usuarios-cadastrados', obterUsuariosCadastrados); 
 // Rotas para Imóveis
+
 router.post("/cadastrar-imovel", registrarNovoImovel);
 router.get("/obter-imoveis", obterNovoImoveis);
 
