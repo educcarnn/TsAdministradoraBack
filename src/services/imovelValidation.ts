@@ -30,7 +30,7 @@ export const validarImovel = (data: ImovelData) => {
     }
   }
 
-  // Adicione mais validações conforme necessário
+
 
   return errors.length > 0 ? errors : null;
 };

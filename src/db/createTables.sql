@@ -50,3 +50,5 @@ CREATE TABLE tabela_imoveis (
   tipo_condominio VARCHAR(20),
   condominio JSONB
 );
+
+DELETE FROM imoveis;
