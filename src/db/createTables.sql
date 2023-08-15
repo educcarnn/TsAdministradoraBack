@@ -37,4 +37,16 @@ CREATE TABLE tabela_pessoas_juridicas (
   novo_socio_administrador VARCHAR(100) NOT NULL,
   telefone VARCHAR(20) NOT NULL,
   email VARCHAR(100) NOT NULL
+  
+);
+
+CREATE TABLE tabela_imoveis (
+  id SERIAL PRIMARY KEY,
+  tipo_imovel VARCHAR(20) NOT NULL,
+  caracteristicas JSONB NOT NULL,
+  tipo_negociacao VARCHAR(20) NOT NULL,
+  venda JSONB,
+  aluguel JSONB,
+  tipo_condominio VARCHAR(20),
+  condominio JSONB
 );
