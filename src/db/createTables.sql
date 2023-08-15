@@ -26,10 +26,9 @@ CREATE TABLE tabela_pessoas_fisicas (
 
 CREATE TABLE tabela_pessoas_juridicas (
   id SERIAL PRIMARY KEY,
-  tipo VARCHAR(20) NOT NULL,
-  funcao TEXT[] NOT NULL,
-  inquilino BOOLEAN NOT NULL,
-  cnpj VARCHAR(18) NOT NULL,
+  tipo VARCHAR(50),
+  funcao VARCHAR(100)[] NOT NULL,
+  cnpj VARCHAR(14) NOT NULL,
   razao_social VARCHAR(100) NOT NULL,
   nome_fantasia VARCHAR(100) NOT NULL,
   endereco VARCHAR(200) NOT NULL,
@@ -37,7 +36,6 @@ CREATE TABLE tabela_pessoas_juridicas (
   novo_socio_administrador VARCHAR(100) NOT NULL,
   telefone VARCHAR(20) NOT NULL,
   email VARCHAR(100) NOT NULL
-  
 );
 
 CREATE TABLE tabela_imoveis (
