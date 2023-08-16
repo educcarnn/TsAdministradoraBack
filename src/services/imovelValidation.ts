@@ -12,25 +12,23 @@ export const validarImovel = (data: ImovelData) => {
   }
 
   if (data.tipoCondominio === "naoIsento") {
+    const condominio = data.condominio;
     if (
-      !data.condominio ||
-      !data.condominio.nomeCondominio ||
-      !data.condominio.nomeAdministradora ||
-      !data.condominio.razaoSocial ||
-      !data.condominio.cnpj ||
-      !data.condominio.site ||
-      !data.condominio.login ||
-      !data.condominio.senha ||
-      !data.condominio.telefoneFixo ||
-      !data.condominio.telefoneCelular ||
-      isNaN(data.condominio.valorMensal) ||
-      data.condominio.valorMensal <= 0
+      !condominio ||
+      !condominio.nome_condominio ||
+      !condominio.nome_administradora ||
+      !condominio.razao_social_condominio ||
+      !condominio.cnpj_condominio ||
+      !condominio.site_condominio ||
+      !condominio.login_condominio ||
+      !condominio.senha_condominio ||
+      !condominio.telefone_fixo_condominio ||
+      !condominio.telefone_celular_condominio ||
+      (condominio.valor_mensal_condominio === undefined || condominio.valor_mensal_condominio === null)
     ) {
       errors.push("Campos obrigatórios para condomínio não foram preenchidos corretamente.");
     }
   }
-
-
 
   return errors.length > 0 ? errors : null;
 };

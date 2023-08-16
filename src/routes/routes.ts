@@ -1,7 +1,7 @@
 import express from 'express';
 import { cadastrarPessoaFisica, cadastrarPessoaJuridica, obterUsuariosCadastrados} from '../controllers/clienteController';
 import { registrarImovel, obterImoveis } from '../controllers/aluguelController';
-import { registrarNovoImovel, obterNovoImoveis} from '../controllers/imovelControllers';
+import { registrarNovoImovel} from '../controllers/imovelControllers';
 
 const router = express.Router();
 
@@ -13,10 +13,10 @@ const router = express.Router();
     router.post('/cadastrar-pessoa-juridica', cadastrarPessoaJuridica);
 
     router.get('/obter-usuarios-cadastrados', obterUsuariosCadastrados); 
-// Rotas para Imóveis
 
+// Rotas para Imóveis
 router.post("/cadastrar-imovel", registrarNovoImovel);
-router.get("/obter-imoveis", obterNovoImoveis);
+
 
 // Rotas para Contratos
 

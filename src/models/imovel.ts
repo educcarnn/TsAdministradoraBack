@@ -7,7 +7,7 @@ export interface Imovel {
 
 export interface ImovelData {
   tipoImovel: "residencial" | "comercial";
-  tipoConstrução: string,
+  generoImovel: string;
   caracteristicas: {
     tipoConstrucao: string;
     numeroQuartos: number;
@@ -17,7 +17,7 @@ export interface ImovelData {
     areaUtil: number;
     areaTotal: number;
   };
-  tipoNegociacao: "venda" | "aluguel" | "venda-e-aluguel";
+  tipoNegociacao: "venda" | "aluguel" | "vendaealuguel";
   venda?: {
     valorVenda: number;
     taxaIntermediacao: number;
@@ -27,17 +27,43 @@ export interface ImovelData {
     taxaAdministracao: number;
     taxaLocacao: number;
   };
+  vendaealuguel?: {
+    valorVenda: number;
+    valorAluguel: number;
+    taxaIntermediacao: number;
+  };
+  tipoIptu: "isento" | "naoIsento";
+  iptu?: {
+    numero_matricula_iptu?: number;
+    valorMensal?: number;
+  };
   tipoCondominio: "isento" | "naoIsento";
   condominio?: {
-    nomeCondominio: string;
-    nomeAdministradora: string;
-    razaoSocial: string;
-    cnpj: string;
-    site: string;
-    login: string;
-    senha: string;
-    telefoneFixo: string;
-    telefoneCelular: string;
-    valorMensal: number;
+    nome_condominio?: string;
+    nome_administradora?: string;
+    razao_social_condominio?: string;
+    cnpj_condominio?: string;
+    site_condominio?: string;
+    login_condominio?: string;
+    senha_condominio?: string;
+    telefone_fixo_condominio?: string;
+    telefone_celular_condominio?: string;
+    valor_mensal_condominio?: number;
   };
+  proprietários: {
+    proprietário: string;
+    percentual: number;
+    novos_proprietarios: [];
+  };
+  localizacao: {
+    cep: number;
+    endereco: string;
+    bairro: string;
+    cidade: string;
+    estado: string;
+    andar: number;
+    numero: number;
+  };
+  caracteristicas_imovel: string[];
+  caracteristicas_condominio: string[];
 }

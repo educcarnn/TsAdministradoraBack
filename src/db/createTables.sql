@@ -38,15 +38,53 @@ CREATE TABLE tabela_pessoas_juridicas (
   email VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE tabela_imoveis (
+
+CREATE TABLE tabela_registro_imovel (
   id SERIAL PRIMARY KEY,
-  tipo_imovel VARCHAR(20) NOT NULL,
-  caracteristicas JSONB NOT NULL,
-  tipo_negociacao VARCHAR(20) NOT NULL,
-  venda JSONB,
-  aluguel JSONB,
+  tipo_imovel VARCHAR(20),
+  genero_imovel VARCHAR(255),
+  tipo_construcao VARCHAR(255),
+  numero_quartos INT,
+  numero_suites INT,
+  numero_banheiros INT,
+  numero_vagas INT,
+  area_util FLOAT,
+  area_total FLOAT,
+  tipo_negociacao VARCHAR(20),
+  valor_venda NUMERIC,
+  taxa_intermediacao NUMERIC,
+  valor_aluguel NUMERIC,
+  taxa_administracao NUMERIC,
+  taxa_locacao NUMERIC,
+  tipo_iptu VARCHAR(20),
+  numero_matricula_iptu INT,
+  valor_mensal_iptu NUMERIC,
   tipo_condominio VARCHAR(20),
-  condominio JSONB
+  nome_condominio VARCHAR(255),
+  nome_administradora VARCHAR(255),
+  razao_social_condominio VARCHAR(255),
+  cnpj_condominio VARCHAR(20),
+  site_condominio VARCHAR(255),
+  login_condominio VARCHAR(255),
+  senha_condominio VARCHAR(255),
+  telefone_fixo_condominio VARCHAR(20),
+  telefone_celular_condominio VARCHAR(20),
+  valor_mensal_condominio NUMERIC,
+  proprietario VARCHAR(255),
+  percentual NUMERIC,
+  novos_proprietarios JSONB,
+cep INT,  -- Adicione a coluna "cep"
+  endereco VARCHAR(255),
+  bairro VARCHAR(255),
+  cidade VARCHAR(255),
+  estado VARCHAR(10),
+  andar INT,
+  numero INT, 
+  caracteristicas_imovel VARCHAR(100)[] NOT NULL,
+  caracteristicas_condominio VARCHAR(100)[] NOT NULL,
 );
 
-DELETE FROM imoveis;
+
+
+  
+
