@@ -76,8 +76,7 @@ export const registrarNovoImovel = async (req: Request, res: Response) => {
       data.localizacao.andar,
       data.localizacao.numero,
       data.caracteristicas_imovel,
-      data.caracteristicas_condominio
-    
+      data.caracteristicas_condominio,
     ];
 
     await client.query(query, values);
@@ -87,5 +86,25 @@ export const registrarNovoImovel = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Erro ao registrar imóvel:", error);
     res.status(500).json({ message: "Erro ao registrar imóvel" });
+  }
+};
+
+export const obterTodosImoveis = async (req: Request, res: Response) => {
+  try {
+    const client = await pool.connect();
+
+    const query = `
+      SELECT * FROM tabela_registro_imovel;
+    `;
+
+    const result = await client.query(query);
+    const imoveis = result.rows;
+
+    client.release();
+
+    res.status(200).json(imoveis);
+  } catch (error) {
+    console.error("Erro ao obter imóveis:", error);
+    res.status(500).json({ message: "Erro ao obter imóveis" });
   }
 };
