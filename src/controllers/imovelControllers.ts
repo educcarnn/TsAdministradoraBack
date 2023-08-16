@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { Pool } from "pg";
 import { ImovelData } from "../models/imovel"; // Certifique-se de que o caminho esteja correto
+const dbConfig = {
+  connectionString:
+    "postgres://tsadministradoback:M76iYdAFvTmHIKVF0FgFz9YD64QYS2bs@dpg-cjd6o0s5kgrc73avnndg-a.oregon-postgres.render.com/tsadministradoback",
+  ssl: {
+    rejectUnauthorized: false, // Configuração para permitir conexões SSL não verificadas
+  },
+};
 
-const pool = new Pool({
-  user: "educc",
-  host: "localhost",
-  database: "tsadministradora",
-  password: "1234",
-  port: 5432, // Porta padrão do PostgreSQL
-});
+const pool = new Pool(dbConfig);
 
 export const registrarNovoImovel = async (req: Request, res: Response) => {
   const data: ImovelData = req.body;
