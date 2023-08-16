@@ -12,7 +12,7 @@ const router = express.Router();
     // Rota para cadastrar Pessoa Jurídica
     router.post('/cadastrar-pessoa-juridica', cadastrarPessoaJuridica);
 
-    router.get('/obter-usuarios-cadastrados', obterUsuariosCadastrados); 
+router.get('/obter-usuarios-cadastrados', obterUsuariosCadastrados); 
 
 // Rotas para Imóveis
 router.post("/cadastrar-imovel", registrarNovoImovel);
