@@ -14,7 +14,7 @@ const router = express.Router();
     router.post('/cadastrar-pessoa-juridica', cadastrarPessoaJuridica);
 
 router.get('/obter-usuarios-cadastrados', obterUsuariosCadastrados); 
-router.get("/obter-usuarios-cadastrados/:id", obterUsuarioPorId);
+
 
 
 
