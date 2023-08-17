@@ -1,3 +1,4 @@
+/*
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Contract } from "./contrato";
 
