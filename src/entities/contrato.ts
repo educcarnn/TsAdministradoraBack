@@ -1,52 +1,53 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from "typeorm";
+import { Person } from "./Person";
+import { Property } from "./Property";
 
-@Entity({ name: "tabela_pessoas_fisicas" })
-export class Person {
+@Entity()
+export class Contract {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  tipo: string;
+  @ManyToOne(() => Person, person => person.contracts)
+  pessoa: Person;
 
-  @Column("simple-array")
-  funcao: string[];
+  @ManyToOne(() => Property, property => property.contracts)
+  imovel: Property;
 
-  @Column()
-  nome: string;
-
-  @Column()
-  cpf: string;
+  @ManyToOne(() => Person, person => person.contracts)
+  proprietario: Person;
 
   @Column()
-  identidade: string;
+  tipoContrato: string;
+
+  @ManyToMany(() => Person)
+  @JoinTable()
+  locatarios: Person[];
 
   @Column()
-  orgao_expedidor: string;
+  garantia: string;
 
   @Column()
-  data_nascimento: Date;
+  dataInicio: Date;
 
   @Column()
-  profissao: string;
+  dataTermino: Date;
 
   @Column()
-  estado_civil: string;
+  valor: number;
 
   @Column()
-  filiacao_mae: string;
+  seguradora: string;
 
   @Column()
-  filiacao_pai: string;
+  apolice: string;
 
   @Column()
-  nacionalidade: string;
+  numeroParcelas: number;
 
   @Column()
-  telefone_fixo: string;
+  observacao: string;
 
-  @Column()
-  telefone_celular: string;
+  // ... outras colunas e relacionamentos
 
-  @Column()
-  email: string;
+  // Construtor e métodos adicionais aqui
 }

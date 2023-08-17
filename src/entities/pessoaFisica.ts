@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Contrato } from "./Contrato"; // Importe a entidade Contrato se necessário
+import { Contract } from "./contrato";
 
 @Entity({ name: "tabela_pessoas_fisicas" })
 export class Person {
@@ -44,7 +44,7 @@ export class Person {
   @Column({ nullable: true })
   pdf: string | null;
 
-  @OneToMany(() => Contrato, (contrato) => contrato.locatario)
+  @OneToMany(() => Contrato, (contrato) => Contract.locatario)
   contratos: Contrato[];
 
   // ... outras relações

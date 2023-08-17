@@ -73,7 +73,7 @@ CREATE TABLE tabela_registro_imovel (
   proprietario VARCHAR(255),
   percentual NUMERIC,
   novos_proprietarios JSONB,
-cep INT,  -- Adicione a coluna "cep"
+  cep INT, 
   endereco VARCHAR(255),
   bairro VARCHAR(255),
   cidade VARCHAR(255),
