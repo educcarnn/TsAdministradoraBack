@@ -53,3 +53,5 @@ export class Contract {
 
   // Construtor e métodos adicionais aqui
 }
+
+*/
