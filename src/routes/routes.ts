@@ -2,7 +2,7 @@ import express from 'express';
 import { cadastrarPessoaFisica, cadastrarPessoaJuridica, obterUsuariosCadastrados} from '../controllers/clienteController';
 import { registrarImovel, obterImoveis } from '../controllers/aluguelController';
 import { registrarNovoImovel, obterTodosImoveis } from '../controllers/imovelControllers';
-
+import { obterUsuarioPorId } from '../controllers/clienteController';
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ const router = express.Router();
     router.post('/cadastrar-pessoa-juridica', cadastrarPessoaJuridica);
 
 router.get('/obter-usuarios-cadastrados', obterUsuariosCadastrados); 
-router.get('/obter-usuarios-cadastrados:id', obterUsuariosCadastrados); 
+router.get('/obter-usuario/:id', obterUsuarioPorId);
 
 
 
