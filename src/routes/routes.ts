@@ -1,6 +1,5 @@
 import express from 'express';
 import { cadastrarPessoaFisica, cadastrarPessoaJuridica, obterUsuariosCadastrados} from '../controllers/clienteController';
-import { registrarImovel, obterImoveis } from '../controllers/aluguelController';
 import { registrarNovoImovel, obterTodosImoveis } from '../controllers/imovelControllers';
 import { obterUsuarioPorId } from '../controllers/clienteController';
 
@@ -25,10 +24,8 @@ router.get("/obter-imoveis-cadastrados", obterTodosImoveis)
 
 
 // Rotas para Contratos
-    
+
 
 // Rotas para Aluguel
-router.post('/aluguel', registrarImovel);
-router.get('/aluguel', obterImoveis);
 
 export default router;
