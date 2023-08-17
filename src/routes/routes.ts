@@ -2,7 +2,7 @@ import express from 'express';
 import { cadastrarPessoaFisica, cadastrarPessoaJuridica, obterUsuariosCadastrados} from '../controllers/clienteController';
 import { registrarImovel, obterImoveis } from '../controllers/aluguelController';
 import { registrarNovoImovel, obterTodosImoveis } from '../controllers/imovelControllers';
-import { obterUsuarioPorId } from '../controllers/clienteController';
+
 
 const router = express.Router();
 
