@@ -25,6 +25,7 @@ router.get("/obter-imoveis-cadastrados", obterTodosImoveis)
 
 
 // Rotas para Contratos
+    
 
 // Rotas para Aluguel
 router.post('/aluguel', registrarImovel);

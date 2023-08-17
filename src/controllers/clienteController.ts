@@ -85,7 +85,7 @@ export const obterUsuarioPorId = async (req: Request, res: Response) => {
     // Consulta para obter usuário por ID
     const query = `
       SELECT * FROM tabela_pessoas_fisicas WHERE id = $1
-      UNION
+      UNION ALL
       SELECT * FROM tabela_pessoas_juridicas WHERE id = $1
     `;
     const result = await client.query(query, [id]);
