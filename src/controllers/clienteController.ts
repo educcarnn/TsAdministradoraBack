@@ -74,3 +74,30 @@ export const obterUsuariosCadastrados = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Erro ao obter usuários cadastrados" });
   }
 };
+
+
+
+export const obterUsuarioPorId = async (req: Request, res: Response) => {
+  const { id } = req.query;
+
+  try {
+    const client = await pool.connect();
+
+    // Consulta para obter usuário por ID
+    const query = "SELECT * FROM tabela_pessoas_fisicas WHERE id = $1";
+    const result = await client.query(query, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    const usuario = result.rows[0];
+
+    client.release();
+
+    res.status(200).json(usuario);
+  } catch (error) {
+    console.error("Erro ao obter usuário por ID:", error);
+    res.status(500).json({ message: "Erro ao obter usuário por ID" });
+  }
+};

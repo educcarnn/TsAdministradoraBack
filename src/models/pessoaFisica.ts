@@ -18,7 +18,13 @@ interface Filiacao {
     telefoneFixo: string;
     telefoneCelular: string;
     email: string;
+    endereco: string;
+    genero: string;
     pdf: string | null;
+    contratos: [];
+    imóveis: [];
+    lista_email_enviados: [];
+    extrato_de_repassse: [];
   }
   
 
