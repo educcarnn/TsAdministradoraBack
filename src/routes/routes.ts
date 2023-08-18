@@ -37,7 +37,7 @@ router.post("/cadastrar-imovel", registrarNovoImovel);
 router.get("/obter-imoveis-cadastrados", obterTodosImoveis)
 
     router.post("/cadastro-imovel", CadastrarImovel)
-    router.post("/obter-imoveis", ObterTodosImoveis)
+    router.post("/obter-imoveis-novo", ObterTodosImoveis)
 
 
 // Rotas para Contratos
