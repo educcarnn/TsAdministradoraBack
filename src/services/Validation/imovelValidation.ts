@@ -1,4 +1,4 @@
-import { ImovelData } from "../models/imovel";
+import { ImovelData } from "../../models/imovel";
 
 export const validarImovel = (data: ImovelData) => {
   const errors: string[] = [];

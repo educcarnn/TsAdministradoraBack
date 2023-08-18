@@ -1,9 +1,4 @@
-CREATE TABLE imoveis (
-  id SERIAL PRIMARY KEY,
-  inquilino VARCHAR(255),
-  proprietario VARCHAR(255),
-  numero_imovel VARCHAR(255)
-);
+
 
 CREATE TABLE tabela_pessoas_fisicas (
   id SERIAL PRIMARY KEY,
@@ -72,7 +67,7 @@ CREATE TABLE tabela_registro_imovel (
   valor_mensal_condominio NUMERIC,
   proprietario VARCHAR(255),
   percentual NUMERIC,
-  novos_proprietarios JSONB,
+  novos_proprietarios VARCHAR(100)[] NOT NULL,
   cep INT, 
   endereco VARCHAR(255),
   bairro VARCHAR(255),

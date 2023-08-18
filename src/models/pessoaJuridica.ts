@@ -10,5 +10,9 @@ export interface PessoaJuridica {
     telefone: string;
     email: string;
     pdf: string | null;
+    contratos:[];
+    imoveis: [];
+    lista_email_enviados: [];
+    extrato_de_repassse: [];
   }
   

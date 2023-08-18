@@ -1,29 +1,43 @@
-/*
-
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from "typeorm";
-import { Person } from "./Person";
-import { Property } from "./Property";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
+import { Pessoa } from "./pessoaFisica";
+import { PessoaJuridica } from "./pessoaJuridica";
+import { RegistroImovel } from "./imovel";
 
 @Entity()
-export class Contract {
+export class Contrato {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Person, person => person.contracts)
-  pessoa: Person;
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
+  pessoa: Pessoa;
 
-  @ManyToOne(() => Property, property => property.contracts)
-  imovel: Property;
+  @ManyToMany(() => PessoaJuridica)
+  @JoinTable()
+  proprietariosPessoaJuridica: PessoaJuridica[];
 
-  @ManyToOne(() => Person, person => person.contracts)
-  proprietario: Person;
+  @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
+  imovel: RegistroImovel;
+
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos, {
+    nullable: true,
+    eager: true,
+    cascade: true,
+  })
+  proprietario: Pessoa | null;
 
   @Column()
   tipoContrato: string;
 
-  @ManyToMany(() => Person)
+  @ManyToMany(() => Pessoa)
   @JoinTable()
-  locatarios: Person[];
+  locatarios: Pessoa[];
 
   @Column()
   garantia: string;
@@ -48,10 +62,4 @@ export class Contract {
 
   @Column()
   observacao: string;
-
-  // ... outras colunas e relacionamentos
-
-  // Construtor e métodos adicionais aqui
 }
-
-*/

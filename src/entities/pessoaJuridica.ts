@@ -1,7 +1,8 @@
-/*
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Contrato } from "./contrato";
+import { RegistroImovel } from "./imovel";
 
-@Entity({ name: "tabela_pessoas_juridicas" })
+@Entity({ name: "tabela_pessoas_juridicas_orm" })
 export class PessoaJuridica {
   @PrimaryGeneratedColumn()
   id: number;
@@ -35,5 +36,12 @@ export class PessoaJuridica {
 
   @Column()
   email: string;
+
+  @ManyToMany(() => Contrato)
+  @JoinTable()
+  contratos: Contrato[];
+
+  @ManyToMany(() => RegistroImovel)
+  @JoinTable()
+  propriedades: RegistroImovel[];
 }
-*/

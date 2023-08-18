@@ -1,9 +1,9 @@
-/*
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Contract } from "./contrato";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Contrato } from "./contrato";
+import { RegistroImovel } from "./imovel";
 
-@Entity({ name: "tabela_pessoas_fisicas" })
-export class Person {
+@Entity({ name: "tabela_pessoas_fisicas_orm" })
+export class Pessoa {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,33 +34,36 @@ export class Person {
   @Column({ name: "estado_civil" })
   estadoCivil: string;
 
-  // ... outras colunas
-
   @Column()
   endereco: string;
 
   @Column()
   genero: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "varchar" }) // Use type "varchar" for the PDF path
   pdf: string | null;
 
-  @OneToMany(() => Contrato, (contrato) => Contract.locatario)
+  @ManyToMany(() => Contrato)
+  @JoinTable()
   contratos: Contrato[];
 
-  // ... outras relações
+  @ManyToMany(() => RegistroImovel)
+  @JoinTable()
+  propriedades: RegistroImovel[];
+
+  isProprietario(): boolean {
+    return this.funcao.includes("Proprietário");
+  }
 
   // Função para retornar a idade com base na data de nascimento
   get idade(): number {
-    const today = new Date();
-    const birthDate = new Date(this.dataNascimento);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+    const hoje = new Date();
+    const dataNascimento = new Date(this.dataNascimento);
+    let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+    const diffMeses = hoje.getMonth() - dataNascimento.getMonth();
+    if (diffMeses < 0 || (diffMeses === 0 && hoje.getDate() < dataNascimento.getDate())) {
+      idade--;
     }
-    return age;
+    return idade;
   }
 }
-
-*/
