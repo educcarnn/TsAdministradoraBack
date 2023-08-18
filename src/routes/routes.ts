@@ -4,6 +4,7 @@ import { registrarNovoImovel, obterTodosImoveis } from '../controllers/imovelCon
 import { obterUsuarioPorId } from '../controllers/clienteController';
 import { AtualizarPessoaPorId, CadastrarPessoa, DeletarPessoaPorId, ObterPessoaPorId, ObterTodasPessoas } from '../controllers/newCliente';
 import { CadastrarPessoaJuridica, ObterTodasPessoasJuridicas, ObterPessoaJuridicaPorId, AtualizarPessoaJuridicaPorId, DeletarPessoaJuridicaPorId} from '../controllers/newClienteJuridica';
+import { CadastrarImovel, ObterTodosImoveis } from '../controllers/imovelOrm';
 
 const router = express.Router();
 
@@ -35,10 +36,12 @@ router.patch('/pessoa-juridica-patch/:id', AtualizarPessoaJuridicaPorId)
 router.post("/cadastrar-imovel", registrarNovoImovel);
 router.get("/obter-imoveis-cadastrados", obterTodosImoveis)
 
+    router.post("/cadastro-imovel", CadastrarImovel)
+    router.post("/obter-imoveis", ObterTodosImoveis)
+
 
 // Rotas para Contratos
 
 
-// Rotas para Aluguel
 
 export default router;
