@@ -12,8 +12,15 @@ export const obterTodasPessoas = async (): Promise<Pessoa[]> => {
   return PessoaRepository.find();
 };
 
-
-
 export const obterPessoaPorId = async (id: number): Promise<Pessoa | undefined> => {
-  return PessoaRepository.findOne(id);
+  const pessoa = await PessoaRepository.findOne({ where: { id: id } });
+  return pessoa || undefined;
+};
+
+export const deletarPessoaPorId = async (id: number): Promise<void> => {
+  await PessoaRepository.delete(id);
+};
+
+export const atualizarPessoaPorId = async (id: number, data: Pessoa): Promise<void> => {
+  await PessoaRepository.update(id, data);
 };
