@@ -4,7 +4,9 @@ import { registrarNovoImovel, obterTodosImoveis } from '../controllers/imovelCon
 import { obterUsuarioPorId } from '../controllers/clienteController';
 import { AtualizarPessoaPorId, CadastrarPessoa, DeletarPessoaPorId, ObterPessoaPorId, ObterTodasPessoas } from '../controllers/newCliente';
 import { CadastrarPessoaJuridica, ObterTodasPessoasJuridicas, ObterPessoaJuridicaPorId, AtualizarPessoaJuridicaPorId, DeletarPessoaJuridicaPorId} from '../controllers/newClienteJuridica';
-import { CadastrarImovel, ObterTodosImoveis } from '../controllers/imovelOrm';
+import { CadastrarImovel, ObterTodosImoveis, ObterImovelPorId, ExcluirImovel, AtualizarImovel} from '../controllers/imovelOrm';
+import { CadastrarContrato, ObterTodosContratos, ObterContratoPorId, ExcluirContrato, AtualizarContrato } from '../controllers/contratoOrm';
+import { atualizarContratoPorId, obterContratoPorId } from '../services/contrato';
 
 const router = express.Router();
 
@@ -33,15 +35,21 @@ router.delete('/pessoa-juridica-delete/:id', DeletarPessoaJuridicaPorId)
 router.patch('/pessoa-juridica-patch/:id', AtualizarPessoaJuridicaPorId)
 
 // Rotas para Imóveis
-router.post("/cadastrar-imovel", registrarNovoImovel);
-router.get("/obter-imoveis-cadastrados", obterTodosImoveis)
+router.post('/cadastrar-imovel', registrarNovoImovel);
+router.get('/obter-imoveis-cadastrados', obterTodosImoveis)
 
-    router.post("/cadastro-imovel", CadastrarImovel)
-    router.post("/obter-imoveis-novo", ObterTodosImoveis)
-
+    router.post('/cadastro-imovel', CadastrarImovel)
+    router.get('/obter-imoveis-novo', ObterTodosImoveis)
+    router.get('/obter-imovel/:id', ObterImovelPorId)
+    router.delete('/imovel-delete/:id', ExcluirImovel)
+    router.patch('/imovel-patch/:id', AtualizarImovel)
 
 // Rotas para Contratos
-
+router.post('/cadastro-contrato', CadastrarContrato)
+router.get('/obter-contratos-novo', ObterTodosContratos)
+router.get('obter-contrato/:id', obterContratoPorId )
+router.delete('contrato-delete/:id', ExcluirContrato)
+router.patch('contrato-patch/:id', AtualizarContrato)
 
 
 export default router;

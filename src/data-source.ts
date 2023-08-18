@@ -22,6 +22,7 @@ const dataSourceConfig = (): DataSourceOptions => {
       entities: [entitiesPath],
     };
   }
+  
 
   return {
     type: 'postgres',

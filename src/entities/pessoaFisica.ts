@@ -13,6 +13,9 @@ export class Pessoa {
   @Column("simple-array")
   funcao: string[];
 
+  @Column("simple-array")
+  formaPagamento: string[]
+
   @Column()
   nome: string;
 
