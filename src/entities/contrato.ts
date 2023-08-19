@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinTable, ManyToMany } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { PessoaJuridica } from "./pessoaJuridica";
 import { RegistroImovel } from "./imovel";
@@ -39,27 +32,27 @@ export class Contrato {
   @JoinTable()
   locatarios: Pessoa[];
 
-  @Column()
-  garantia: string;
+  @Column("jsonb") // Armazena os objetos como JSON
+  garantia: {
+    tipo: string;
+    fiador: string;
+    dataInicio: string;
+    dataTermino: string;
+    valor: number;
+    seguradora: string;
+    apolice: string;
+    numeroParcelas: number;
+    observacao: string;
+  };
 
-  @Column()
-  dataInicio: Date;
-
-  @Column()
-  dataTermino: Date;
-
-  @Column()
-  valor: number;
-
-  @Column()
-  seguradora: string;
-
-  @Column()
-  apolice: string;
-
-  @Column()
-  numeroParcelas: number;
-
-  @Column()
-  observacao: string;
+  @Column("jsonb") // Armazena os objetos como JSON
+  detalhesContrato: {
+    dataInicio: string;
+    dataTermino: string;
+    valor: number;
+    seguradora: string;
+    apolice: string;
+    numeroParcelas: number;
+    observacao: string;
+  };
 }

@@ -47,9 +47,9 @@ router.get('/obter-imoveis-cadastrados', obterTodosImoveis)
 // Rotas para Contratos
 router.post('/cadastro-contrato', CadastrarContrato)
 router.get('/obter-contratos-novo', ObterTodosContratos)
-router.get('obter-contrato/:id', obterContratoPorId )
-router.delete('contrato-delete/:id', ExcluirContrato)
-router.patch('contrato-patch/:id', AtualizarContrato)
+router.get('/obter-contrato/:id', obterContratoPorId )
+router.delete('/contrato-delete/:id', ExcluirContrato)
+router.patch('/contrato-patch/:id', AtualizarContrato)
 
 
 export default router;
