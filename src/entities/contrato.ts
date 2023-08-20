@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinTable, ManyToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinTable,
+  ManyToMany,
+} from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { PessoaJuridica } from "./pessoaJuridica";
 import { RegistroImovel } from "./imovel";
@@ -8,31 +15,14 @@ export class Contrato {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
-  pessoa: Pessoa;
-
-  @ManyToMany(() => PessoaJuridica)
+  @ManyToMany(() => PessoaJuridica, {nullable: true})
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
-
-  @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
-  imovel: RegistroImovel;
-
-  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos, {
-    nullable: true,
-    eager: true,
-    cascade: true,
-  })
-  proprietario: Pessoa | null;
 
   @Column()
   tipoContrato: string;
 
-  @ManyToMany(() => Pessoa)
-  @JoinTable()
-  locatarios: Pessoa[];
-
-  @Column("jsonb") // Armazena os objetos como JSON
+  @Column("jsonb", {nullable: true}) // Armazena os objetos como JSON
   garantia: {
     tipo: string;
     fiador: string;
@@ -45,7 +35,7 @@ export class Contrato {
     observacao: string;
   };
 
-  @Column("jsonb") // Armazena os objetos como JSON
+  @Column("jsonb", {nullable: true}) // Armazena os objetos como JSON
   detalhesContrato: {
     dataInicio: string;
     dataTermino: string;
@@ -55,7 +45,23 @@ export class Contrato {
     numeroParcelas: number;
     observacao: string;
   };
-  PessoaJuridica: any;
 
-  // RELACIONAMENTOS 
+  // RELACIONAMENTOS
+  @ManyToMany(() => Pessoa)
+  @JoinTable()
+  locatarios: Pessoa[];
+
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos, {
+    nullable: true,
+    eager: true,
+    cascade: true,
+  })
+  proprietario: Pessoa | null;
+
+  @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
+  imovel: RegistroImovel;
+
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
+  pessoa: Pessoa;
+  PessoaJuridica: any;
 }

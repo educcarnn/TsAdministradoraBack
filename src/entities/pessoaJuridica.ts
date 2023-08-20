@@ -9,7 +9,7 @@ import {
 import { Contrato } from "./contrato";
 import { RegistroImovel } from "./imovel";
 
-@Entity({ name: "tabela_pessoas_juridicas_orm" })
+@Entity()
 export class PessoaJuridica {
   @PrimaryGeneratedColumn()
   id: number;

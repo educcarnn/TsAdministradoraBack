@@ -7,155 +7,106 @@ import {
 } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { Contrato } from "./contrato";
-import { CaracteristicaCondominio } from "./caracteristicasCondominio";
-import { CaracteristicaImovel } from "./caracteristicasImovel";
 import { PessoaJuridica } from "./pessoaJuridica";
 
-
-@Entity("tabela_registro_imovel_orm")
+@Entity()
 export class RegistroImovel {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  tipo_imovel: string;
+  tipoImovel: string;
 
   @Column()
-  genero_imovel: string;
+  generoImovel: string;
+
+  @Column("jsonb", { nullable: true })
+  caracteristicas: {
+    tipoConstrucao: string;
+    numeroQuartos: number;
+    numeroSuites: number;
+    numeroBanheiros: number;
+    numeroVagas: number;
+    areaUtil: number;
+    areaTotal: number;
+  };
+
+  @Column("jsonb", { nullable: true })
+  negociacao: {
+    tipo: string;
+    valores: {
+      valorVenda: number;
+      taxaIntermediacao: number;
+      valorAluguel: number;
+      taxaAdministracao: number;
+      taxaLocacao: number;
+      vendaealuguelVenda: number;
+      vendaealuguelAluguel: number;
+      vendaealuguelTaxa: number;
+    };
+  };
 
   @Column()
-  tipo_construcao: string;
+  tipoIptu: string;
 
-  @Column({ type: "int" })
-  numero_quartos: number;
-
-  @Column({ type: "int" })
-  numero_suites: number;
-
-  @Column({ type: "int" })
-  numero_banheiros: number;
-
-  @Column({ type: "int" })
-  numero_vagas: number;
-
-  @Column({ type: "float" })
-  area_util: number;
-
-  @Column({ type: "float" })
-  area_total: number;
+  @Column("jsonb", { nullable: true })
+  iptu: {
+    numero_matricula_iptu: number;
+    valorMensal: number;
+  };
 
   @Column()
-  tipo_negociacao: string;
+  tipoCondominio: string;
 
-  @Column({ type: "numeric", nullable: true })
-  valor_venda: number;
+  @Column("jsonb", { nullable: true })
+  condominio: {
+    nome_condominio: string;
+    nome_administradora: string;
+    razao_social: string;
+    cnpj: string;
+    site: string;
+    login: string;
+    senha: string;
+    telefone_fixo: string;
+    telefone_celular: string;
+    valor_mensal: number;
+  };
 
-  @Column({ type: "numeric", nullable: true })
-  taxa_intermediacao: number;
-
-  @Column({ type: "numeric", nullable: true })
-  valor_aluguel: number;
-
-  @Column({ type: "numeric", nullable: true })
-  taxa_administracao: number;
-
-  @Column({ type: "numeric", nullable: true })
-  taxa_locacao: number;
-
-  @Column()
-  tipo_iptu: string;
-
-  @Column({ type: "int", nullable: true })
-  numero_matricula_iptu: number;
-
-  @Column({ type: "numeric", nullable: true })
-  valor_mensal_iptu: number;
-
-  @Column()
-  tipo_condominio: string;
-
-  @Column( {nullable: true})
-  nome_condominio: string;
+  @Column("jsonb", { nullable: true })
+  localizacao: {
+    cep: number;
+    endereco: string;
+    bairro: string;
+    cidade: string;
+    estado: string;
+    andar: number;
+    numero: number;
+  };
 
   @Column({ nullable: true })
-  nome_administradora: string;
-
-  @Column({ nullable: true })
-  razao_social_condominio: string;
-
-  @Column({ length: 20, nullable: true })
-  cnpj_condominio: string;
-
-  @Column({ nullable: true })
-  site_condominio: string;
-
-  @Column({ nullable: true })
-  login_condominio: string;
-
-  @Column({ nullable: true })
-  senha_condominio: string;
-
-  @Column({ length: 20, nullable: true })
-  telefone_fixo_condominio: string;
-
-  @Column({ length: 20, nullable: true })
-  telefone_celular_condominio: string;
-
-  @Column({ type: "numeric", nullable: true })
-  valor_mensal_condominio: number;
-
-
-  @Column({ type: "numeric", nullable: true })
   percentual: number;
 
-  @Column("varchar", { array: true })
-  novos_proprietarios: string[];
+  @Column("text", { array: true, nullable: true })
+  caracteristicasImovel: string[];
 
-  @Column({ type: "int"})
-  cep: number;
+  @Column("text", { array: true, nullable: true })
+  caracteristicasCondominio: string[];
 
-  @Column()
-  endereco: string;
-
-  @Column()
-  bairro: string;
-
-  @Column()
-  cidade: string;
-
-  @Column({ length: 10 })
-  estado: string;
-
-  @Column({ type: "int", nullable: true })
-  andar: number;
-
-  @Column({ type: "int", nullable: true })
-  numero: number;
-
-  @Column('text', { array: true, nullable: true })
+  @Column("text", { array: true, nullable: true })
   fotos: string[];
 
   /*Relacionamentos*/
-  @ManyToMany(() => Contrato, { nullable: true})
+  @ManyToMany(() => Contrato, { nullable: true })
   @JoinTable()
-  contratos: Contrato[];  
+  contratos: Contrato[];
 
-  @ManyToMany(() => Pessoa, { nullable: true})
+  @ManyToMany(() => Pessoa, { nullable: true })
   @JoinTable()
   proprietarios: Pessoa[];
 
-  @ManyToMany(() => PessoaJuridica, { nullable: true})
+  @ManyToMany(() => PessoaJuridica, { nullable: true })
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
-
-  @ManyToMany(() => CaracteristicaCondominio)
-  @JoinTable()
-  CaracteristicaCondominio: CaracteristicaCondominio[];
-
-  @ManyToMany(() => CaracteristicaImovel)
-  @JoinTable()
-  caracteristicas_imovel: CaracteristicaImovel[];
   Pessoa: any;
   PessoaJuridica: any;
-
 }
