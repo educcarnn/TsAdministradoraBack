@@ -14,10 +14,10 @@ export const CadastrarImovel = async (req: Request, res: Response): Promise<Resp
 
   try {
     await cadastrarImovel(data, pessoaId);
-    return res.status(201).json({ message: 'Imóvel cadastrado e vinculado à pessoa com sucesso!' });
+    return res.status(201).json({ message: 'Imóvel cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Imóvel e vincular à pessoa:', error);
-    return res.status(500).json({ message: 'Erro ao cadastrar Imóvel e vincular à pessoa' });
+    return res.status(500).json({ message: 'Erro ao cadastrar Imóvel' });
   }
 };
 
