@@ -7,8 +7,6 @@ export const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRep
 
 export const cadastrarImovel = async (data: RegistroImovel, pessoaId: number): Promise<void> => {
   const imovel = new RegistroImovel();
-  imovel.tipoImovel = data.tipoImovel;
-  // Preencha os outros campos do imóvel conforme necessário
 
   const imovelSalvo = await ImovelRepository.save(imovel);
 
