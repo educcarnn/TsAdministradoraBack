@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
 import { RegistroImovel } from './imovel';
-
+import { Contrato } from './contrato';
 
 @Entity()
 export class Pessoa {
@@ -61,6 +61,7 @@ export class Pessoa {
   @Column('jsonb', { nullable: true })
   anexos: string[];
 
+/*RELACIONAMENTOS*/
   @Column('jsonb', { nullable: true })
   lista_email: string[];
 
@@ -69,5 +70,8 @@ export class Pessoa {
 
   @OneToMany(() => RegistroImovel, imovel => imovel.Pessoa, {nullable: true })
   imoveis: RegistroImovel[];
-  contratos: any;
+
+  @OneToMany(() => Contrato, contrato => contrato.pessoa, {nullable: true})
+  contratos: Contrato[];
+
 }

@@ -74,7 +74,7 @@ export class RegistroImovel {
   @Column()
   tipo_condominio: string;
 
-  @Column()
+  @Column( {nullable: true})
   nome_condominio: string;
 
   @Column({ nullable: true })
@@ -104,17 +104,6 @@ export class RegistroImovel {
   @Column({ type: "numeric", nullable: true })
   valor_mensal_condominio: number;
 
-  @ManyToMany(() => Contrato)
-  @JoinTable()
-  contratos: Contrato[];
-
-  @ManyToMany(() => Pessoa)
-  @JoinTable()
-  proprietarios: Pessoa[];
-
-  @ManyToMany(() => PessoaJuridica)
-  @JoinTable()
-  proprietariosPessoaJuridica: PessoaJuridica[];
 
   @Column({ type: "numeric", nullable: true })
   percentual: number;
@@ -122,7 +111,7 @@ export class RegistroImovel {
   @Column("varchar", { array: true })
   novos_proprietarios: string[];
 
-  @Column({ type: "int", nullable: true })
+  @Column({ type: "int"})
   cep: number;
 
   @Column()
@@ -143,6 +132,22 @@ export class RegistroImovel {
   @Column({ type: "int", nullable: true })
   numero: number;
 
+  @Column('text', { array: true, nullable: true })
+  fotos: string[];
+
+  /*Relacionamentos*/
+  @ManyToMany(() => Contrato, { nullable: true})
+  @JoinTable()
+  contratos: Contrato[];  
+
+  @ManyToMany(() => Pessoa, { nullable: true})
+  @JoinTable()
+  proprietarios: Pessoa[];
+
+  @ManyToMany(() => PessoaJuridica, { nullable: true})
+  @JoinTable()
+  proprietariosPessoaJuridica: PessoaJuridica[];
+
   @ManyToMany(() => CaracteristicaCondominio)
   @JoinTable()
   CaracteristicaCondominio: CaracteristicaCondominio[];
@@ -152,4 +157,5 @@ export class RegistroImovel {
   caracteristicas_imovel: CaracteristicaImovel[];
   Pessoa: any;
   PessoaJuridica: any;
+
 }

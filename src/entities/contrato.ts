@@ -55,4 +55,7 @@ export class Contrato {
     numeroParcelas: number;
     observacao: string;
   };
+  PessoaJuridica: any;
+
+  // RELACIONAMENTOS 
 }
