@@ -7,7 +7,6 @@ export const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRep
 
 export const cadastrarImovel = async (data: RegistroImovel, pessoaId: number): Promise<void> => {
   const imovel = new RegistroImovel();
-
   const imovelSalvo = await ImovelRepository.save(imovel);
 
   const pessoa = await PessoaRepository.findOne({ where: { id: pessoaId } }); // Utiliza a opção "where" para buscar a pessoa por ID

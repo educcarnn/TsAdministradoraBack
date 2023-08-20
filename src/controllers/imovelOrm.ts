@@ -9,11 +9,11 @@ import {
 } from '../services/imovel';
 
 
-export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
+export const cadastrarImovelController = async (req: Request, res: Response): Promise<Response> => {
   const { data, pessoaId } = req.body;
 
   try {
-    await cadastrarImovel(data, pessoaId); // Passa o pessoaId para a função cadastrarImovel
+    await cadastrarImovel(data, pessoaId);
     return res.status(201).json({ message: 'Imóvel cadastrado e vinculado à pessoa com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Imóvel e vincular à pessoa:', error);
