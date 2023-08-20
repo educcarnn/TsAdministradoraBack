@@ -9,7 +9,7 @@ import {
 } from '../services/imovel';
 
 
-export const cadastrarImovelController = async (req: Request, res: Response): Promise<Response> => {
+export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const { data, pessoaId } = req.body;
 
   try {
