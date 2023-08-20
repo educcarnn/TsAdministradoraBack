@@ -4,6 +4,7 @@ import { CadastrarPessoaJuridica, ObterTodasPessoasJuridicas, ObterPessoaJuridic
 import { CadastrarImovel, ObterTodosImoveis, ObterImovelPorId, ExcluirImovel, AtualizarImovel} from '../controllers/imovelOrm';
 import { CadastrarContrato, ObterTodosContratos, ObterContratoPorId, ExcluirContrato, AtualizarContrato } from '../controllers/contratoOrm';
 import { atualizarContratoPorId, obterContratoPorId } from '../services/contrato';
+import { vincularPessoaImovel } from '../middlewares/ImovelToPessoa';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.delete('/pessoa-juridica-delete/:id', DeletarPessoaJuridicaPorId)
 router.patch('/pessoa-juridica-patch/:id', AtualizarPessoaJuridicaPorId)
 
 // Rotas para Imóveis
-router.post('/cadastro-imovel', CadastrarImovel)
+router.post('/cadastro-imovel', CadastrarImovel, vincularPessoaImovel)
 router.get('/obter-imoveis-novo', ObterTodosImoveis)
 router.get('/obter-imovel/:id', ObterImovelPorId)
 router.delete('/imovel-delete/:id', ExcluirImovel)

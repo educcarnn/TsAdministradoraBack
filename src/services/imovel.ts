@@ -1,22 +1,13 @@
 import { Repository } from 'typeorm';
 import { RegistroImovel } from '../entities/imovel';
 import { AppDataSource } from '../data-source';
-import { PessoaRepository } from './pessoaFisica';
 
-export const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
+const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
 
-export const cadastrarImovel = async (data: RegistroImovel, pessoaId: number): Promise<void> => {
-  const imovel = new RegistroImovel();
-  const imovelSalvo = await ImovelRepository.save(imovel);
-
-  const pessoa = await PessoaRepository.findOne({ where: { id: pessoaId } }); // Utiliza a opção "where" para buscar a pessoa por ID
-  if (pessoa) {
-    imovelSalvo.proprietarios.push(pessoa);
-    await ImovelRepository.save(imovelSalvo);
-  } else {
-    throw new Error('Pessoa não encontrada');
-  }
+export const cadastrarImovel = async (data: RegistroImovel): Promise<void> => {
+  await ImovelRepository.save(data);
 };
+
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();
 };
