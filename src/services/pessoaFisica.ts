@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { Pessoa } from '../entities/pessoaFisica';
 import { AppDataSource } from '../data-source';
 
-const PessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa);
+export const PessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa);
 
 export const cadastrarPessoa = async (data: Pessoa): Promise<void> => {
   await PessoaRepository.save(data);

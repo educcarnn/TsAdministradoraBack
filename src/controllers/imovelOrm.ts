@@ -8,15 +8,16 @@ import {
   atualizarImovelPorId
 } from '../services/imovel';
 
+
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
-  const data: RegistroImovel = req.body as RegistroImovel;
+  const { data, pessoaId } = req.body;
 
   try {
-    await cadastrarImovel(data);
-    return res.status(201).json({ message: 'Imóvel cadastrado com sucesso!' });
+    await cadastrarImovel(data, pessoaId); // Passa o pessoaId para a função cadastrarImovel
+    return res.status(201).json({ message: 'Imóvel cadastrado e vinculado à pessoa com sucesso!' });
   } catch (error) {
-    console.error('Erro ao cadastrar Imóvel:', error);
-    return res.status(500).json({ message: 'Erro ao cadastrar Imóvel' });
+    console.error('Erro ao cadastrar Imóvel e vincular à pessoa:', error);
+    return res.status(500).json({ message: 'Erro ao cadastrar Imóvel e vincular à pessoa' });
   }
 };
 

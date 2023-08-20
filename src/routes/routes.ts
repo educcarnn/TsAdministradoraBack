@@ -35,5 +35,7 @@ router.get('/obter-contrato/:id', obterContratoPorId )
 router.delete('/contrato-delete/:id', ExcluirContrato)
 router.patch('/contrato-patch/:id', AtualizarContrato)
 
+    // Vínculos
 
+    
 export default router;
