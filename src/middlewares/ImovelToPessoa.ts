@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { RegistroImovel } from "../entities/imovel";
 import { Pessoa } from "../entities/pessoaFisica";
-import { AppDataSource } from "../data-source"; // Certifique-se de importar o dataSource correto
+import { Contrato } from "../entities/contrato";
+import { AppDataSource } from "../data-source";
 
 export const vincularPessoaImovel = async (
   req: Request,
@@ -24,11 +25,16 @@ export const vincularPessoaImovel = async (
 
     imovelSalvo.proprietarios.push(pessoa);
 
+    const contratoRepository = AppDataSource.getRepository(Contrato);
+    const contrato = new Contrato();
+    contrato.imovel = imovelSalvo;
+    await contratoRepository.save(contrato);
+
     await imovelRepository.save(imovelSalvo);
 
-    next();
+    next(); // Chama o próximo middleware ou rota sem retornar nenhum valor
   } catch (error) {
     console.error("Erro ao vincular pessoa e imóvel:", error);
-    return res.status(500).json({ message: "Erro ao vincular pessoa e imóvel" });
+    res.status(500).json({ message: "Erro ao vincular pessoa e imóvel" }); // Retornar a resposta diretamente aqui
   }
 };
