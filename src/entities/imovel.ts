@@ -150,4 +150,6 @@ export class RegistroImovel {
   @ManyToMany(() => CaracteristicaImovel)
   @JoinTable()
   caracteristicas_imovel: CaracteristicaImovel[];
+  Pessoa: any;
+  PessoaJuridica: any;
 }

@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
-import { Contrato } from "./contrato";
-import { RegistroImovel } from "./imovel";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
+import { RegistroImovel } from './imovel';
 
-@Entity({ name: "tabela_pessoas_fisicas_orm" })
+
+@Entity()
 export class Pessoa {
   @PrimaryGeneratedColumn()
   id: number;
@@ -10,11 +10,8 @@ export class Pessoa {
   @Column()
   tipo: string;
 
-  @Column("simple-array")
-  funcao: string[];
-
-  @Column("simple-array")
-  formaPagamento: string[]
+  @Column()
+  funcao: string;
 
   @Column()
   nome: string;
@@ -25,48 +22,52 @@ export class Pessoa {
   @Column()
   identidade: string;
 
-  @Column({ name: "orgao_expedidor" })
+  @Column()
   orgaoExpedidor: string;
 
-  @Column({ name: "data_nascimento" })
-  dataNascimento: Date;
+  @Column()
+  dataNascimento: string;
 
   @Column()
   profissao: string;
 
-  @Column({ name: "estado_civil" })
+  @Column()
   estadoCivil: string;
 
+  @Column('jsonb')
+  filiacao: { mae: string, pai: string };
+
   @Column()
-  endereco: string;
+  nacionalidade: string;
+
+  @Column({ nullable: true })
+  telefoneFixo: string;
+
+  @Column()
+  telefoneCelular: string;
+
+  @Column()
+  email: string;
 
   @Column()
   genero: string;
 
-  @Column({ nullable: true, type: "varchar" }) // Use type "varchar" for the PDF path
-  pdf: string | null;
+  @Column('jsonb', { nullable: true })
+  endereco: { cep: string, endereco: string, bairro: string, cidade: string, estado: string };
 
-  @ManyToMany(() => Contrato)
-  @JoinTable()
-  contratos: Contrato[];
+  @Column('jsonb', { nullable: true })
+  dadoBancarios: { chavePix: string, banco: string, agencia: string, conta: string };
 
-  @ManyToMany(() => RegistroImovel)
-  @JoinTable()
-  propriedades: RegistroImovel[];
+  @Column('jsonb', { nullable: true })
+  anexos: string[];
 
-  isProprietario(): boolean {
-    return this.funcao.includes("Proprietário");
-  }
+  @Column('jsonb', { nullable: true })
+  lista_email: string[];
 
-  // Função para retornar a idade com base na data de nascimento
-  get idade(): number {
-    const hoje = new Date();
-    const dataNascimento = new Date(this.dataNascimento);
-    let idade = hoje.getFullYear() - dataNascimento.getFullYear();
-    const diffMeses = hoje.getMonth() - dataNascimento.getMonth();
-    if (diffMeses < 0 || (diffMeses === 0 && hoje.getDate() < dataNascimento.getDate())) {
-      idade--;
-    }
-    return idade;
-  }
+  @Column('jsonb', { nullable: true })
+  lista_repasse: string[];
+
+  @OneToMany(() => RegistroImovel, imovel => imovel.Pessoa, {nullable: true })
+  imoveis: RegistroImovel[];
+  contratos: any;
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { Contrato } from "./contrato";
 import { RegistroImovel } from "./imovel";
 
@@ -10,26 +10,23 @@ export class PessoaJuridica {
   @Column()
   tipo: string;
 
-  @Column("simple-array")
-  funcao: string[];
+  @Column()
+  funcao: string;
 
   @Column()
   cnpj: string;
 
   @Column()
-  razao_social: string;
+  razaoSocial: string;
 
   @Column()
-  nome_fantasia: string;
+  nomeFantasia: string;
 
   @Column()
-  endereco: string;
+  dataAberturaEmpresa: string;
 
   @Column()
-  data_abertura_empresa: Date;
-
-  @Column()
-  novo_socio_administrador: string;
+  novoSocioAdministrador: string;
 
   @Column()
   telefone: string;
@@ -37,11 +34,20 @@ export class PessoaJuridica {
   @Column()
   email: string;
 
+  @Column('jsonb', { nullable: true })
+  endereco: { cep: string, endereco: string, bairro: string, cidade: string, estado: string };
+
+  @Column('jsonb', { nullable: true })
+  dadoBancarios: { chavePix: string, banco: string, agencia: string, conta: string };
+
+  @Column('jsonb', { nullable: true })
+  anexos: string[];
+
   @ManyToMany(() => Contrato)
   @JoinTable()
   contratos: Contrato[];
 
-  @ManyToMany(() => RegistroImovel)
-  @JoinTable()
+  @OneToMany(() => RegistroImovel, imovel => imovel.PessoaJuridica)
   propriedades: RegistroImovel[];
+  
 }
