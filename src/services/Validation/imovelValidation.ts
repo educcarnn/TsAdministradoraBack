@@ -1,5 +1,5 @@
 
-
+/*
 export const validarImovel = (data: ImovelData) => {
   const errors: string[] = [];
 
@@ -32,3 +32,4 @@ export const validarImovel = (data: ImovelData) => {
 
   return errors.length > 0 ? errors : null;
 };
+*/
