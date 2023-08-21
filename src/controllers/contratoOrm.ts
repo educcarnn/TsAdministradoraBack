@@ -7,18 +7,27 @@ import {
   deletarContratoPorId,
   atualizarContratoPorId
 } from '../services/contrato'; // Certifique-se de importar os serviços corretos
+import { PessoaRepository } from '../services/pessoaFisica';
 
 export const CadastrarContrato = async (req: Request, res: Response): Promise<Response> => {
   const data: Contrato = req.body as Contrato;
+  const pessoaId: number = req.body.pessoaId; // Obtenha o ID da pessoa do corpo da requisição
 
   try {
-    await cadastrarContrato(data);
+    const pessoa = await PessoaRepository.findOne({ where: { id: pessoaId } });
+    if (!pessoa) {
+      return res.status(404).json({ message: 'Pessoa não encontrada' });
+    }
+
+    await cadastrarContrato(data, pessoaId); // Chame o serviço de cadastro de contrato
+
     return res.status(201).json({ message: 'Contrato cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Contrato:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Contrato' });
   }
 };
+
 
 export const ObterTodosContratos = async (_req: Request, res: Response): Promise<Response> => {
   try {
