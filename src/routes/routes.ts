@@ -4,6 +4,7 @@ import { CadastrarPessoaJuridica, ObterTodasPessoasJuridicas, ObterPessoaJuridic
 import { CadastrarImovel, ObterTodosImoveis, ObterImovelPorId, ExcluirImovel, AtualizarImovel} from '../controllers/imovelOrm';
 import { CadastrarContrato, ObterTodosContratos, ObterContratoPorId, ExcluirContrato, AtualizarContrato } from '../controllers/contratoOrm';
 import { atualizarContratoPorId, obterContratoPorId } from '../services/contrato';
+import { Login } from '../controllers/Auth/auth';
 
 const router = express.Router();
 
@@ -35,7 +36,8 @@ router.get('/obter-contrato/:id', obterContratoPorId )
 router.delete('/contrato-delete/:id', ExcluirContrato)
 router.patch('/contrato-patch/:id', AtualizarContrato)
 
-    // Vínculos
+    // User
+    router.post('/login', Login)
 
     
 export default router;
