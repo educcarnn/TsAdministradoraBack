@@ -111,6 +111,5 @@ export class RegistroImovel {
   proprietariosPessoaJuridica: PessoaJuridica[];
   Pessoa: any;
   PessoaJuridica: any;
-  imovel: Pessoa;
 
 }

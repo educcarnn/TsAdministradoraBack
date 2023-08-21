@@ -7,10 +7,7 @@ const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository
 const PessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa); // Adicione o repositório da entidade Pessoa
 
 
-Para que a propriedade imoveis na entidade Pessoa seja preenchida automaticamente ao adicionar um imóvel, você pode utilizar a função update do TypeORM para salvar as mudanças na relação entre a pessoa e os imóveis. Aqui está como você pode fazer isso:
 
-typescript
-Copy code
 export const cadastrarImovel = async (
   imovelData: RegistroImovel,
   pessoaId: number
@@ -43,6 +40,8 @@ export const cadastrarImovel = async (
 
   return imovel;
 };
+
+
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();
 };
