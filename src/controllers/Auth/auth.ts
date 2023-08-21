@@ -1,3 +1,4 @@
+/*
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user';
@@ -44,3 +45,4 @@ export const cadastro = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ msg: 'Erro no servidor' });
   }
 };
+*/

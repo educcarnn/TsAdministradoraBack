@@ -37,7 +37,8 @@ router.delete('/contrato-delete/:id', ExcluirContrato)
 router.patch('/contrato-patch/:id', AtualizarContrato)
 
     // User
+    /*
     router.post('/login', Login)
-
+*/
     
 export default router;
