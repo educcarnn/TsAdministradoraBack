@@ -102,7 +102,7 @@ export class RegistroImovel {
   @JoinTable()
   contratos: Contrato[];
 
-  @ManyToOne(() => Pessoa, pessoa => pessoa.imoveis, { nullable: true })
+  @ManyToOne(() => Pessoa, pessoa => pessoa.imoveis)
   proprietario: Pessoa;
 
 

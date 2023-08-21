@@ -68,7 +68,7 @@ export class Pessoa {
   @Column('jsonb', { nullable: true })
   lista_repasse: string[];
 
-  @OneToMany(() => RegistroImovel, imovel => imovel.proprietario, {nullable: true })
+  @OneToMany(() => RegistroImovel, imovel => imovel.proprietario)
   imoveis: RegistroImovel[];
 
   @OneToMany(() => Contrato, contrato => contrato.pessoa, {nullable: true})

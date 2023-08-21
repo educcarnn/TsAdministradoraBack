@@ -18,7 +18,6 @@ export const cadastrarImovel = async (
   // Encontre a pessoa pelo ID
   const pessoa = await pessoaRepository.findOne({
     where: { id: pessoaId },
-    relations: ['imoveis'], // Carrega a relação de imóveis da pessoa
   });
 
   if (!pessoa) {
@@ -31,12 +30,6 @@ export const cadastrarImovel = async (
 
   // Salve o imóvel no banco de dados
   await imovelRepository.save(imovel);
-
-  // Atualize manualmente a relação de imóveis da pessoa
-  pessoa.imoveis = [...(pessoa.imoveis || []), imovel]; // Adicione o novo imóvel à lista de imóveis
-
-  // Salve as mudanças no repositório da pessoa
-  await pessoaRepository.save(pessoa);
 
   return imovel;
 };
