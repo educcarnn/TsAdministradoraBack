@@ -16,6 +16,7 @@ export const cadastrarImovel = async (
   // Encontre a pessoa pelo ID
   const pessoa = await pessoaRepository.findOne({
     where: { id: pessoaId },
+    relations: ['imoveis'], // Carrega a relação de imóveis da pessoa
   });
 
   if (!pessoa) {
@@ -23,22 +24,18 @@ export const cadastrarImovel = async (
   }
 
   // Crie o imóvel com a associação à pessoa
-  const imovel = imovelRepository.create({
-    ...imovelData,
-    proprietario: pessoa, // Associe a pessoa como proprietária do imóvel
-  });
+  const imovel = imovelRepository.create(imovelData);
+  imovel.proprietario = pessoa; // Associe a pessoa como proprietária do imóvel
 
   // Salve o imóvel no banco de dados
   await imovelRepository.save(imovel);
 
-  // Adicione automaticamente o imóvel à coleção de imóveis da pessoa
-  pessoa.imoveis.push(imovel);
-
-  // Salve as mudanças no repositório da pessoa
+  // Salve as mudanças no repositório da pessoa (atualizando a relação de imóveis)
   await pessoaRepository.save(pessoa);
 
   return imovel;
 };
+
 
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();
