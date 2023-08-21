@@ -69,7 +69,7 @@ export class Pessoa {
   lista_repasse: string[];
 
   @OneToMany(() => RegistroImovel, imovel => imovel.Pessoa, {nullable: true })
-  imoveis: RegistroImovel[];
+  imoveis: RegistroImovel[] = [];
 
   @OneToMany(() => Contrato, contrato => contrato.pessoa, {nullable: true})
   contratos: Contrato[];
