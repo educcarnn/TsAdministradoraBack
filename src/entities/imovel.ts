@@ -103,7 +103,6 @@ export class RegistroImovel {
   contratos: Contrato[];
 
   @ManyToOne(() => Pessoa, pessoa => pessoa.imoveis, { nullable: true })
-  @JoinColumn({ name: 'proprietarioId' })
   proprietario: Pessoa;
 
 
