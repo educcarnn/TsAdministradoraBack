@@ -4,7 +4,7 @@ import { CadastrarPessoaJuridica, ObterTodasPessoasJuridicas, ObterPessoaJuridic
 import { CadastrarImovel, ObterTodosImoveis, ObterImovelPorId, ExcluirImovel, AtualizarImovel} from '../controllers/imovelOrm';
 import { CadastrarContrato, ObterTodosContratos, ObterContratoPorId, ExcluirContrato, AtualizarContrato } from '../controllers/contratoOrm';
 import { atualizarContratoPorId, obterContratoPorId } from '../services/contrato';
-import { Login } from '../controllers/Auth/auth';
+//import { Login } from '../controllers/Auth/auth';
 
 const router = express.Router();
 
