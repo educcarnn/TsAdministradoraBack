@@ -70,7 +70,8 @@ export class PessoaJuridica {
 
   @OneToMany(() => Contrato, contrato => contrato.PessoaJuridica, {nullable: true})
   contratos: Contrato[];
-
+/*
   @OneToMany(() => RegistroImovel, (imovel) => imovel.PessoaJuridica, { nullable: true })
   imoveis: RegistroImovel[];
+  */
 }

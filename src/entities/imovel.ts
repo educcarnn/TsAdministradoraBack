@@ -5,6 +5,7 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  JoinColumn
 } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { Contrato } from "./contrato";
@@ -101,15 +102,13 @@ export class RegistroImovel {
   @JoinTable()
   contratos: Contrato[];
 
-  @ManyToOne(() => Pessoa, { nullable: true })
-  @JoinTable()
-  proprietario: Pessoa; // Agora a propriedade representa uma única Pessoa, não um array
+  @ManyToOne(() => Pessoa, pessoa => pessoa.imoveis, { nullable: true })
+  @JoinColumn({ name: 'proprietarioId' })
+  proprietario: Pessoa;
 
 
   @ManyToOne(() => PessoaJuridica, { nullable: true })
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
-  Pessoa: any;
-  PessoaJuridica: any;
 
 }

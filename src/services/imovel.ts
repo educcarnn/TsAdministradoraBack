@@ -31,14 +31,9 @@ export const cadastrarImovel = async (
   // Salve o imóvel no banco de dados
   await imovelRepository.save(imovel);
 
-  // Atualize a relação de imóveis da pessoa
-  //pessoa.imoveis = [...(pessoa.imoveis || []), imovel]; // Adicione o novo imóvel à lista de imóveis
-
-  // Salve as mudanças no repositório da pessoa
-  await pessoaRepository.save(pessoa);
-
   return imovel;
 };
+
 
 
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
