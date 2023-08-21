@@ -7,6 +7,7 @@ import {
   deletarImovelPorId,
   atualizarImovelPorId
 } from '../services/imovel';
+import { getImoveisComPessoas } from '../services/imovel';
 
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const data: RegistroImovel = req.body as RegistroImovel;
@@ -23,8 +24,8 @@ export const CadastrarImovel = async (req: Request, res: Response): Promise<Resp
 
 export const ObterTodosImoveis = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const imoveis = await obterTodosImoveis();
-    return res.status(200).json(imoveis);
+    const imoveisComPessoas = await getImoveisComPessoas();
+    return res.status(200).json(imoveisComPessoas);
   } catch (error) {
     console.error('Erro ao obter todos os Imóveis:', error);
     return res.status(500).json({ message: 'Erro ao obter todos os Imóveis' });

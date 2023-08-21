@@ -69,7 +69,7 @@ export class Pessoa {
   lista_repasse: string[];
 
   @ManyToMany(() => RegistroImovel, imovel => imovel.pessoas, {eager: true})
-  @JoinTable()
+
   imoveis: RegistroImovel[];
   
   @OneToMany(() => Contrato, contrato => contrato.pessoa)
