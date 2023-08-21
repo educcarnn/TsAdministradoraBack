@@ -1,40 +1,32 @@
-import { Repository } from 'typeorm';
-import { RegistroImovel } from '../entities/imovel';
-import { Pessoa } from '../entities/pessoaFisica';
-import { AppDataSource } from '../data-source';
+import { Repository } from "typeorm";
+import { RegistroImovel } from "../entities/imovel";
+import { Pessoa } from "../entities/pessoaFisica";
+import { AppDataSource } from "../data-source";
 
-const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
-const PessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa); // Adicione o repositório da entidade Pessoa
-
-
-
+const ImovelRepository: Repository<RegistroImovel> =
+  AppDataSource.getRepository(RegistroImovel);
+const pessoaRepository = AppDataSource.getRepository(Pessoa);
+const imovelRepository = AppDataSource.getRepository(RegistroImovel);
 export const cadastrarImovel = async (
-  imovelData: RegistroImovel,
+  enderecoImovel: string,
   pessoaId: number
 ): Promise<RegistroImovel> => {
-  const pessoaRepository = AppDataSource.getRepository(Pessoa);
-  const imovelRepository = AppDataSource.getRepository(RegistroImovel);
-
   // Encontre a pessoa pelo ID
-  const pessoa = await pessoaRepository.findOne({
-    where: { id: pessoaId },
-  });
+  const pessoa = await pessoaRepository.findOne({ where: { id: pessoaId } });
 
   if (!pessoa) {
     throw new Error("Pessoa não encontrada");
   }
 
-  // Crie o imóvel com a associação à pessoa
-  const imovel = imovelRepository.create(imovelData);
-  imovel.proprietario = pessoa; // Associe a pessoa como proprietária do imóvel
+  // Crie um novo imóvel e associe à pessoa
+  const novoImovel = new RegistroImovel();
+  novoImovel.proprietario = pessoa;
 
   // Salve o imóvel no banco de dados
-  await imovelRepository.save(imovel);
+  await imovelRepository.save(novoImovel);
 
-  return imovel;
+  return novoImovel;
 };
-
-
 
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();

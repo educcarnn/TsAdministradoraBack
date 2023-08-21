@@ -62,16 +62,16 @@ export class Pessoa {
   anexos: string[];
 
 /*RELACIONAMENTOS*/
-  @Column('jsonb', { nullable: true })
+  @Column('jsonb')
   lista_email: string[];
 
-  @Column('jsonb', { nullable: true })
+  @Column('jsonb')
   lista_repasse: string[];
 
   @OneToMany(() => RegistroImovel, imovel => imovel.proprietario)
   imoveis: RegistroImovel[];
 
-  @OneToMany(() => Contrato, contrato => contrato.pessoa, {nullable: true})
+  @OneToMany(() => Contrato, contrato => contrato.pessoa)
   contratos: Contrato[];
 
 }

@@ -98,7 +98,7 @@ export class RegistroImovel {
   fotos: string[];
 
   /*Relacionamentos*/
-  @ManyToMany(() => Contrato, { nullable: true })
+  @ManyToMany(() => Contrato)
   @JoinTable()
   contratos: Contrato[];
 
@@ -106,7 +106,7 @@ export class RegistroImovel {
   proprietario: Pessoa;
 
 
-  @ManyToOne(() => PessoaJuridica, { nullable: true })
+  @ManyToOne(() => PessoaJuridica)
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
 
