@@ -7,8 +7,7 @@ const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository
 const PessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa); // Adicione o repositório da entidade Pessoa
 
 
-
-export const cadastrarImovel = async (
+export const cadastrarImovel= async (
   imovelData: RegistroImovel,
   pessoaId: number
 ): Promise<RegistroImovel> => {
@@ -23,8 +22,9 @@ export const cadastrarImovel = async (
   }
 
   // Crie um novo imóvel e associe à pessoa
-  const novoImovel = imovelRepository.create(imovelData);
-  novoImovel.proprietario = pessoa;
+  const novoImovel = new RegistroImovel();
+  Object.assign(novoImovel, imovelData);
+  novoImovel.pessoas = [pessoa]; // Associe a pessoa como proprietária do imóvel
 
   // Salve o imóvel no banco de dados
   await imovelRepository.save(novoImovel);

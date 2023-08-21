@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable} from 'typeorm';
 import { RegistroImovel } from './imovel';
 import { Contrato } from './contrato';
 
@@ -52,7 +52,7 @@ export class Pessoa {
   @Column()
   genero: string;
 
-  @Column('jsonb', { nullable: true })
+  @Column('jsonb', { nullable: true})
   endereco: { cep: string, endereco: string, bairro: string, cidade: string, estado: string };
 
   @Column('jsonb', { nullable: true })
@@ -68,9 +68,10 @@ export class Pessoa {
   @Column('jsonb')
   lista_repasse: string[];
 
-  @OneToMany(() => RegistroImovel, imovel => imovel.proprietario)
+  @ManyToMany(() => RegistroImovel, imovel => imovel.pessoas, {eager: true})
+  @JoinTable()
   imoveis: RegistroImovel[];
-
+  
   @OneToMany(() => Contrato, contrato => contrato.pessoa)
   contratos: Contrato[];
 

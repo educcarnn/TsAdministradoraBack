@@ -53,7 +53,6 @@ export class Contrato {
 
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos, {
     nullable: true,
-    eager: true,
     cascade: true,
   })
   proprietario: Pessoa | null;
