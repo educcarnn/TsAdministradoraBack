@@ -12,7 +12,6 @@ export const cadastrarImovel = async (
 ): Promise<RegistroImovel> => {
   // Encontre a pessoa pelo ID
   const pessoa = await pessoaRepository.findOne({ where: { id: pessoaId } });
-
   if (!pessoa) {
     throw new Error("Pessoa não encontrada");
   }
