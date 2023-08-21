@@ -21,7 +21,6 @@ export const CadastrarImovel = async (req: Request, res: Response): Promise<Resp
   }
 };
 
-
 export const ObterTodosImoveis = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const imoveis = await obterTodosImoveis();

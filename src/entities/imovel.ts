@@ -112,4 +112,5 @@ export class RegistroImovel {
   Pessoa: any;
   PessoaJuridica: any;
   imovel: Pessoa;
+
 }
