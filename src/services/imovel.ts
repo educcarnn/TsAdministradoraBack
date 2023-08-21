@@ -8,7 +8,6 @@ const ImovelRepository: Repository<RegistroImovel> =
 const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
 export const cadastrarImovel = async (
-  enderecoImovel: string,
   pessoaId: number
 ): Promise<RegistroImovel> => {
   // Encontre a pessoa pelo ID
@@ -24,6 +23,13 @@ export const cadastrarImovel = async (
 
   // Salve o imóvel no banco de dados
   await imovelRepository.save(novoImovel);
+
+  // Busque todos os imóveis com informações de proprietários incluídas
+  const imoveisComProprietarios = await imovelRepository.find({
+    relations: {
+      proprietario: true,
+    },
+  });
 
   return novoImovel;
 };
