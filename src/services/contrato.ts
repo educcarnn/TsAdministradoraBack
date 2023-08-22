@@ -56,13 +56,27 @@ export const obterTodosContratos = async (): Promise<Contrato[]> => {
   return ContratoRepository.find();
 };
 
-export const obterContratoPorId = async (
-  id: number
-): Promise<Contrato | undefined> => {
-  const getContrato = await getContratos();
-  const contrato = await getContrato.find((contrato) => contrato.id === id);
-  return contrato || undefined;
-};
+export const obterContratoPorId = async (id: number): Promise<Contrato | undefined> => {
+  try {
+    const getContrato = await getContratos();
+    const contrato = await ContratoRepository.findOne({ where: { id: id } });
+
+    if (contrato) {
+      // Procura o imóvel nas informações carregadas
+      const contratoFind = getContrato.find(item => item.id === contrato.id);
+
+      if (contratoFind) {
+        return contratoFind;
+      }
+    }
+
+    return undefined;
+  } catch (error) {
+    console.error('Erro ao obter Contrato por ID:', error);
+    return undefined;
+  }
+}
+
 
 export const deletarContratoPorId = async (id: number): Promise<void> => {
   await ContratoRepository.delete(id);

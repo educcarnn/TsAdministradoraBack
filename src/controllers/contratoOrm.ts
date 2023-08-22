@@ -7,7 +7,7 @@ import {
   deletarContratoPorId,
   atualizarContratoPorId
 } from '../services/contrato'; // Certifique-se de importar os serviços corretos
-
+import { getContratos } from '../services/contrato';
 
 export const CadastrarContrato = async (req: Request, res: Response): Promise<Response> => {
   const data: Contrato = req.body as Contrato;
@@ -27,7 +27,7 @@ export const CadastrarContrato = async (req: Request, res: Response): Promise<Re
 
 export const ObterTodosContratos = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const contratos = await obterTodosContratos();
+    const contratos = await getContratos();
     return res.status(200).json(contratos);
   } catch (error) {
     console.error('Erro ao obter todos os Contratos:', error);
@@ -39,6 +39,7 @@ export const ObterContratoPorId = async (req: Request, res: Response): Promise<R
   const { id } = req.params;
 
   try {
+    await getContratos()
     const contrato = await obterContratoPorId(Number(id));
 
     if (!contrato) {

@@ -32,7 +32,7 @@ router.patch('/imovel-patch/:id', AtualizarImovel)
 // Rotas para Contratos
 router.post('/cadastro-contrato', CadastrarContrato)
 router.get('/obter-contratos-novo', ObterTodosContratos)
-router.get('/obter-contrato/:id', obterContratoPorId )
+router.get('/obter-contrato/:id', ObterContratoPorId )
 router.delete('/contrato-delete/:id', ExcluirContrato)
 router.patch('/contrato-patch/:id', AtualizarContrato)
 
