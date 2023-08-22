@@ -68,11 +68,14 @@ export class Pessoa {
   @Column('jsonb',  { nullable: true })
   lista_repasse: string[];
 
-  @ManyToMany(() => RegistroImovel, imovel => imovel.pessoas, {eager: true})
-  imoveis: RegistroImovel[];
+  @OneToMany(() => RegistroImovel, (RegistroImovel) => RegistroImovel.proprietario)
+  imoveisProprietarios: RegistroImovel[];
 
-  // Contratos
-  @ManyToMany(() => Contrato, (contrato) => contrato.locatarios, {eager: true})
-  contratos: Contrato[];
+  // Relação com contratos onde a pessoa é proprietária
+  @OneToMany(() => Contrato, (contrato) => contrato.proprietario)
+  contratosProprietarios: Contrato[];
 
+  // Relação com contratos onde a pessoa é inquilina
+  @OneToMany(() => Contrato, (contrato) => contrato.inquilino)
+  contratosInquilinos: Contrato[];
 }

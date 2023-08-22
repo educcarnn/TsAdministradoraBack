@@ -47,13 +47,16 @@ export class Contrato {
   };
 
   // RELACIONAMENTOS
-  @ManyToMany(() => Pessoa, (pessoa) => pessoa.contratos)
-  @JoinTable()
-  locatarios: Pessoa[];
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosInquilinos)
+  inquilino: Pessoa;
 
-  @ManyToMany(() => RegistroImovel, (imovel) => imovel.contratos)
-  @JoinTable()
-  imoveis: RegistroImovel[];
+  // Relação com o proprietário no contrato
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosProprietarios)
+  proprietario: Pessoa;
+
+  // Relação com o imóvel alugado neste contrato
+  @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
+  imovel: RegistroImovel;
   
   /*
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)

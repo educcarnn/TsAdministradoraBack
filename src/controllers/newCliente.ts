@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pessoa } from '../entities/pessoaFisica';
 import { cadastrarPessoa, obterTodasPessoas, obterPessoaPorId, deletarPessoaPorId, atualizarPessoaPorId} from '../services/pessoaFisica';
+import { requeryPessoas } from '../services/pessoaFisica';
 
 export const CadastrarPessoa = async (req: Request, res: Response): Promise<Response> => {
   const data: Pessoa = req.body;
@@ -16,8 +17,9 @@ export const CadastrarPessoa = async (req: Request, res: Response): Promise<Resp
 
 export const ObterTodasPessoas = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const pessoas = await obterTodasPessoas();
+    const pessoas = await requeryPessoas()
     return res.status(200).json(pessoas);
+    
   } catch (error) {
     console.error('Erro ao obter todas as Pessoas:', error);
     return res.status(500).json({ message: 'Erro ao obter todas as Pessoas' });

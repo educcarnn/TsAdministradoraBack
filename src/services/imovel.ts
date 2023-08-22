@@ -3,6 +3,7 @@ import { RegistroImovel } from "../entities/imovel";
 import { Pessoa } from "../entities/pessoaFisica";
 import { AppDataSource } from "../data-source";
 
+
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
   AppDataSource.getRepository(Pessoa); // Adicione o repositório da entidade Pessoa
@@ -14,30 +15,32 @@ export const cadastrarImovel = async (
   imovelData: RegistroImovel,
   pessoaId: number
 ): Promise<RegistroImovel> => {
+
   // Encontre a pessoa pelo ID
-  const pessoa = await pessoaRepository.findOne({
-    where: { id: pessoaId }
-  });
+  const pessoa = await pessoaRepository.findOne({ where: { id: pessoaId } });
 
   if (!pessoa) {
     throw new Error("Pessoa não encontrada");
   }
 
-  const novoImovel = imovelRepository.create(imovelData);
-  novoImovel.pessoas = [pessoa];
+  // Crie um novo imóvel e associe a pessoa como proprietário
+  const novoImovel = imovelRepository.create({
+    ...imovelData,
+    proprietario: pessoa
+  });
 
+  // Salve o novo imóvel no banco de dados
   await imovelRepository.save(novoImovel);
-
-  pessoa.imoveis.push(novoImovel); // Adicione o novo imóvel à lista de imóveis da pessoa
-  await pessoaRepository.save(pessoa);
 
   return novoImovel;
 };
 
+
 export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository.find({
     relations: {
-      pessoas: true,
+      proprietario: true,
+      contratos: true,
     },
   });
   return imoveisComPessoas;

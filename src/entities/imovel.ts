@@ -6,6 +6,7 @@ import {
   JoinTable,
   ManyToOne,
   JoinColumn,
+  OneToMany
 } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { Contrato } from "./contrato";
@@ -98,13 +99,12 @@ export class RegistroImovel {
   fotos: string[];
 
   /*Relacionamentos*/
-  @ManyToMany(() => Contrato, (contrato) => contrato.imoveis, {eager: true})
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.imoveisProprietarios)
+  proprietario: Pessoa;
+
+  // Relação com os contratos associados a este imóvel
+  @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
-
-  @ManyToMany(() => Pessoa, (pessoa) => pessoa.imoveis)
-  @JoinTable()
-  pessoas: Pessoa[];
-
   /*
   @ManyToOne(() => PessoaJuridica)
   @JoinTable()

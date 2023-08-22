@@ -9,21 +9,30 @@ const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository
 
 export const cadastrarContrato = async (
   data: Contrato,
-  pessoaId: number,
-  imovelId: number // Adicione o ID do imóvel como um parâmetro
+  inquilinoId: number,
+  proprietarioId: number,
+  imovelId: number
 ): Promise<Contrato> => {
   const contratoRepository = AppDataSource.getRepository(Contrato);
 
-  const pessoa = await PessoaRepository.findOne({
-    where: { id: pessoaId },
+  const inquilino = await PessoaRepository.findOne({
+    where: { id: inquilinoId },
   });
 
-  if (!pessoa) {
-    throw new Error("Pessoa não encontrada");
+  if (!inquilino) {
+    throw new Error("Inquilino (locatário) não encontrado");
+  }
+
+  const proprietario = await PessoaRepository.findOne({
+    where: { id: proprietarioId },
+  });
+
+  if (!proprietario) {
+    throw new Error("Proprietário não encontrado");
   }
 
   const imovel = await ImovelRepository.findOne({
-    where: { id: imovelId }, // Busque o imóvel pelo ID
+    where: { id: imovelId },
   });
 
   if (!imovel) {
@@ -31,13 +40,14 @@ export const cadastrarContrato = async (
   }
 
   const contrato = contratoRepository.create(data);
-  contrato.locatarios = [pessoa];
-  contrato.imoveis = [imovel]; // Associe o imóvel ao contrato
+  contrato.inquilino = inquilino;   // Associe o inquilino ao contrato
+  contrato.proprietario = proprietario;  // Associe o proprietário ao contrato
+  contrato.imovel = imovel;  // Associe o imóvel ao contrato
 
   await contratoRepository.save(contrato);
 
-  pessoa.contratos.push(contrato);
-  await PessoaRepository.save(pessoa);
+  // Como as relações são `ManyToOne`, você não precisa atualizar os arrays de contratos dos objetos `inquilino` e `proprietario`
+  // O TypeORM se encarregará de atualizar os IDs estrangeiros no contrato
 
   return contrato;
 };
@@ -45,8 +55,9 @@ export const cadastrarContrato = async (
 export const getContratos = async () => {
   const imoveisComPessoas = await ContratoRepository.find({
     relations: {
-      locatarios: true,
-      imoveis: true,
+      inquilino: true,
+      imovel: true,
+      proprietario: true,
     },
   });
   return imoveisComPessoas;
