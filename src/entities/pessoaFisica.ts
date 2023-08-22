@@ -46,7 +46,7 @@ export class Pessoa {
   @Column()
   telefoneCelular: string;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   @Column()
