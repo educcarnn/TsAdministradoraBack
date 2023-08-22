@@ -62,10 +62,10 @@ export class Pessoa {
   anexos: string[];
 
 /*RELACIONAMENTOS*/
-  @Column('jsonb')
+  @Column('jsonb',  { nullable: true })
   lista_email: string[];
 
-  @Column('jsonb')
+  @Column('jsonb',  { nullable: true })
   lista_repasse: string[];
 
   @ManyToMany(() => RegistroImovel, imovel => imovel.pessoas, {eager: true})
