@@ -69,10 +69,10 @@ export class Pessoa {
   lista_repasse: string[];
 
   @ManyToMany(() => RegistroImovel, imovel => imovel.pessoas, {eager: true})
-
   imoveis: RegistroImovel[];
-  
-  @OneToMany(() => Contrato, contrato => contrato.pessoa)
+
+  // Contratos
+  @ManyToMany(() => Contrato, (contrato) => contrato.locatarios, {eager: true})
   contratos: Contrato[];
 
 }

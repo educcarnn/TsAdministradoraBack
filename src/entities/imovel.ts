@@ -98,16 +98,17 @@ export class RegistroImovel {
   fotos: string[];
 
   /*Relacionamentos*/
-  @ManyToMany(() => Contrato)
+  @ManyToMany(() => Contrato, (contrato) => contrato.imovel)
   @JoinTable()
   contratos: Contrato[];
   
   @ManyToMany(() => Pessoa, pessoa => pessoa.imoveis)
   @JoinTable()
   pessoas: Pessoa[];
-
+  
+/*
   @ManyToOne(() => PessoaJuridica)
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
-
+*/
 }

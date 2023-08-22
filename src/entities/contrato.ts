@@ -14,15 +14,15 @@ import { RegistroImovel } from "./imovel";
 export class Contrato {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToMany(() => PessoaJuridica, {nullable: true})
+/*
+  @ManyToMany(() => PessoaJuridica, { nullable: true })
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
-
+*/
   @Column()
   tipoContrato: string;
 
-  @Column("jsonb", {nullable: true}) // Armazena os objetos como JSON
+  @Column("jsonb", { nullable: true }) // Armazena os objetos como JSON
   garantia: {
     tipo: string;
     fiador: string;
@@ -35,7 +35,7 @@ export class Contrato {
     observacao: string;
   };
 
-  @Column("jsonb", {nullable: true}) // Armazena os objetos como JSON
+  @Column("jsonb", { nullable: true }) // Armazena os objetos como JSON
   detalhesContrato: {
     dataInicio: string;
     dataTermino: string;
@@ -47,20 +47,20 @@ export class Contrato {
   };
 
   // RELACIONAMENTOS
-  @ManyToMany(() => Pessoa)
+  @ManyToMany(() => Pessoa, (pessoa) => pessoa.contratos)
   @JoinTable()
   locatarios: Pessoa[];
-
-  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos, {
-    nullable: true,
-    cascade: true,
-  })
-  proprietario: Pessoa | null;
-
-  @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
+  
+  @ManyToOne(() => RegistroImovel, (imovel) => imovel.contratos)
   imovel: RegistroImovel;
+
+  /*
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
+  proprietario: Pessoa[];
+
 
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
   pessoa: Pessoa;
   PessoaJuridica: any;
+*/
 }

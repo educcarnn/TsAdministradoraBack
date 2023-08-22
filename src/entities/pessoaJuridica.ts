@@ -67,7 +67,7 @@ export class PessoaJuridica {
 
   @Column("jsonb", { nullable: true })
   lista_repasse: string[];
-
+/*
   @OneToMany(() => Contrato, contrato => contrato.PessoaJuridica, {nullable: true})
   contratos: Contrato[];
 /*
