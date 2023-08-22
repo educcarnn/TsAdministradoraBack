@@ -37,6 +37,7 @@ export const ObterImovelPorId = async (req: Request, res: Response): Promise<Res
   const { id } = req.params;
 
   try {
+    await getImoveisComPessoas();
     const imovel = await obterImovelPorId(Number(id));
 
     if (!imovel) {

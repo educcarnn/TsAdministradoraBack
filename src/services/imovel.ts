@@ -50,15 +50,23 @@ export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
 export const obterImovelPorId = async (
   id: number
 ): Promise<RegistroImovel | undefined> => {
-  const imovel = await ImovelRepository.findOne({ where: { id: id } });
-  return imovel || undefined;
-};
+  try {
+    const imoveisComPessoas = await getImoveisComPessoas(); // Carrega informações de pessoas relacionadas aos imóveis
+    const imovel = await ImovelRepository.findOne({ where: { id: id } });
 
-export const deletarImovelPorId = async (id: number): Promise<void> => {
-  const imovel = await ImovelRepository.findOne({ where: { id: id } });
+    if (imovel) {
+      // Procura o imóvel nas informações carregadas
+      const imovelEncontrado = imoveisComPessoas.find(item => item.id === imovel.id);
 
-  if (imovel) {
-    await ImovelRepository.remove(imovel);
+      if (imovelEncontrado) {
+        return imovelEncontrado;
+      }
+    }
+
+    return undefined;
+  } catch (error) {
+    console.error('Erro ao obter Imóvel por ID:', error);
+    return undefined;
   }
 };
 
