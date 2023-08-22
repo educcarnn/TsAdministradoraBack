@@ -99,7 +99,6 @@ export class RegistroImovel {
 
   /*Relacionamentos*/
   @ManyToMany(() => Contrato, (contrato) => contrato.imoveis, {eager: true})
-  @JoinTable()
   contratos: Contrato[];
 
   @ManyToMany(() => Pessoa, (pessoa) => pessoa.imoveis)

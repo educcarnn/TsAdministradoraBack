@@ -81,3 +81,12 @@ export const atualizarImovelPorId = async (
     await ImovelRepository.save(imovel);
   }
 };
+
+
+export const deletarImovelPorId = async (id: number): Promise<void> => {
+  const imovel = await ImovelRepository.findOne({ where: { id: id } });
+
+  if (imovel) {
+    await ImovelRepository.remove(imovel);
+  }
+};
