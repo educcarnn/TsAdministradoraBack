@@ -14,7 +14,7 @@ import { RegistroImovel } from "./imovel";
 export class Contrato {
   @PrimaryGeneratedColumn()
   id: number;
-/*
+  /*
   @ManyToMany(() => PessoaJuridica, { nullable: true })
   @JoinTable()
   proprietariosPessoaJuridica: PessoaJuridica[];
@@ -50,10 +50,11 @@ export class Contrato {
   @ManyToMany(() => Pessoa, (pessoa) => pessoa.contratos)
   @JoinTable()
   locatarios: Pessoa[];
-  
-  @ManyToOne(() => RegistroImovel, (imovel) => imovel.contratos)
-  imovel: RegistroImovel;
 
+  @ManyToMany(() => RegistroImovel, (imovel) => imovel.contratos)
+  @JoinTable()
+  imoveis: RegistroImovel[];
+  
   /*
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
   proprietario: Pessoa[];

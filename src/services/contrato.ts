@@ -1,12 +1,16 @@
-import { Repository } from 'typeorm';
-import { Contrato } from '../entities/contrato';
-import { AppDataSource } from '../data-source'; // Certifique-se de importar o dataSource correto
-import { PessoaRepository } from './pessoaFisica';
-const ContratoRepository: Repository<Contrato> = AppDataSource.getRepository(Contrato);
+import { Repository } from "typeorm";
+import { Contrato } from "../entities/contrato";
+import { AppDataSource } from "../data-source"; // Certifique-se de importar o dataSource correto
+import { PessoaRepository } from "./pessoaFisica";
+import { RegistroImovel } from "../entities/imovel";
+const ContratoRepository: Repository<Contrato> =
+  AppDataSource.getRepository(Contrato);
+const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel)
 
 export const cadastrarContrato = async (
   data: Contrato,
   pessoaId: number,
+  imovelId: number // Adicione o ID do imóvel como um parâmetro
 ): Promise<Contrato> => {
   const contratoRepository = AppDataSource.getRepository(Contrato);
 
@@ -18,21 +22,31 @@ export const cadastrarContrato = async (
     throw new Error("Pessoa não encontrada");
   }
 
-   const contrato = contratoRepository.create(data);
-   contrato.locatarios = [pessoa];
+  const imovel = await ImovelRepository.findOne({
+    where: { id: imovelId }, // Busque o imóvel pelo ID
+  });
+
+  if (!imovel) {
+    throw new Error("Imóvel não encontrado");
+  }
+
+  const contrato = contratoRepository.create(data);
+  contrato.locatarios = [pessoa];
+  contrato.imoveis = [imovel]; // Associe o imóvel ao contrato
 
   await contratoRepository.save(contrato);
 
-  // pessoa.contratos.push(contrato);
-  // await PessoaRepository.save(pessoa); // Salvar a pessoa após adicionar o contrato
+  pessoa.contratos.push(contrato);
+  await PessoaRepository.save(pessoa);
 
   return contrato;
 };
+
 export const getContratos = async () => {
   const imoveisComPessoas = await ContratoRepository.find({
     relations: {
       locatarios: true,
-      imovel: true, 
+      imoveis: true,
     },
   });
   return imoveisComPessoas;
@@ -45,16 +59,18 @@ export const obterTodosContratos = async (): Promise<Contrato[]> => {
 export const obterContratoPorId = async (
   id: number
 ): Promise<Contrato | undefined> => {
-  const getContrato = await getContratos()
+  const getContrato = await getContratos();
   const contrato = await getContrato.find((contrato) => contrato.id === id);
   return contrato || undefined;
 };
-
 
 export const deletarContratoPorId = async (id: number): Promise<void> => {
   await ContratoRepository.delete(id);
 };
 
-export const atualizarContratoPorId = async (id: number, data: Contrato): Promise<void> => {
+export const atualizarContratoPorId = async (
+  id: number,
+  data: Contrato
+): Promise<void> => {
   await ContratoRepository.update(id, data);
 };

@@ -12,9 +12,10 @@ import {
 export const CadastrarContrato = async (req: Request, res: Response): Promise<Response> => {
   const data: Contrato = req.body as Contrato;
   const pessoaId: number = req.body.pessoaId; // Obtenha o ID da pessoa do corpo da requisição
+  const imovelId: number = req.body.imovelId;
 
   try {
-    await cadastrarContrato(data, pessoaId); // Chame o serviço de cadastro de contrato
+    await cadastrarContrato(data, pessoaId, imovelId); // Chame o serviço de cadastro de contrato
 
     return res.status(201).json({ message: 'Contrato cadastrado com sucesso!' });
   } catch (error) {
