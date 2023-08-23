@@ -25,7 +25,6 @@ export class Contrato {
   @Column("jsonb", { nullable: true }) // Armazena os objetos como JSON
   garantia: {
     tipo: string;
-    fiador: string;
     dataInicio: string;
     dataTermino: string;
     valor: number;
