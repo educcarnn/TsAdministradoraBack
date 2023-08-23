@@ -90,10 +90,10 @@ export class RegistroImovel {
   percentual: number;
 
   @Column("text", { array: true, nullable: true })
-  caracteristicasImovel: string[];
+  caracteristicas_imovel: string[];
 
   @Column("text", { array: true, nullable: true })
-  caracteristicasCondominio: string[];
+  caracteristicas_condominio: string[];
 
   @Column("text", { array: true, nullable: true })
   fotos: string[];
