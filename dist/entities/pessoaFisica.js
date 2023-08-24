@@ -14,6 +14,30 @@ const typeorm_1 = require("typeorm");
 const imovel_1 = require("./imovel");
 const contrato_1 = require("./contrato");
 let Pessoa = exports.Pessoa = class Pessoa {
+    id;
+    tipo;
+    funcao;
+    nome;
+    cpf;
+    identidade;
+    orgaoExpedidor;
+    dataNascimento;
+    profissao;
+    estadoCivil;
+    filiacao;
+    nacionalidade;
+    telefoneFixo;
+    telefoneCelular;
+    email;
+    genero;
+    endereco;
+    dadoBancarios;
+    anexos;
+    lista_email;
+    lista_repasse;
+    imoveisProprietarios;
+    contratosProprietarios;
+    contratosInquilinos;
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),

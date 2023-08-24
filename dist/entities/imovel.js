@@ -14,6 +14,22 @@ const typeorm_1 = require("typeorm");
 const pessoaFisica_1 = require("./pessoaFisica");
 const contrato_1 = require("./contrato");
 let RegistroImovel = exports.RegistroImovel = class RegistroImovel {
+    id;
+    tipoImovel;
+    generoImovel;
+    caracteristicas;
+    negociacao;
+    tipoIptu;
+    iptu;
+    tipoCondominio;
+    condominio;
+    localizacao;
+    percentual;
+    caracteristicas_imovel;
+    caracteristicas_condominio;
+    fotos;
+    proprietario;
+    contratos;
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
