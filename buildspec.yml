@@ -3,23 +3,21 @@ version: 0.2
 phases:
   install:
     commands:
-      - node -v
-      - npm -v
-      - yarn -v
+      - echo Instalando as dependências...
+      - npm install
 
   pre_build:
     commands:
-      - yarn install
+      - echo Executando o script de build...
+      - chmod +x ./build.sh
+      - ./build.sh
 
   build:
     commands:
-      - ./build.sh
-
-  post_build:
-    commands:
-      - rm -rf node_modules/
+      - echo Iniciando a aplicação...
+      - npm run dev
 
 artifacts:
-  base-directory: "."
   files:
-    - "**/*"
+    - '**/*'
+  discard-paths: yes
