@@ -1,21 +1,19 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      nodejs: 18
-    commands:
-      - echo "Instalando dependências..."
-      - npm install
   pre_build:
     commands:
-      - echo "Executando testes..."
-      - npm test
+      - echo Install packages...
+      - npm install
   build:
     commands:
-      - echo "Construindo o código..."
+      - echo Create build...
       - npm run build
-
+  post_build:
+    commands:
+      - echo Removing unnecessary files...
+      - rm -rf node_modules/
 artifacts:
+  base-directory: '.'
   files:
-    - 'src/**/*'
+    - '**/*'

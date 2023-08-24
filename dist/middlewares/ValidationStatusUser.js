@@ -1,4 +1,4 @@
-
+"use strict";
 /*
 export const ValidationStatusUser = (req: Request, res: Response, next: NextFunction) => {
     const user = req.user as any;  // Aqui, "as any" é usado para supor que `req.user` pode ter qualquer formato. Idealmente, você deve definir uma interface para "user".

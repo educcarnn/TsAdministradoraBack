@@ -1,3 +1,4 @@
+"use strict";
 /*
 export const ValidationEmail = (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
@@ -9,4 +10,4 @@ export const ValidationEmail = (req: Request, res: Response, next: NextFunction)
         res.status(400).send("E-mail inválido");
     }
 };
-*/
+*/ 
