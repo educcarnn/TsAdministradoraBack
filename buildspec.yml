@@ -3,15 +3,15 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Install packages...
+      - echo Installando pacotes...
       - npm install
   build:
     commands:
-      - echo Create build...
-      - npm run build
+      - echo Criando build...
+      - ./build.sh  # Se o build.sh fizer o trabalho de construção, chame-o aqui.
   post_build:
     commands:
-      - echo Removing unnecessary files...
+      - echo Removendo arquivos desnecessários...
       - rm -rf node_modules/
 artifacts:
   base-directory: '.'
