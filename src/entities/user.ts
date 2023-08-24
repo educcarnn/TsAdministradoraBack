@@ -1,18 +1,25 @@
-// src/entities/User.js
-
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { IsEmail } from "class-validator";
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Column()
-  username: string;
+    @Column()
+    name: string;
 
-  @Column()
-  password: string;
+    @Column()
+    @IsEmail()
+    email: string;
 
-  @Column()
-  admin: boolean;
+    @Column()
+    password: string; 
+
+    @Column({
+        type: "enum",
+        enum: ["admin", "user"],
+        default: "user"
+    })
+    role: string;
 }

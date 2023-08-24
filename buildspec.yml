@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo "Instalando dependências..."
+      - npm install
+  pre_build:
+    commands:
+      - echo "Executando testes..."
+      - npm test
+  build:
+    commands:
+      - echo "Construindo o código..."
+      - npm run build
+
+artifacts:
+  files:
+    - 'src/**/*'
