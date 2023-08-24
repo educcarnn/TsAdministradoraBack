@@ -11,7 +11,7 @@ phases:
       - node -v
       - npm -v
       - yarn -v
-      
+       
   pre_build:
     commands:
       - echo "Instalando pacotes com Yarn..."
