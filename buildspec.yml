@@ -1,23 +1,19 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - echo Instalando as dependências...
-      - npm install
-
   pre_build:
     commands:
-      - echo Executando o script de build...
-      - chmod +x ./build.sh
-      - ./build.sh
-
+      - echo Install packages...
+      - npm install
   build:
     commands:
-      - echo Iniciando a aplicação...
-      - npm run dev
-
+      - echo Create build...
+      - npm run build
+  post_build:
+    commands:
+      - echo Removing unnecessary files...
+      - rm -rf node_modules/
 artifacts:
+  base-directory: '.'
   files:
     - '**/*'
-  discard-paths: yes
