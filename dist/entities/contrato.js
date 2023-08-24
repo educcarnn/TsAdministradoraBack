@@ -13,7 +13,7 @@ exports.Contrato = void 0;
 const typeorm_1 = require("typeorm");
 const pessoaFisica_1 = require("./pessoaFisica");
 const imovel_1 = require("./imovel");
-let Contrato = exports.Contrato = class Contrato {
+let Contrato = class Contrato {
     id;
     tipoContrato;
     garantia;
@@ -22,6 +22,7 @@ let Contrato = exports.Contrato = class Contrato {
     proprietario;
     imovel;
 };
+exports.Contrato = Contrato;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)

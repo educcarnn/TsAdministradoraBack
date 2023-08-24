@@ -4,6 +4,7 @@ import { User } from "src/entities/user";
 /**
  * Middleware para garantir que um usuário tenha a role adequada para acessar uma rota
  */
+/*
 export function ensureRole(roleRequired: string) {
     return (req: Request, res: Response, next: NextFunction) => {
         const user = req.user as User; // Suponha que o usuário está anexado ao objeto req após a autenticação
@@ -19,3 +20,4 @@ export function ensureRole(roleRequired: string) {
         next();
     }
 }
+*/
