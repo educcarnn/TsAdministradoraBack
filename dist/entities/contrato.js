@@ -13,16 +13,8 @@ exports.Contrato = void 0;
 const typeorm_1 = require("typeorm");
 const pessoaFisica_1 = require("./pessoaFisica");
 const imovel_1 = require("./imovel");
-let Contrato = class Contrato {
-    id;
-    tipoContrato;
-    garantia;
-    detalhesContrato;
-    inquilino;
-    proprietario;
-    imovel;
+let Contrato = exports.Contrato = class Contrato {
 };
-exports.Contrato = Contrato;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -32,11 +24,13 @@ __decorate([
     __metadata("design:type", String)
 ], Contrato.prototype, "tipoContrato", void 0);
 __decorate([
-    (0, typeorm_1.Column)("jsonb", { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }) // Armazena os objetos como JSON
+    ,
     __metadata("design:type", Object)
 ], Contrato.prototype, "garantia", void 0);
 __decorate([
-    (0, typeorm_1.Column)("jsonb", { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }) // Armazena os objetos como JSON
+    ,
     __metadata("design:type", Object)
 ], Contrato.prototype, "detalhesContrato", void 0);
 __decorate([

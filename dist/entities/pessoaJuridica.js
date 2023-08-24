@@ -11,24 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PessoaJuridica = void 0;
 const typeorm_1 = require("typeorm");
-let PessoaJuridica = class PessoaJuridica {
-    id;
-    tipo;
-    funcao;
-    cnpj;
-    razaoSocial;
-    nomeFantasia;
-    dataAberturaEmpresa;
-    novoSocioAdministrador;
-    telefone;
-    email;
-    endereco;
-    dadoBancarios;
-    anexos;
-    lista_email;
-    lista_repasse;
+let PessoaJuridica = exports.PessoaJuridica = class PessoaJuridica {
 };
-exports.PessoaJuridica = PessoaJuridica;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)

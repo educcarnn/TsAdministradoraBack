@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
+// src/data-source.ts
 require("dotenv/config");
 const path_1 = __importDefault(require("path"));
 require("reflect-metadata");
@@ -31,7 +32,7 @@ const dataSourceConfig = () => {
         entities: [entitiesPath],
         migrations: [migrationPath],
         ssl: {
-            rejectUnauthorized: false,
+            rejectUnauthorized: false, // Para desabilitar a verificação do certificado (não recomendado em produção)
         },
     };
 };

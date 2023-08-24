@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from "express";
-import { User } from "src/entities/user";
+
 
 /**
  * Middleware para garantir que um usuário tenha a role adequada para acessar uma rota
