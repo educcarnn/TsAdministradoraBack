@@ -1,10 +1,11 @@
+
 version: 0.2
 
 phases:
   install:
     commands:
       - echo Instalando as dependências...
-      - yarn 
+      - npm run dev
 
   pre_build:
     commands:
