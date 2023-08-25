@@ -37,6 +37,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/Auth/AuthOrm";
+import { verifyAuth } from "../middlewares/ValidationRoutes";
 
 const router = express.Router();
 

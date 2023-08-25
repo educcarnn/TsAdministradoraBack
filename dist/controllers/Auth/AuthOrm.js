@@ -34,6 +34,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.loginUser = exports.registerUser = void 0;
 const UserService = __importStar(require("../../services/user")); // Ajuste o caminho conforme necessário
+const jwt = __importStar(require("jsonwebtoken"));
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newUser = yield UserService.createUser(req.body);
@@ -54,8 +55,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isValidPassword) {
             return res.status(401).json({ message: "Senha incorreta." });
         }
-        // Aqui você pode gerar e enviar um token JWT ou qualquer lógica de sessão que estiver usando.
-        res.status(200).json({ message: "Login bem-sucedido!", role: user.role });
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ message: "Login bem-sucedido!", token: token, role: user.role });
     }
     catch (error) {
         res.status(500).json({ message: 'Erro no login' });

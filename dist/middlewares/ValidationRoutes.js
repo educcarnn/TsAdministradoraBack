@@ -1,19 +1,36 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValidationStatusUser = void 0;
-const ValidationStatusUser = (req, res, next) => {
-    const user = req.user;
-    if (user) {
-        // Lógica de validação de status
-        if (user.role !== "admin") {
-            next();
-        }
-        else {
-            res.status(401).send("Status inválido");
-        }
-    }
-    else {
-        res.status(401).send("Usuário não autenticado");
-    }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.ValidationStatusUser = ValidationStatusUser;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifyAuth = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const verifyAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        res.status(401).json({ message: "Token não fornecido" });
+        return;
+    }
+    const parts = authHeader.split(' ');
+    if (parts.length !== 2) {
+        res.status(401).json({ message: "Erro no token" });
+        return;
+    }
+    const [scheme, token] = parts;
+    if (!/^Bearer$/i.test(scheme)) {
+        res.status(401).json({ message: "Formato de token malformado" });
+        return;
+    }
+    // Certifique-se de definir sua chave secreta em algum lugar seguro!
+    const secret = process.env.JWT_SECRET || "chave_secreta_para_teste";
+    jsonwebtoken_1.default.verify(token, secret, (err, decoded) => {
+        if (err) {
+            res.status(401).json({ message: "Token inválido" });
+            return;
+        }
+        // Aqui nós pegamos o payload decodificado e o anexamos à requisição para uso posterior
+        req.user = decoded;
+        next();
+    });
+};
+exports.verifyAuth = verifyAuth;

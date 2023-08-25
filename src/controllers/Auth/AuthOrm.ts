@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as UserService from "../../services/user"; // Ajuste o caminho conforme necessário
+import * as jwt from 'jsonwebtoken';
 
 export const registerUser = async (req: Request, res: Response) => {
     try {
@@ -24,8 +25,9 @@ export const loginUser = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Senha incorreta." });
         }
 
-        // Aqui você pode gerar e enviar um token JWT ou qualquer lógica de sessão que estiver usando.
-        res.status(200).json({ message: "Login bem-sucedido!", role: user.role });
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        res.status(200).json({ message: "Login bem-sucedido!", token: token, role: user.role });
+        
         
     } catch (error) {
         res.status(500).json({ message: 'Erro no login' });
