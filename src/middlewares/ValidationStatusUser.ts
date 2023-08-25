@@ -16,4 +16,3 @@ export const ValidationStatusUser = (req: Request, res: Response, next: NextFunc
         res.status(401).send("Usuário não autenticado");
     }
 };
-*/
