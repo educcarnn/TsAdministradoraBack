@@ -31,17 +31,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.loginUser = exports.registerUser = void 0;
+exports.deleteUser = exports.updateUser = exports.loginUser = exports.registerUser = exports.inviteAdmin = void 0;
 const UserService = __importStar(require("../../services/user")); // Ajuste o caminho conforme necessário
 const jwt = __importStar(require("jsonwebtoken"));
+const mail_1 = __importDefault(require("@sendgrid/mail"));
+const user_1 = require("../../services/user");
+mail_1.default.setApiKey(process.env.SENDGRID_API_KEY || "");
+const inviteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const newInvite = yield (0, user_1.createInvite)(req.body);
+        const token = jwt.sign({ userId: newInvite.id, role: newInvite.role }, process.env.JWT_SECRET, { expiresIn: "3h" });
+        const baseActivationURL = newInvite.role === "admin"
+            ? "https://tsadministradora.com.br/invite-admin"
+            : "https://tsadministradora.com.br/clientes-pessoa-fisica";
+        const activationLink = `${baseActivationURL}?token=${token}`;
+        const msg = {
+            to: newInvite.email,
+            from: "tsadmsistema@gmail.com",
+            subject: "Ative sua conta - Ts Administradora",
+            text: `Olá! Ative sua conta e defina sua senha clicando no seguinte link: ${activationLink}`,
+            html: `<p>Olá! Ative sua conta e defina sua senha clicando no seguinte <a href="${activationLink}">link</a>. A partir do momento que foi enviado o link terá 3 horas de acesso, passado esse horário, só poderá ser feito o cadastro mediante a reenvio</p>`,
+        };
+        yield mail_1.default.send(msg);
+        res.status(201).json({ message: "Convite enviado!" });
+    }
+    catch (error) {
+        console.error("Erro detalhado:", error);
+        if (error.message === "Role desconhecida") {
+            res.status(400).json({ message: "Role desconhecida" });
+        }
+        else {
+            res
+                .status(400)
+                .json({ message: "E-mail em uso ou falha ao enviar o convite" });
+        }
+    }
+});
+exports.inviteAdmin = inviteAdmin;
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newUser = yield UserService.createUser(req.body);
         res.status(201).json(newUser);
     }
     catch (error) {
-        res.status(400).json({ message: 'Erro no registro' });
+        res.status(400).json({ message: "E-mail em uso" });
     }
 });
 exports.registerUser = registerUser;
@@ -55,11 +92,16 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isValidPassword) {
             return res.status(401).json({ message: "Senha incorreta." });
         }
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: "Login bem-sucedido!", token: token, role: user.role });
+        const token = jwt.sign({
+            userId: user.id,
+            role: user.role,
+        }, process.env.JWT_SECRET, { expiresIn: "24h" });
+        res
+            .status(200)
+            .json({ message: "Login bem-sucedido!", token: token, role: user.role });
     }
     catch (error) {
-        res.status(500).json({ message: 'Erro no login' });
+        res.status(500).json({ message: "Erro no login" });
     }
 });
 exports.loginUser = loginUser;

@@ -69,3 +69,17 @@ export const deleteUserById = async (id: number): Promise<void> => {
 
     await userRepository.remove(user);
 };
+
+
+export const createInvite = async (userData: any) => {
+    const userRepository = AppDataSource.getRepository(User);
+
+    // Neste caso, não estamos salvando a senha, pois a ideia é que o usuário defina a senha quando aceitar o convite.
+    const user = new User();
+    user.email = userData.email;
+    user.role = userData.role || "user";
+
+    await userRepository.save(user);
+    
+    return user;
+}

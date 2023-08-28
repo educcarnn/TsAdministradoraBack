@@ -21,14 +21,12 @@ const verifyAuth = (req, res, next) => {
         res.status(401).json({ message: "Formato de token malformado" });
         return;
     }
-    // Certifique-se de definir sua chave secreta em algum lugar seguro!
     const secret = process.env.JWT_SECRET || "chave_secreta_para_teste";
     jsonwebtoken_1.default.verify(token, secret, (err, decoded) => {
         if (err) {
             res.status(401).json({ message: "Token inválido" });
             return;
         }
-        // Aqui nós pegamos o payload decodificado e o anexamos à requisição para uso posterior
         req.user = decoded;
         next();
     });

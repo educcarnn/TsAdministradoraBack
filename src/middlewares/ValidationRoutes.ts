@@ -1,10 +1,8 @@
-// authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { User } from '../interface/user';
 
-
-
-export const verifyAuth = (req: Request, res: Response, next: NextFunction): void => {
+export const verifyAuth = (req: Request & { user?: User }, res: Response, next: NextFunction): void => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -26,7 +24,6 @@ export const verifyAuth = (req: Request, res: Response, next: NextFunction): voi
         return;
     }
 
-    // Certifique-se de definir sua chave secreta em algum lugar seguro!
     const secret = process.env.JWT_SECRET || "chave_secreta_para_teste";
 
     jwt.verify(token, secret, (err, decoded) => {
@@ -35,8 +32,7 @@ export const verifyAuth = (req: Request, res: Response, next: NextFunction): voi
             return;
         }
 
-        // Aqui nós pegamos o payload decodificado e o anexamos à requisição para uso posterior
-        req.user = decoded as any;
+        req.user = decoded as User;
 
         next();
     });

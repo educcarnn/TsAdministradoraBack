@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserById = exports.updateUserById = exports.checkPassword = exports.hashPassword = exports.findUserByEmail = exports.createUser = void 0;
+exports.createInvite = exports.deleteUserById = exports.updateUserById = exports.checkPassword = exports.hashPassword = exports.findUserByEmail = exports.createUser = void 0;
 const user_1 = require("../entities/user"); // Ajuste o caminho conforme necessário
 const data_source_1 = require("../data-source");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -69,3 +69,13 @@ const deleteUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     yield userRepository.remove(user);
 });
 exports.deleteUserById = deleteUserById;
+const createInvite = (userData) => __awaiter(void 0, void 0, void 0, function* () {
+    const userRepository = data_source_1.AppDataSource.getRepository(user_1.User);
+    // Neste caso, não estamos salvando a senha, pois a ideia é que o usuário defina a senha quando aceitar o convite.
+    const user = new user_1.User();
+    user.email = userData.email;
+    user.role = userData.role || "user";
+    yield userRepository.save(user);
+    return user;
+});
+exports.createInvite = createInvite;

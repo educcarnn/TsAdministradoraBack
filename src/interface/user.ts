@@ -1,4 +1,3 @@
-
 export interface User {
     id: number;
     name: string;
@@ -7,3 +6,4 @@ export interface User {
     role: "admin" | "user";
     status?: "valid" | "invalid"; 
 }
+
