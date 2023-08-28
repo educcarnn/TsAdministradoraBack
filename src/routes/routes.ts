@@ -38,38 +38,38 @@ import {
   deleteUser,
 } from "../controllers/Auth/AuthOrm";
 import { verificarAdminOuUser, verificarAdmin } from "../middlewares/ValidationStatusUser";
-import {verifyAuth} from "../middlewares/ValidationRoutes"
+
 import { inviteAdmin } from "../controllers/Auth/AuthOrm";
 
 const router = express.Router();
 
 // Clientes
-router.post("/cadastrar-nova-pessoa-fisica", verifyAuth, verificarAdminOuUser, CadastrarPessoa);
-router.get("/obter-novas-pessoas", verifyAuth, verificarAdmin, ObterTodasPessoas);
-router.get("/pessoa/:id", verifyAuth, verificarAdminOuUser, ObterPessoaPorId);
-router.delete("/pessoa-delete/:id",  verifyAuth, verificarAdmin, DeletarPessoaPorId);
-router.patch("/pessoa-patch/:id", verifyAuth, verificarAdminOuUser, AtualizarPessoaPorId);
+router.post("/cadastrar-nova-pessoa-fisica", CadastrarPessoa);
+router.get("/obter-novas-pessoas",  ObterTodasPessoas);
+router.get("/pessoa/:id",  ObterPessoaPorId);
+router.delete("/pessoa-delete/:id",  DeletarPessoaPorId);
+router.patch("/pessoa-patch/:id",  AtualizarPessoaPorId);
 
 //Juridica
-router.post("/cadastrar-nova-pessoa-juridica", verifyAuth, verificarAdminOuUser, CadastrarPessoaJuridica);
-router.get("/obter-novas-pessoas-juridica",  verifyAuth, verificarAdmin, ObterTodasPessoasJuridicas);
-router.get("/pessoa-juridica/:id",verifyAuth, verificarAdminOuUser, ObterPessoaJuridicaPorId);
-router.delete("/pessoa-juridica-delete/:id", verifyAuth, verificarAdmin, DeletarPessoaJuridicaPorId);
-router.patch("/pessoa-juridica-patch/:id", verifyAuth, verificarAdminOuUser, AtualizarPessoaJuridicaPorId);
+router.post("/cadastrar-nova-pessoa-juridica",  CadastrarPessoaJuridica);
+router.get("/obter-novas-pessoas-juridica",  ObterTodasPessoasJuridicas);
+router.get("/pessoa-juridica/:id", ObterPessoaJuridicaPorId);
+router.delete("/pessoa-juridica-delete/:id",DeletarPessoaJuridicaPorId);
+router.patch("/pessoa-juridica-patch/:id",  AtualizarPessoaJuridicaPorId);
 
 // Rotas para Imóveis
-router.post("/cadastro-imovel",verifyAuth, verificarAdminOuUser, CadastrarImovel);
-router.get("/obter-imoveis-novo", verifyAuth, verificarAdmin, ObterTodosImoveis);
-router.get("/obter-imovel/:id",  verifyAuth, verificarAdminOuUser, ObterImovelPorId);
-router.delete("/imovel-delete/:id",  verifyAuth, verificarAdmin, ExcluirImovel);
-router.patch("/imovel-patch/:id", verifyAuth, verificarAdminOuUser, AtualizarImovel);
+router.post("/cadastro-imovel",CadastrarImovel);
+router.get("/obter-imoveis-novo", ObterTodosImoveis);
+router.get("/obter-imovel/:id",  ObterImovelPorId);
+router.delete("/imovel-delete/:id",   ExcluirImovel);
+router.patch("/imovel-patch/:id", AtualizarImovel);
 
 // Rotas para Contratos
-router.post("/cadastro-contrato",verifyAuth, verificarAdmin, CadastrarContrato);
-router.get("/obter-contratos-novo", verifyAuth, verificarAdmin, ObterTodosContratos);
-router.get("/obter-contrato/:id",  verifyAuth, verificarAdminOuUser, ObterContratoPorId);
-router.delete("/contrato-delete/:id",  verifyAuth, verificarAdmin, ExcluirContrato);
-router.patch("/contrato-patch/:id", verifyAuth, verificarAdmin, AtualizarContrato);
+router.post("/cadastro-contrato", CadastrarContrato);
+router.get("/obter-contratos-novo",  ObterTodosContratos);
+router.get("/obter-contrato/:id",  ObterContratoPorId);
+router.delete("/contrato-delete/:id",   ExcluirContrato);
+router.patch("/contrato-patch/:id",  AtualizarContrato);
 
 // User
 router.post("/users/invite-admin", inviteAdmin);
