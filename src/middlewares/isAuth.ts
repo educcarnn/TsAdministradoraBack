@@ -6,10 +6,12 @@ export const isAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.token;
+  // Extrai o token do cabeçalho Authorization
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];  // 'Bearer <token>'
 
   if (!token) {
-    return res.status(401).json({ message: "Não autenticado." });
+    return res.status(401).json({ message: "Não autenticado. Token não fornecido." });
   }
 
   try {
@@ -19,7 +21,7 @@ export const isAuthenticated = (
     };
 
     req.user = decoded.userId as any; // armazene o userId no objeto req para uso posterior
-    req.role = decoded.role as any; // armazene a role no objeto req para uso posterior
+    req.role = decoded.role as any;   // armazene a role no objeto req para uso posterior
 
     next();
   } catch (error) {

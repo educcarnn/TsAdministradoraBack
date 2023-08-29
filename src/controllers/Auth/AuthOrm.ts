@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import * as UserService from "../../services/user"; // Ajuste o caminho conforme necessário
 import * as jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
-import bcrypt from "bcryptjs";
 import sgMail from "@sendgrid/mail";
 import { createInvite } from "../../services/user";
 
@@ -73,19 +71,28 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Senha incorreta." });
     }
 
+    const tokenExpiration = 24 * 60 * 60; // 24 horas em segundos
+
     const token = jwt.sign(
       {
         userId: user.id,
         role: user.role,
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "24h" }
+      { expiresIn: tokenExpiration }
     );
 
-    // Armazene esse token em um cookie
-    res.cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000,  }); // 24h em milissegundos
+    const expirationDate = new Date();
+    expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiration);
 
-    res.status(200).json({ message: "Login bem-sucedido!", role: user.role });
+    // Retornando o token, a role e a data de expiração no corpo da resposta
+    res.status(200).json({ 
+      message: "Login bem-sucedido!", 
+      token: token, 
+      role: user.role,
+      tokenExpiresAt: expirationDate 
+    });
+
   } catch (error) {
     res.status(500).json({ message: "Erro no login" });
   }
