@@ -83,7 +83,7 @@ export const loginUser = async (req: Request, res: Response) => {
     );
 
     // Armazene esse token em um cookie
-    res.cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // 24h em milissegundos
+    res.cookie("token", token, { httpOnly: false, maxAge: 24 * 60 * 60 * 1000 }); // 24h em milissegundos
 
     res.status(200).json({ message: "Login bem-sucedido!", role: user.role });
   } catch (error) {
