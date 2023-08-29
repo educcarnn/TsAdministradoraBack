@@ -9,14 +9,23 @@ const app = express();
 
 // Habilita o CORS para permitir requisições de diferentes origens
 // Lembre-se de configurar as opções do CORS se você estiver usando cookies em domínios diferentes.
-const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000', 'http://tsadministradora.com.br', 'http://tsadministradora.onrender.com', 'http://192.168.15.147:3001'];
+const allowedOrigins = [
+  "http://localhost:3001",
+  "http://localhost:3000",
+  "http://www.tsadministradora.dev",
+  "https://www.tsadministradora.dev",
+  "www.tsadministradora.dev",
+  "https://tsadministradora.com.br",
+  "http://tsadministradora.com.br",
+  "tsadministradora.com.br"
+];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin as string)) {
-    res.header('Access-Control-Allow-Origin', origin);  // Aqui está o cabeçalho Access-Control-Allow-Origin.
+    res.header('Access-Control-Allow-Origin', origin);
   }
-  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
