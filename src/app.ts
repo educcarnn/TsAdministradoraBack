@@ -1,26 +1,25 @@
 import express from 'express';
-import cors from 'cors';
 import routes from "./routes/routes";
 
 const app = express();
 
 // Lista dos domínios que você quer permitir
-const allowedOrigins = [
-    'https://localhost:3000',
-    'https://localhost:3001',
+const origensPermitidas = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://tsadministradora.onrender.com',
+    'https://tsadministradora.onrender.com',
     'https://tsadministradora.com.br',
     'http://tsadministradora.com.br',
-    'https://tsadministradora.onrender.com',
-    'http://tsadministradora.onrender.com'
-
+    'n-git-main-educcarnn.vercel.app',
+    'n-ba8lchbcb-educcarnn.vercel.app'
 ];
 
 app.use((req, res, next) => {
-    const origin = req.get('origin');
+    const origem = req.get('origin');
 
-
-    if (origin && allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
+    if (origensPermitidas.includes(origem as string)) {
+        res.setHeader('Access-Control-Allow-Origin', origem as string);
     }
 
     // Configura outros cabeçalhos CORS
