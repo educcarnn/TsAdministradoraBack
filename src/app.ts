@@ -9,7 +9,7 @@ const app = express();
 
 // Habilita o CORS para permitir requisições de diferentes origens
 // Lembre-se de configurar as opções do CORS se você estiver usando cookies em domínios diferentes.
-const allowedOrigins = ['*'];
+const allowedOrigins = ['http://localhost:3001', 'http://tsadministradora.com.br'];
 
 app.use(cors({
   origin: function(origin, callback){
