@@ -1,17 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../interface/user";
-
-export const verificarAdmin = (req: Request & { user?: User }, res: Response, next: NextFunction): void => {
-    if (req.user) {
-        if (req.user.role === 'admin') {
-            next();
-        } else {
-            res.status(403).json({ message: "Acesso negado: usuário não é admin" });
-        }
+export const isAdmin = (req: Request & { role?: string }, res: Response, next: NextFunction) => {
+    if (req.role && req.role === "admin") {
+        next();
     } else {
-        res.status(401).json({ message: "Usuário não autenticado" });
+        res.status(403).json({ message: "Acesso negado. Permissão de admin necessária." });
     }
 };
+
 
 export const verificarAdminOuUser = (req: Request & { user?: User }, res: Response, next: NextFunction): void => {
     if (req.user) {
