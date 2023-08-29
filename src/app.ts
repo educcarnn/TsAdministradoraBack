@@ -9,14 +9,21 @@ const app = express();
 
 // Habilita o CORS para permitir requisições de diferentes origens
 // Lembre-se de configurar as opções do CORS se você estiver usando cookies em domínios diferentes.
-//const allowedOrigins = ['https://localhost:3001', 'https://tsadministradora.com.br'];
+const allowedOrigins = ['https://localhost:3001', 'https://tsadministradora.com.br'];
 
 app.use(cors({
-  origin: '*', // Defina a origem permitida aqui
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Permite enviar cookies de autenticação
-  optionsSuccessStatus: 204, // Resposta de sucesso para opções pré-voo
+  origin: function(origin, callback){
+    // Se a origem da requisição estiver na lista de allowedOrigins, permita a requisição
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'A política de CORS para este site não permite o acesso a partir da origem especificada.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
 }));
+
 // Parseia o corpo das requisições JSON para objetos JavaScript
 app.use(express.json());
 
