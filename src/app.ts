@@ -12,12 +12,18 @@ const app = express();
 const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000', 'http://tsadministradora.com.br', 'http://tsadministradora.onrender.com', 'http://192.168.15.147:3001'];
 
 app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin as string)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
 
-  res.header('Access-Control-Allow-Headers', '*');
+  // Note a adição de 'content-type' aqui
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
+
 // Parseia o corpo das requisições JSON para objetos JavaScript
 app.use(express.json());
 
