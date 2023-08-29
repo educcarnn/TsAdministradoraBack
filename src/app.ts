@@ -14,10 +14,14 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://tsadministradora.com.br",
   "http://tsadministradora.com.br",
-  "http://www.tsadministradora.dev",
-  "https://www.tsadministradora.dev",
+  "http://tsadministradora.dev",
+  "https://tsadministradora.dev",
   "https://tsadministradora.onrender.com",
   "http://tsadministradora.onrender.com",
+  "https://n-ba8lchbcb-educcarnn.vercel.app/",
+  "http://n-ba8lchbcb-educcarnn.vercel.app/",
+  "https://n-git-main-educcarnn.vercel.app/",
+  "http://n-git-main-educcarnn.vercel.app/",
 ];
 
 app.use((req, res, next) => {
@@ -29,7 +33,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
   );
-  res.header("Access-Control-Allow-credentials", "true");
+  res.header("Access-Control-Allow-credentials", true as unknown as undefined);
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
   next();
 });
