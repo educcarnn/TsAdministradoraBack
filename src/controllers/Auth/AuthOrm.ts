@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
-import * as UserService from "../../services/user"; // Ajuste o caminho conforme necessário
+import * as UserService from "../../services/user";
+import * as PessoaService from "../../services/pessoaFisica"; // Ajuste o caminho conforme necessário
 import * as jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 import { createInvite } from "../../services/user";
+import { Pessoa } from "../../entities/pessoaFisica";
+import { User } from "../../entities/user";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
 
@@ -54,29 +57,37 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    const user = await UserService.findUserByEmail(req.body.email);
+    let user: User | Pessoa | null | undefined;
 
-    if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+      user = await UserService.findUserByEmail(req.body.email);
+
+      if (!user) {
+        user = await PessoaService.findPessoaByEmail(req.body.email);
+        if (!user) {
+            return res.status(404).json({ message: "Usuário não encontrado." });
+        }
     }
 
-    const isValidPassword = await UserService.checkPassword(
-      req.body.password,
-      user.password as string
-    );
+      const isValidPassword = user instanceof User
+          ? await UserService.checkPassword(req.body.password, user.password as string)
+          : await PessoaService.checkPassword(req.body.password, user.password as string);
 
-    if (!isValidPassword) {
-      return res.status(401).json({ message: "Senha incorreta." });
-    }
+      if (!isValidPassword) {
+          return res.status(401).json({ message: "Senha incorreta." });
+      }
 
-    const tokenExpiration = 24 * 60 * 60; // 24 horas em segundos
+      // Geração do token JWT
+     const tokenExpiration = 24 * 60 * 60; // 24 horas em segundos
 
     const token = jwt.sign(
       {
         userId: user.id,
-        role: user.role,
+        role: user.role || "user", // Se não tiver role, assume "user" para Pessoa
       },
       process.env.JWT_SECRET as string,
       { expiresIn: tokenExpiration }
@@ -86,13 +97,12 @@ export const loginUser = async (req: Request, res: Response) => {
     expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiration);
 
     // Retornando o token, a role e a data de expiração no corpo da resposta
-    res.status(200).json({ 
-      message: "Login bem-sucedido!", 
-      token: token, 
-      role: user.role,
-      tokenExpiresAt: expirationDate 
+    res.status(200).json({
+      message: "Login bem-sucedido!",
+      token: token,
+      role: user.role || "user",
+      tokenExpiresAt: expirationDate,
     });
-
   } catch (error) {
     res.status(500).json({ message: "Erro no login" });
   }

@@ -2,18 +2,20 @@
 import { User } from "../entities/user"; // Ajuste o caminho conforme necessário
 import { AppDataSource } from "../data-source";
 import bcrypt from "bcrypt";
+import {isEmailInUse} from "../../src/utils/emailUtils"
+import { PessoaRepository } from "./pessoaFisica";
+import { Pessoa } from "../entities/pessoaFisica";
 
-const userRepository = AppDataSource.getRepository(User);
+export const userRepository = AppDataSource.getRepository(User);
 
 export const createUser = async (userData: Partial<User>): Promise<User> => {
     if (!userData.email) {
         throw new Error("E-mail não fornecido.");
     }
 
-    const userExists = await userRepository.findOne({ where: { email: userData.email } });
-
-    if (userExists) {
-        throw new Error("E-mail já registrado.");
+    const emailInUse = await isEmailInUse(userData.email);
+    if (emailInUse) {
+        throw new Error("E-mail já registrado em User ou Pessoa.");
     }
 
     // Certifique-se de que userData.password esteja definido antes de tentar hasheá-lo
@@ -30,11 +32,12 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
     return newUser;
 };
 
-export const findUserByEmail = async (email: string): Promise<User | undefined> => {
+export const findUserByEmail = async (email: string): Promise<User | Pessoa | undefined> => {
     const user = await userRepository.findOne({ where: { email: email } });
-    return user || undefined;
+    const pessoa = await PessoaRepository.findOne({ where: { email: email } });
+    
+    return user || pessoa || undefined;
 };
-
 export const hashPassword = async (password: string): Promise<string> => {
     const saltRounds = 10;
     return bcrypt.hash(password, saltRounds);
