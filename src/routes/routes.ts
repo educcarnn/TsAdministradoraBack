@@ -37,10 +37,10 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/Auth/AuthOrm";
-import { verificarAdminOuUser } from "../middlewares/ValidationStatusUser";
+
 import { inviteAdmin } from "../controllers/Auth/AuthOrm";
 import { isAuthenticated } from "../middlewares/isAuth";
-import { isAdmin } from "../middlewares/ValidationStatusUser";
+import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
 
 const router = express.Router();
 
@@ -49,7 +49,7 @@ router.post("/cadastrar-nova-pessoa-fisica", CadastrarPessoa);
 router.get("/obter-novas-pessoas", isAuthenticated ,isAdmin, ObterTodasPessoas);
 router.get("/pessoa/:id",  ObterPessoaPorId);
 router.delete("/pessoa-delete/:id",  DeletarPessoaPorId);
-router.patch("/pessoa-patch/:id",  AtualizarPessoaPorId);
+router.patch("/pessoa-patch/:id", isAuthenticated, isAdminOuUser, AtualizarPessoaPorId);
 
 //Juridica
 router.post("/cadastrar-nova-pessoa-juridica",  CadastrarPessoaJuridica);

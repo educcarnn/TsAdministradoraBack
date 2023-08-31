@@ -105,6 +105,8 @@ export class RegistroImovel {
   // Relação com os contratos associados a este imóvel
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
+
+  
   /*
   @ManyToOne(() => PessoaJuridica)
   @JoinTable()
