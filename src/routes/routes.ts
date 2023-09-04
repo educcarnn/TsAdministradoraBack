@@ -37,7 +37,6 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/Auth/AuthOrm";
-
 import { inviteAdmin } from "../controllers/Auth/AuthOrm";
 import { isAuthenticated } from "../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
@@ -62,8 +61,8 @@ router.patch("/pessoa-juridica-patch/:id",  AtualizarPessoaJuridicaPorId);
 router.post("/cadastro-imovel",CadastrarImovel);
 router.get("/obter-imoveis-novo", isAuthenticated ,isAdmin, ObterTodosImoveis);
 router.get("/obter-imovel/:id",  ObterImovelPorId);
-router.delete("/imovel-delete/:id",   ExcluirImovel);
-router.patch("/imovel-patch/:id", AtualizarImovel);
+router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
+router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUser, AtualizarImovel);
 
 // Rotas para Contratos
 router.post("/cadastro-contrato", CadastrarContrato);
@@ -76,7 +75,7 @@ router.patch("/contrato-patch/:id",  AtualizarContrato);
 router.post("/users/invite-admin", inviteAdmin);
 router.post("/admin/register", registerUser)
 router.post("/users/login", loginUser);
-router.put("/users/:id", updateUser);
+router.patch("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 
 /*
