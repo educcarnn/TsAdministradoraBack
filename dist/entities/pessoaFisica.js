@@ -13,8 +13,9 @@ exports.Pessoa = void 0;
 const typeorm_1 = require("typeorm");
 const imovel_1 = require("./imovel");
 const contrato_1 = require("./contrato");
-let Pessoa = exports.Pessoa = class Pessoa {
+let Pessoa = class Pessoa {
 };
+exports.Pessoa = Pessoa;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -24,8 +25,8 @@ __decorate([
     __metadata("design:type", String)
 ], Pessoa.prototype, "tipo", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)('text', { array: true, default: () => 'ARRAY[]::text[]' }),
+    __metadata("design:type", Array)
 ], Pessoa.prototype, "funcao", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -56,7 +57,7 @@ __decorate([
     __metadata("design:type", String)
 ], Pessoa.prototype, "estadoCivil", void 0);
 __decorate([
-    (0, typeorm_1.Column)('jsonb'),
+    (0, typeorm_1.Column)("jsonb"),
     __metadata("design:type", Object)
 ], Pessoa.prototype, "filiacao", void 0);
 __decorate([
@@ -76,27 +77,40 @@ __decorate([
     __metadata("design:type", String)
 ], Pessoa.prototype, "email", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Pessoa.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "enum",
+        enum: ["admin", "user"],
+        default: "user",
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], Pessoa.prototype, "role", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Pessoa.prototype, "genero", void 0);
 __decorate([
-    (0, typeorm_1.Column)('jsonb', { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Object)
 ], Pessoa.prototype, "endereco", void 0);
 __decorate([
-    (0, typeorm_1.Column)('jsonb', { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Object)
 ], Pessoa.prototype, "dadoBancarios", void 0);
 __decorate([
-    (0, typeorm_1.Column)('jsonb', { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "anexos", void 0);
 __decorate([
-    (0, typeorm_1.Column)('jsonb', { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "lista_email", void 0);
 __decorate([
-    (0, typeorm_1.Column)('jsonb', { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "lista_repasse", void 0);
 __decorate([

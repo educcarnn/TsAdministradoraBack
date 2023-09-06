@@ -36,10 +36,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.loginUser = exports.registerUser = exports.inviteAdmin = void 0;
-const UserService = __importStar(require("../../services/user")); // Ajuste o caminho conforme necessário
+const UserService = __importStar(require("../../services/user"));
+const PessoaService = __importStar(require("../../services/pessoaFisica")); // Ajuste o caminho conforme necessário
 const jwt = __importStar(require("jsonwebtoken"));
 const mail_1 = __importDefault(require("@sendgrid/mail"));
 const user_1 = require("../../services/user");
+const user_2 = require("../../entities/user");
 mail_1.default.setApiKey(process.env.SENDGRID_API_KEY || "");
 const inviteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -82,23 +84,38 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registerUser = registerUser;
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield UserService.findUserByEmail(req.body.email);
+        let user;
+        user = yield UserService.findUserByEmail(req.body.email);
         if (!user) {
-            return res.status(404).json({ message: "Usuário não encontrado." });
+            user = yield PessoaService.findPessoaByEmail(req.body.email);
+            if (!user) {
+                return res.status(404).json({ message: "Usuário não encontrado." });
+            }
         }
-        const isValidPassword = yield UserService.checkPassword(req.body.password, user.password);
+        const isValidPassword = user instanceof user_2.User
+            ? yield UserService.checkPassword(req.body.password, user.password)
+            : yield PessoaService.checkPassword(req.body.password, user.password);
         if (!isValidPassword) {
             return res.status(401).json({ message: "Senha incorreta." });
         }
+        // Geração do token JWT
+        const tokenExpiration = 24 * 60 * 60; // 24 horas em segundos
         const token = jwt.sign({
             userId: user.id,
-            role: user.role,
-        }, process.env.JWT_SECRET, { expiresIn: "24h" });
-        res
-            .status(200)
-            .json({ message: "Login bem-sucedido!", token: token, role: user.role });
+            role: user.role || "user", // Se não tiver role, assume "user" para Pessoa
+        }, process.env.JWT_SECRET, { expiresIn: tokenExpiration });
+        const expirationDate = new Date();
+        expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiration);
+        // Retornando o token, a role e a data de expiração no corpo da resposta
+        res.status(200).json({
+            message: "Login bem-sucedido!",
+            token: token,
+            role: user.role || "user",
+            tokenExpiresAt: expirationDate,
+        });
     }
     catch (error) {
         res.status(500).json({ message: "Erro no login" });

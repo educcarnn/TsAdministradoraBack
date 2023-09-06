@@ -12,32 +12,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInvite = exports.deleteUserById = exports.updateUserById = exports.checkPassword = exports.hashPassword = exports.findUserByEmail = exports.createUser = void 0;
+exports.createInvite = exports.deleteUserById = exports.updateUserById = exports.checkPassword = exports.hashPassword = exports.findUserByEmail = exports.createUser = exports.userRepository = void 0;
 const user_1 = require("../entities/user"); // Ajuste o caminho conforme necessário
 const data_source_1 = require("../data-source");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const userRepository = data_source_1.AppDataSource.getRepository(user_1.User);
+const emailUtils_1 = require("../../src/utils/emailUtils");
+const pessoaFisica_1 = require("./pessoaFisica");
+exports.userRepository = data_source_1.AppDataSource.getRepository(user_1.User);
 const createUser = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     if (!userData.email) {
         throw new Error("E-mail não fornecido.");
     }
-    const userExists = yield userRepository.findOne({ where: { email: userData.email } });
-    if (userExists) {
-        throw new Error("E-mail já registrado.");
+    const emailInUse = yield (0, emailUtils_1.isEmailInUse)(userData.email);
+    if (emailInUse) {
+        throw new Error("E-mail já registrado em User ou Pessoa.");
     }
     // Certifique-se de que userData.password esteja definido antes de tentar hasheá-lo
     if (!userData.password) {
         throw new Error("Senha não fornecida.");
     }
     userData.password = yield (0, exports.hashPassword)(userData.password);
-    const newUser = userRepository.create(userData);
-    yield userRepository.save(newUser);
+    const newUser = exports.userRepository.create(userData);
+    yield exports.userRepository.save(newUser);
     return newUser;
 });
 exports.createUser = createUser;
 const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield userRepository.findOne({ where: { email: email } });
-    return user || undefined;
+    const user = yield exports.userRepository.findOne({ where: { email: email } });
+    const pessoa = yield pessoaFisica_1.PessoaRepository.findOne({ where: { email: email } });
+    return user || pessoa || undefined;
 });
 exports.findUserByEmail = findUserByEmail;
 const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,7 +53,7 @@ const checkPassword = (inputPassword, storedPasswordHash) => __awaiter(void 0, v
 });
 exports.checkPassword = checkPassword;
 const updateUserById = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield userRepository.findOne({ where: { id: id } });
+    const user = yield exports.userRepository.findOne({ where: { id: id } });
     if (!user) {
         throw new Error("Usuário não encontrado.");
     }
@@ -58,15 +61,15 @@ const updateUserById = (id, data) => __awaiter(void 0, void 0, void 0, function*
         data.password = yield (0, exports.hashPassword)(data.password);
     }
     Object.assign(user, data);
-    yield userRepository.save(user);
+    yield exports.userRepository.save(user);
 });
 exports.updateUserById = updateUserById;
 const deleteUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield userRepository.findOne({ where: { id: id } });
+    const user = yield exports.userRepository.findOne({ where: { id: id } });
     if (!user) {
         throw new Error("Usuário não encontrado.");
     }
-    yield userRepository.remove(user);
+    yield exports.userRepository.remove(user);
 });
 exports.deleteUserById = deleteUserById;
 const createInvite = (userData) => __awaiter(void 0, void 0, void 0, function* () {

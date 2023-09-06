@@ -1,34 +1,47 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verificarAdminOuUser = exports.verificarAdmin = void 0;
-const verificarAdmin = (req, res, next) => {
-    if (req.user) {
-        if (req.user.role === 'admin') {
+exports.isAdminOuUser = exports.isAdmin = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const isAdmin = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: "Token não fornecido." });
+    }
+    try {
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        if (decoded.role && decoded.role === "admin") {
             next();
         }
         else {
-            res.status(403).json({ message: "Acesso negado: usuário não é admin" });
+            res.status(403).json({ message: "Acesso negado. Permissão de admin necessária." });
         }
     }
-    else {
-        res.status(401).json({ message: "Usuário não autenticado" });
+    catch (err) {
+        res.status(403).json({ message: "Token inválido." });
     }
 };
-exports.verificarAdmin = verificarAdmin;
-const verificarAdminOuUser = (req, res, next) => {
-    if (req.user) {
-        console.log(req.user); // Log do user para verificar o conteúdo
-        if (req.user.role === 'admin' || req.user.role === 'user') {
+exports.isAdmin = isAdmin;
+const isAdminOuUser = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: "Token não fornecido." });
+    }
+    try {
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        if (decoded.role && decoded.role === "admin" || decoded.role === "user") {
             next();
         }
         else {
-            console.log('Role não é nem admin nem user'); // Log para diagnóstico
-            res.status(403).json({ message: "Acesso negado: permissão insuficiente" });
+            res.status(403).json({ message: "Acesso negado. Permissão de admin necessária." });
         }
     }
-    else {
-        console.log('Usuário não autenticado'); // Log para diagnóstico
-        res.status(401).json({ message: "Usuário não autenticado" });
+    catch (err) {
+        res.status(403).json({ message: "Token inválido." });
     }
 };
-exports.verificarAdminOuUser = verificarAdminOuUser;
+exports.isAdminOuUser = isAdminOuUser;

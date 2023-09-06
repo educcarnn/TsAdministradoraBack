@@ -39,6 +39,7 @@ export class Contrato {
     dataInicio: string;
     dataTermino: string;
     valor: number;
+    contrato: string;
     seguradora: string;
     apolice: string;
     numeroParcelas: number;

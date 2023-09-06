@@ -60,16 +60,16 @@ router.patch("/pessoa-juridica-patch/:id",  AtualizarPessoaJuridicaPorId);
 // Rotas para Imóveis
 router.post("/cadastro-imovel",CadastrarImovel);
 router.get("/obter-imoveis-novo", isAuthenticated ,isAdmin, ObterTodosImoveis);
-router.get("/obter-imovel/:id",  ObterImovelPorId);
+router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUser, ObterImovelPorId);
 router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
 router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUser, AtualizarImovel);
 
 // Rotas para Contratos
-router.post("/cadastro-contrato", CadastrarContrato);
+router.post("/cadastro-contrato",  isAuthenticated ,isAdmin, CadastrarContrato);
 router.get("/obter-contratos-novo", isAuthenticated , isAdmin, ObterTodosContratos);
-router.get("/obter-contrato/:id",  ObterContratoPorId);
-router.delete("/contrato-delete/:id",   ExcluirContrato);
-router.patch("/contrato-patch/:id",  AtualizarContrato);
+router.get("/obter-contrato/:id",  isAuthenticated, isAdminOuUser, ObterContratoPorId);
+router.delete("/contrato-delete/:id",   isAuthenticated ,isAdmin,ExcluirContrato);
+router.patch("/contrato-patch/:id",  isAuthenticated ,isAdmin, AtualizarContrato);
 
 // User
 router.post("/users/invite-admin", inviteAdmin);
@@ -78,8 +78,5 @@ router.post("/users/login", loginUser);
 router.patch("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 
-/*
-    router.post('/login', Login)
 
-  */
 export default router;

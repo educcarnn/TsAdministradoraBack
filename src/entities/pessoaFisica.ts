@@ -18,8 +18,8 @@ export class Pessoa {
   @Column()
   tipo: string;
 
-  @Column()
-  funcao: string;
+  @Column('text', { array: true, default: () => 'ARRAY[]::text[]' })
+  funcao: string[];
 
   @Column()
   nome: string;
