@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { RegistroImovel } from "../entities/imovel";
 import { Pessoa } from "../entities/pessoaFisica";
 import { AppDataSource } from "../data-source";
-
+import { ProprietarioImovel } from "../entities/relations/proprietarioImovel";
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
@@ -10,35 +10,40 @@ const ImovelRepository: Repository<RegistroImovel> =
 
 const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
+const proprietarioImovelRepository = AppDataSource.getRepository(ProprietarioImovel);
 
 export const cadastrarImovel = async (
   imovelData: RegistroImovel,
-  pessoaId: number
+  proprietariosData: { id: number, percentual: number }[]
 ): Promise<RegistroImovel> => {
 
-  // Encontre a pessoa pelo ID
-  const pessoa = await pessoaRepository.findOne({ where: { id: pessoaId } });
 
-  if (!pessoa) {
-    throw new Error("Pessoa não encontrada");
-  }
-
-  // Crie um novo imóvel e associe a pessoa como um dos proprietários
-  const novoImovel = imovelRepository.create({
-    ...imovelData,
-    proprietarios: [pessoa]  // Aqui está a mudança principal: agora é uma lista de proprietários.
-  });
 
   // Salve o novo imóvel no banco de dados
-  await imovelRepository.save(novoImovel);
+  const savedImovel = await imovelRepository.save(imovelData);
 
-  return novoImovel;
+  for (const propData of proprietariosData) {
+    const pessoa = await pessoaRepository.findOne({ where: { id: propData.id } });
+    if (!pessoa) {
+      throw new Error(`Pessoa com ID ${propData.id} não encontrada`);
+    }
+
+    const proprietarioImovel = new ProprietarioImovel();
+    proprietarioImovel.pessoa = pessoa;
+    proprietarioImovel.registroImovel = savedImovel;
+    proprietarioImovel.percentualPropriedade = propData.percentual;
+
+    await proprietarioImovelRepository.save(proprietarioImovel);
+  }
+
+  return savedImovel;
 };
+
 
 export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository.find({
     relations: {
-      proprietarios: true,
+      imoveisProprietarios: true,
       contratos: true,
     },
   });
