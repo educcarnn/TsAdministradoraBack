@@ -11,19 +11,16 @@ import { getImoveisComPessoas } from '../services/imovel';
 
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const data: RegistroImovel = req.body as RegistroImovel;
-
-  
-  const proprietariosData = req.body.proprietarios;
+  const pessoaId: number = req.body.pessoaId; // Supondo que você tenha a propriedade pessoaId no corpo da requisição
 
   try {
-    await cadastrarImovel(data, proprietariosData);
+    await cadastrarImovel(data, pessoaId);
     return res.status(201).json({ message: 'Imóvel cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Imóvel:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Imóvel' });
   }
 };
-
 
 export const ObterTodosImoveis = async (_req: Request, res: Response): Promise<Response> => {
   try {
@@ -40,21 +37,19 @@ export const ObterImovelPorId = async (req: Request, res: Response): Promise<Res
   const { id } = req.params;
 
   try {
-    const imovel = await getImoveisComPessoas();
-    const imovelEncontrado = imovel.find((imv) => imv.id === Number(id));
+    await getImoveisComPessoas();
+    const imovel = await obterImovelPorId(Number(id));
 
-    if (!imovelEncontrado) {
+    if (!imovel) {
       return res.status(404).json({ message: 'Imóvel não encontrado' });
     }
 
-    return res.status(200).json(imovelEncontrado);
+    return res.status(200).json(imovel);
   } catch (error) {
     console.error('Erro ao obter Imóvel por ID:', error);
     return res.status(500).json({ message: 'Erro ao obter Imóvel por ID' });
   }
 };
-
-
 
 export const ExcluirImovel = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;

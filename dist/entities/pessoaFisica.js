@@ -11,9 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pessoa = void 0;
 const typeorm_1 = require("typeorm");
+const imovel_1 = require("./imovel");
 const contrato_1 = require("./contrato");
-const proprietarioImovel_1 = require("./relations/proprietarioImovel");
-const contratoInquilino_1 = require("./relations/contratoInquilino");
 let Pessoa = class Pessoa {
 };
 exports.Pessoa = Pessoa;
@@ -26,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], Pessoa.prototype, "tipo", void 0);
 __decorate([
-    (0, typeorm_1.Column)("text", { array: true, default: () => "ARRAY[]::text[]" }),
+    (0, typeorm_1.Column)('text', { array: true, default: () => 'ARRAY[]::text[]' }),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "funcao", void 0);
 __decorate([
@@ -115,15 +114,15 @@ __decorate([
     __metadata("design:type", Array)
 ], Pessoa.prototype, "lista_repasse", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => proprietarioImovel_1.ProprietarioImovel, pi => pi.pessoa),
+    (0, typeorm_1.OneToMany)(() => imovel_1.RegistroImovel, (RegistroImovel) => RegistroImovel.proprietario),
     __metadata("design:type", Array)
-], Pessoa.prototype, "imoveisRelacionados", void 0);
+], Pessoa.prototype, "imoveisProprietarios", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => contrato_1.Contrato, (contrato) => contrato.proprietario),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "contratosProprietarios", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => contratoInquilino_1.ContratoInquilino, (ci) => ci.inquilino),
+    (0, typeorm_1.OneToMany)(() => contrato_1.Contrato, (contrato) => contrato.inquilino),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "contratosInquilinos", void 0);
 exports.Pessoa = Pessoa = __decorate([

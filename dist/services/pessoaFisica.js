@@ -39,7 +39,7 @@ exports.cadastrarPessoa = cadastrarPessoa;
 const requeryPessoas = () => __awaiter(void 0, void 0, void 0, function* () {
     const requery = yield exports.PessoaRepository.find({
         relations: {
-            imoveisRelacionados: true,
+            imoveisProprietarios: true,
             contratosProprietarios: true,
             contratosInquilinos: true,
         },

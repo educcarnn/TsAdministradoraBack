@@ -10,8 +10,8 @@ const path_1 = __importDefault(require("path"));
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const dataSourceConfig = () => {
-    const entitiesPath = path_1.default.join(__dirname, './entities/**/*.{ts,js}');
-    const migrationPath = path_1.default.join(__dirname, './migrations/**/*.{ts,js}');
+    const entitiesPath = path_1.default.join(__dirname, './entities/**.{ts,js}');
+    const migrationPath = path_1.default.join(__dirname, './migrations/**.{ts,js}');
     const dbUrl = process.env.DATABASE_URL;
     if (!dbUrl)
         throw new Error("Missing env var: 'DATABASE_URL' ");

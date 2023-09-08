@@ -5,12 +5,10 @@ import {
   ManyToOne,
   JoinTable,
   ManyToMany,
-  OneToMany,
 } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { PessoaJuridica } from "./pessoaJuridica";
 import { RegistroImovel } from "./imovel";
-import { ContratoInquilino } from "./relations/contratoInquilino";
 
 @Entity()
 export class Contrato {
@@ -45,8 +43,8 @@ export class Contrato {
   };
 
   // RELACIONAMENTOS
-  @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.contrato)
-  inquilinos: ContratoInquilino[];
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosInquilinos)
+  inquilino: Pessoa;
 
   // Relação com o proprietário no contrato
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosProprietarios)

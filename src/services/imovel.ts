@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { RegistroImovel } from "../entities/imovel";
 import { Pessoa } from "../entities/pessoaFisica";
 import { AppDataSource } from "../data-source";
-import { ProprietarioImovel } from "../entities/relations/proprietarioImovel";
+
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
@@ -10,44 +10,39 @@ const ImovelRepository: Repository<RegistroImovel> =
 
 const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
-const proprietarioImovelRepository = AppDataSource.getRepository(ProprietarioImovel);
 
 export const cadastrarImovel = async (
   imovelData: RegistroImovel,
-  proprietariosData: { id: number, percentual: number }[]
+  pessoaId: number
 ): Promise<RegistroImovel> => {
 
+  // Encontre a pessoa pelo ID
+  const pessoa = await pessoaRepository.findOne({ where: { id: pessoaId } });
 
-
-  // Salve o novo imóvel no banco de dados
-  const savedImovel = await imovelRepository.save(imovelData);
-
-  for (const propData of proprietariosData) {
-    const pessoa = await pessoaRepository.findOne({ where: { id: propData.id } });
-    if (!pessoa) {
-      throw new Error(`Pessoa com ID ${propData.id} não encontrada`);
-    }
-
-    const proprietarioImovel = new ProprietarioImovel();
-    proprietarioImovel.pessoa = pessoa;
-    proprietarioImovel.registroImovel = savedImovel;
-    proprietarioImovel.percentualPropriedade = propData.percentual;
-
-    await proprietarioImovelRepository.save(proprietarioImovel);
+  if (!pessoa) {
+    throw new Error("Pessoa não encontrada");
   }
 
-  return savedImovel;
+  // Crie um novo imóvel e associe a pessoa como proprietário
+  const novoImovel = imovelRepository.create({
+    ...imovelData,
+    proprietario: pessoa
+  });
+
+  // Salve o novo imóvel no banco de dados
+  await imovelRepository.save(novoImovel);
+
+  return novoImovel;
 };
 
 
 export const getImoveisComPessoas = async () => {
-  const imoveisComPessoas = await imovelRepository
-    .createQueryBuilder("imovel")
-    .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
-    .leftJoinAndSelect("proprietarioImovel.pessoa", "pessoa")
-    .leftJoinAndSelect("imovel.contratos", "contrato")
-    .getMany();
-
+  const imoveisComPessoas = await imovelRepository.find({
+    relations: {
+      proprietario: true,
+      contratos: true,
+    },
+  });
   return imoveisComPessoas;
 };
 
@@ -63,6 +58,7 @@ export const obterImovelPorId = async (
     const imovel = await ImovelRepository.findOne({ where: { id: id } });
 
     if (imovel) {
+      // Procura o imóvel nas informações carregadas
       const imovelEncontrado = imoveisComPessoas.find(item => item.id === imovel.id);
 
       if (imovelEncontrado) {

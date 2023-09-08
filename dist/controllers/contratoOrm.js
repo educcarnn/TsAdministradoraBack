@@ -14,13 +14,13 @@ const contrato_1 = require("../services/contrato"); // Certifique-se de importar
 const contrato_2 = require("../services/contrato");
 const CadastrarContrato = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    // Obtenha os dados do inquilino, proprietário e imóvel do corpo da requisição
-    const inquilinosData = req.body.inquilinos; // Esta linha foi ajustada
+    // Obtenha os IDs do inquilino, proprietário e imóvel do corpo da requisição
+    const inquilinoId = req.body.inquilinoId;
     const proprietarioId = req.body.proprietarioId;
     const imovelId = req.body.imovelId;
     try {
-        // Passe os dados corretos para o serviço
-        yield (0, contrato_1.cadastrarContrato)(data, inquilinosData, proprietarioId, imovelId); // Esta linha foi ajustada
+        // Passe os IDs corretos para o serviço
+        yield (0, contrato_1.cadastrarContrato)(data, inquilinoId, proprietarioId, imovelId);
         return res.status(201).json({ message: 'Contrato cadastrado com sucesso!' });
     }
     catch (error) {

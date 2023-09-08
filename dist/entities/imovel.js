@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegistroImovel = void 0;
 const typeorm_1 = require("typeorm");
+const pessoaFisica_1 = require("./pessoaFisica");
 const contrato_1 = require("./contrato");
-const proprietarioImovel_1 = require("./relations/proprietarioImovel");
 let RegistroImovel = class RegistroImovel {
 };
 exports.RegistroImovel = RegistroImovel;
@@ -73,9 +73,9 @@ __decorate([
     __metadata("design:type", Array)
 ], RegistroImovel.prototype, "fotos", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => proprietarioImovel_1.ProprietarioImovel, (pi) => pi.registroImovel),
-    __metadata("design:type", Array)
-], RegistroImovel.prototype, "imoveisProprietarios", void 0);
+    (0, typeorm_1.ManyToOne)(() => pessoaFisica_1.Pessoa, (pessoa) => pessoa.imoveisProprietarios),
+    __metadata("design:type", pessoaFisica_1.Pessoa)
+], RegistroImovel.prototype, "proprietario", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => contrato_1.Contrato, (contrato) => contrato.imovel),
     __metadata("design:type", Array)

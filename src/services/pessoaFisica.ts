@@ -4,10 +4,8 @@ import { AppDataSource } from '../data-source';
 import bcrypt from "bcrypt";
 import { isEmailInUse } from '../utils/emailUtils';
 import { userRepository } from './user';
-import { Contrato } from '../entities/contrato';
-
 export const PessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa);
-export const ContratoInquilino: Repository<Contrato> = AppDataSource.getRepository(Contrato)
+
 
 export const cadastrarPessoa = async (pessoaData: Partial<Pessoa>): Promise<Pessoa> => {
   if (!pessoaData.email) {
@@ -35,7 +33,7 @@ export const cadastrarPessoa = async (pessoaData: Partial<Pessoa>): Promise<Pess
 export const requeryPessoas = async () => {
   const requery = await PessoaRepository.find({
     relations: {
-      imoveisRelacionados: true,
+      imoveisProprietarios: true,
       contratosProprietarios: true,
       contratosInquilinos: true,
     },
@@ -47,7 +45,7 @@ export const findPessoaByEmail = async (email: string): Promise<Pessoa | null> =
   const userWithEmail = await userRepository.findOne({ where: { email: email } });
 
   if (userWithEmail) {
-    
+      // Se o e-mail estiver registrado na tabela de User, retornamos null
       return null;
   }
 
@@ -68,59 +66,25 @@ export const obterTodasPessoas = async (): Promise<Pessoa[]> => {
 
 export const obterPessoaPorId = async (id: number): Promise<Pessoa | undefined> => {
   try {
-    const pessoa = await PessoaRepository
-      .createQueryBuilder("pessoa")
-      .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
-      .leftJoinAndSelect("proprietarioImovel.registroImovel", "imovel") // Inclui informações do imóvel
-      .leftJoinAndSelect("pessoa.contratosProprietarios", "contratoProprietario")
-      .leftJoinAndSelect("pessoa.contratosInquilinos", "contratoInquilino")
-      .where("pessoa.id = :id", { id: id })
-      .getOne();
+    const getPessoa = await requeryPessoas();
+    const pessoa = await PessoaRepository.findOne({ where: { id: id } });
 
-    // Inclui os contratos de proprietário e inquilino na pessoa
     if (pessoa) {
-      pessoa.contratosProprietarios = await obterContratosPorProprietarioId(pessoa.id);
-      pessoa.contratosInquilinos = await obterContratosPorInquilinoId(pessoa.id);
+      // Procura a pessoa nas informações carregadas
+      const pessoaFind = getPessoa.find(item => item.id === pessoa.id);
+
+      if (pessoaFind) {
+        return pessoaFind;
+      }
     }
 
-    return pessoa || undefined;
+    return undefined;
   } catch (error) {
     console.error('Erro ao obter Pessoa por ID:', error);
     return undefined;
   }
 }
 
-// Função para obter contratos de proprietário por ID de pessoa
-export const obterContratosPorProprietarioId = async (pessoaId: number): Promise<Contrato[]> => {
-  try {
-    const contratos = await ContratoRepository
-      .createQueryBuilder("contrato")
-      .leftJoin("contrato.proprietario", "proprietario")
-      .where("proprietario.id = :pessoaId", { pessoaId: pessoaId })
-      .getMany();
-
-    return contratos || [];
-  } catch (error) {
-    console.error('Erro ao obter contratos de proprietário:', error);
-    return [];
-  }
-}
-
-// Função para obter contratos de inquilino por ID de pessoa
-export const obterContratosPorInquilinoId = async (pessoaId: number): Promise<Contrato[]> => {
-  try {
-    const contratos = await ContratoRepository
-      .createQueryBuilder("contrato")
-      .leftJoin("contrato.inquilinos", "inquilino")
-      .where("inquilino.id = :pessoaId", { pessoaId: pessoaId })
-      .getMany();
-
-    return contratos || [];
-  } catch (error) {
-    console.error('Erro ao obter contratos de inquilino:', error);
-    return [];
-  }
-}
 
 export const deletarPessoaPorId = async (id: number): Promise<void> => {
   await PessoaRepository.delete(id);

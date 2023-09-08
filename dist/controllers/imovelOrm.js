@@ -14,10 +14,9 @@ const imovel_1 = require("../services/imovel");
 const imovel_2 = require("../services/imovel");
 const CadastrarImovel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    // Aqui, em vez de apenas obter os IDs das pessoas, estamos obtendo também os percentuais.
-    const proprietariosData = req.body.proprietarios;
+    const pessoaId = req.body.pessoaId; // Supondo que você tenha a propriedade pessoaId no corpo da requisição
     try {
-        yield (0, imovel_1.cadastrarImovel)(data, proprietariosData);
+        yield (0, imovel_1.cadastrarImovel)(data, pessoaId);
         return res.status(201).json({ message: 'Imóvel cadastrado com sucesso!' });
     }
     catch (error) {

@@ -14,26 +14,16 @@ const contrato_1 = require("../entities/contrato");
 const data_source_1 = require("../data-source"); // Certifique-se de importar o dataSource correto
 const pessoaFisica_1 = require("./pessoaFisica");
 const imovel_1 = require("../entities/imovel");
-const contratoInquilino_1 = require("../entities/relations/contratoInquilino");
 const ContratoRepository = data_source_1.AppDataSource.getRepository(contrato_1.Contrato);
 const ImovelRepository = data_source_1.AppDataSource.getRepository(imovel_1.RegistroImovel);
-const cadastrarContrato = (data, inquilinosData, // Opcional
-proprietarioId, // Opcional
-imovelId // Opcional
-) => __awaiter(void 0, void 0, void 0, function* () {
+const cadastrarContrato = (data, inquilinoId, proprietarioId, imovelId) => __awaiter(void 0, void 0, void 0, function* () {
     const contratoRepository = data_source_1.AppDataSource.getRepository(contrato_1.Contrato);
-    const contratoInquilinoRepository = data_source_1.AppDataSource.getRepository(contratoInquilino_1.ContratoInquilino);
-    if (!inquilinosData || !Array.isArray(inquilinosData) || inquilinosData.length === 0) {
-        throw new Error("Dados dos inquilinos inválidos ou não fornecidos");
+    const inquilino = yield pessoaFisica_1.PessoaRepository.findOne({
+        where: { id: inquilinoId },
+    });
+    if (!inquilino) {
+        throw new Error("Inquilino (locatário) não encontrado");
     }
-    if (!proprietarioId) {
-        throw new Error("ID do proprietário não fornecido");
-    }
-    if (!imovelId) {
-        throw new Error("ID do imóvel não fornecido");
-    }
-    const inquilinosIds = inquilinosData.map(i => i.id);
-    const inquilinos = yield pessoaFisica_1.PessoaRepository.findByIds(inquilinosIds);
     const proprietario = yield pessoaFisica_1.PessoaRepository.findOne({
         where: { id: proprietarioId },
     });
@@ -47,28 +37,19 @@ imovelId // Opcional
         throw new Error("Imóvel não encontrado");
     }
     const contrato = contratoRepository.create(data);
-    yield contratoRepository.save(contrato); // Salve o contrato primeiro para obter um ID
-    for (const inquilinoData of inquilinosData) {
-        const inquilino = inquilinos.find(i => i.id === inquilinoData.id);
-        if (!inquilino) {
-            throw new Error(`Inquilino com ID ${inquilinoData.id} não encontrado.`);
-        }
-        const contratoInquilino = contratoInquilinoRepository.create({
-            inquilino: inquilino,
-            contrato: contrato,
-            percentual: inquilinoData.percentual
-        });
-        yield contratoInquilinoRepository.save(contratoInquilino);
-    }
-    contrato.proprietario = proprietario;
-    contrato.imovel = imovel;
+    contrato.inquilino = inquilino; // Associe o inquilino ao contrato
+    contrato.proprietario = proprietario; // Associe o proprietário ao contrato
+    contrato.imovel = imovel; // Associe o imóvel ao contrato
+    yield contratoRepository.save(contrato);
+    // Como as relações são `ManyToOne`, você não precisa atualizar os arrays de contratos dos objetos `inquilino` e `proprietario`
+    // O TypeORM se encarregará de atualizar os IDs estrangeiros no contrato
     return contrato;
 });
 exports.cadastrarContrato = cadastrarContrato;
 const getContratos = () => __awaiter(void 0, void 0, void 0, function* () {
     const imoveisComPessoas = yield ContratoRepository.find({
         relations: {
-            inquilinos: true,
+            inquilino: true,
             imovel: true,
             proprietario: true,
         },

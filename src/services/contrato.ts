@@ -3,35 +3,26 @@ import { Contrato } from "../entities/contrato";
 import { AppDataSource } from "../data-source"; // Certifique-se de importar o dataSource correto
 import { PessoaRepository } from "./pessoaFisica";
 import { RegistroImovel } from "../entities/imovel";
-import { ContratoInquilino } from "../entities/relations/contratoInquilino";
 const ContratoRepository: Repository<Contrato> =
   AppDataSource.getRepository(Contrato);
 const ImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel)
 
 export const cadastrarContrato = async (
   data: Contrato,
-  inquilinosData?: { id: number, percentual: number }[],  
-  proprietarioId?: number,  // Opcional
-  imovelId?: number  // Opcional
+  inquilinoId: number,
+  proprietarioId: number,
+  imovelId: number
 ): Promise<Contrato> => {
   const contratoRepository = AppDataSource.getRepository(Contrato);
-  const contratoInquilinoRepository = AppDataSource.getRepository(ContratoInquilino);
 
-  if (!inquilinosData || !Array.isArray(inquilinosData) || inquilinosData.length === 0) {
-    throw new Error("Dados dos inquilinos inválidos ou não fornecidos");
+  const inquilino = await PessoaRepository.findOne({
+    where: { id: inquilinoId },
+  });
+
+  if (!inquilino) {
+    throw new Error("Inquilino (locatário) não encontrado");
   }
 
-  if (!proprietarioId) {
-    throw new Error("ID do proprietário não fornecido");
-  }
-
-  if (!imovelId) {
-    throw new Error("ID do imóvel não fornecido");
-  }
-
-  const inquilinosIds = inquilinosData.map(i => i.id);
-  const inquilinos = await PessoaRepository.findByIds(inquilinosIds);
-  
   const proprietario = await PessoaRepository.findOne({
     where: { id: proprietarioId },
   });
@@ -49,36 +40,22 @@ export const cadastrarContrato = async (
   }
 
   const contrato = contratoRepository.create(data);
-  await contratoRepository.save(contrato);  // Salve o contrato primeiro para obter um ID
+  contrato.inquilino = inquilino;   // Associe o inquilino ao contrato
+  contrato.proprietario = proprietario;  // Associe o proprietário ao contrato
+  contrato.imovel = imovel;  // Associe o imóvel ao contrato
 
-  for (const inquilinoData of inquilinosData) {
-    const inquilino = inquilinos.find(i => i.id === inquilinoData.id);
+  await contratoRepository.save(contrato);
 
-    if (!inquilino) {
-        throw new Error(`Inquilino com ID ${inquilinoData.id} não encontrado.`);
-    }
-
-    const contratoInquilino = contratoInquilinoRepository.create({
-        inquilino: inquilino,  
-        contrato: contrato,
-        percentual: inquilinoData.percentual
-    });
-
-    await contratoInquilinoRepository.save(contratoInquilino);
-  }
-
-  contrato.proprietario = proprietario;
-  contrato.imovel = imovel;
+  // Como as relações são `ManyToOne`, você não precisa atualizar os arrays de contratos dos objetos `inquilino` e `proprietario`
+  // O TypeORM se encarregará de atualizar os IDs estrangeiros no contrato
 
   return contrato;
 };
 
-
-
 export const getContratos = async () => {
   const imoveisComPessoas = await ContratoRepository.find({
     relations: {
-      inquilinos: true,
+      inquilino: true,
       imovel: true,
       proprietario: true,
     },
