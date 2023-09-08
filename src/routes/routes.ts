@@ -58,7 +58,7 @@ router.delete("/pessoa-juridica-delete/:id",DeletarPessoaJuridicaPorId);
 router.patch("/pessoa-juridica-patch/:id",  AtualizarPessoaJuridicaPorId);
 
 // Rotas para Imóveis
-router.post("/cadastro-imovel",CadastrarImovel);
+router.post("/cadastro-imovel", isAuthenticated, isAdminOuUser, CadastrarImovel);
 router.get("/obter-imoveis-novo", isAuthenticated ,isAdmin, ObterTodosImoveis);
 router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUser, ObterImovelPorId);
 router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
