@@ -13,28 +13,33 @@ exports.deletarImovelPorId = exports.atualizarImovelPorId = exports.obterImovelP
 const imovel_1 = require("../entities/imovel");
 const pessoaFisica_1 = require("../entities/pessoaFisica");
 const data_source_1 = require("../data-source");
+const proprietarioImovel_1 = require("../entities/relations/proprietarioImovel");
 const ImovelRepository = data_source_1.AppDataSource.getRepository(imovel_1.RegistroImovel);
 data_source_1.AppDataSource.getRepository(pessoaFisica_1.Pessoa); // Adicione o repositório da entidade Pessoa
 const pessoaRepository = data_source_1.AppDataSource.getRepository(pessoaFisica_1.Pessoa);
 const imovelRepository = data_source_1.AppDataSource.getRepository(imovel_1.RegistroImovel);
-const cadastrarImovel = (imovelData, pessoaId) => __awaiter(void 0, void 0, void 0, function* () {
-    // Encontre a pessoa pelo ID
-    const pessoa = yield pessoaRepository.findOne({ where: { id: pessoaId } });
-    if (!pessoa) {
-        throw new Error("Pessoa não encontrada");
-    }
-    // Crie um novo imóvel e associe a pessoa como um dos proprietários
-    const novoImovel = imovelRepository.create(Object.assign(Object.assign({}, imovelData), { proprietarios: [pessoa] // Aqui está a mudança principal: agora é uma lista de proprietários.
-     }));
+const proprietarioImovelRepository = data_source_1.AppDataSource.getRepository(proprietarioImovel_1.ProprietarioImovel);
+const cadastrarImovel = (imovelData, proprietariosData) => __awaiter(void 0, void 0, void 0, function* () {
     // Salve o novo imóvel no banco de dados
-    yield imovelRepository.save(novoImovel);
-    return novoImovel;
+    const savedImovel = yield imovelRepository.save(imovelData);
+    for (const propData of proprietariosData) {
+        const pessoa = yield pessoaRepository.findOne({ where: { id: propData.id } });
+        if (!pessoa) {
+            throw new Error(`Pessoa com ID ${propData.id} não encontrada`);
+        }
+        const proprietarioImovel = new proprietarioImovel_1.ProprietarioImovel();
+        proprietarioImovel.pessoa = pessoa;
+        proprietarioImovel.registroImovel = savedImovel;
+        proprietarioImovel.percentualPropriedade = propData.percentual;
+        yield proprietarioImovelRepository.save(proprietarioImovel);
+    }
+    return savedImovel;
 });
 exports.cadastrarImovel = cadastrarImovel;
 const getImoveisComPessoas = () => __awaiter(void 0, void 0, void 0, function* () {
     const imoveisComPessoas = yield imovelRepository.find({
         relations: {
-            proprietarios: true,
+            imoveisProprietarios: true,
             contratos: true,
         },
     });

@@ -10,6 +10,7 @@ import {
 import { RegistroImovel } from "./imovel";
 import { Contrato } from "./contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
+import { ContratoInquilino } from "./relations/contratoInquilino";
 @Entity()
 export class Pessoa {
   @PrimaryGeneratedColumn()
@@ -106,7 +107,7 @@ export class Pessoa {
   contratosProprietarios: Contrato[];
 
   // Relação com contratos onde a pessoa é inquilina
-  @OneToMany(() => Contrato, (contrato) => contrato.inquilino)
-  contratosInquilinos: Contrato[];
+  @OneToMany(() => ContratoInquilino, (ci) => ci.inquilino)
+  contratosInquilinos: ContratoInquilino[];
 
 }

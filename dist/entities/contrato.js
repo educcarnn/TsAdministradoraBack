@@ -13,6 +13,7 @@ exports.Contrato = void 0;
 const typeorm_1 = require("typeorm");
 const pessoaFisica_1 = require("./pessoaFisica");
 const imovel_1 = require("./imovel");
+const contratoInquilino_1 = require("./relations/contratoInquilino");
 let Contrato = class Contrato {
 };
 exports.Contrato = Contrato;
@@ -33,9 +34,9 @@ __decorate([
     __metadata("design:type", Object)
 ], Contrato.prototype, "detalhesContrato", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => pessoaFisica_1.Pessoa, (pessoa) => pessoa.contratosInquilinos),
-    __metadata("design:type", pessoaFisica_1.Pessoa)
-], Contrato.prototype, "inquilino", void 0);
+    (0, typeorm_1.OneToMany)(() => contratoInquilino_1.ContratoInquilino, contratoInquilino => contratoInquilino.contrato),
+    __metadata("design:type", Array)
+], Contrato.prototype, "inquilinos", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => pessoaFisica_1.Pessoa, (pessoa) => pessoa.contratosProprietarios),
     __metadata("design:type", pessoaFisica_1.Pessoa)
