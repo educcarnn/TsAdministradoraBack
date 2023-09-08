@@ -25,13 +25,11 @@ __decorate([
     __metadata("design:type", String)
 ], Contrato.prototype, "tipoContrato", void 0);
 __decorate([
-    (0, typeorm_1.Column)("jsonb", { nullable: true }) // Armazena os objetos como JSON
-    ,
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Object)
 ], Contrato.prototype, "garantia", void 0);
 __decorate([
-    (0, typeorm_1.Column)("jsonb", { nullable: true }) // Armazena os objetos como JSON
-    ,
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Object)
 ], Contrato.prototype, "detalhesContrato", void 0);
 __decorate([

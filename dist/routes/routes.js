@@ -26,14 +26,14 @@ router.get("/pessoa-juridica/:id", newClienteJuridica_1.ObterPessoaJuridicaPorId
 router.delete("/pessoa-juridica-delete/:id", newClienteJuridica_1.DeletarPessoaJuridicaPorId);
 router.patch("/pessoa-juridica-patch/:id", newClienteJuridica_1.AtualizarPessoaJuridicaPorId);
 // Rotas para Imóveis
-router.post("/cadastro-imovel", imovelOrm_1.CadastrarImovel);
+router.post("/cadastro-imovel", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdminOuUser, imovelOrm_1.CadastrarImovel);
 router.get("/obter-imoveis-novo", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdmin, imovelOrm_1.ObterTodosImoveis);
 router.get("/obter-imovel/:id", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdminOuUser, imovelOrm_1.ObterImovelPorId);
 router.delete("/imovel-delete/:id", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdmin, imovelOrm_1.ExcluirImovel);
 router.patch("/imovel-patch/:id", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdminOuUser, imovelOrm_1.AtualizarImovel);
 // Rotas para Contratos
 router.post("/cadastro-contrato", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdmin, contratoOrm_1.CadastrarContrato);
-router.get("/obter-contratos-novo", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdmin, contratoOrm_1.ObterTodosContratos);
+router.get("/obter-contratos-novo", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdminOuUser, contratoOrm_1.ObterTodosContratos);
 router.get("/obter-contrato/:id", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdminOuUser, contratoOrm_1.ObterContratoPorId);
 router.delete("/contrato-delete/:id", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdmin, contratoOrm_1.ExcluirContrato);
 router.patch("/contrato-patch/:id", isAuth_1.isAuthenticated, ValidationStatusUser_1.isAdmin, contratoOrm_1.AtualizarContrato);
