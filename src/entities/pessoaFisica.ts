@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { RegistroImovel } from "./imovel";
 import { Contrato } from "./contrato";
-
+import { ProprietarioImovel } from "./relations/proprietarioImovel";
 @Entity()
 export class Pessoa {
   @PrimaryGeneratedColumn()
@@ -97,12 +97,18 @@ export class Pessoa {
 
   @Column("jsonb", { nullable: true })
   lista_repasse: string[];
+<<<<<<< HEAD
 
   @OneToMany(
     () => RegistroImovel,
     (RegistroImovel) => RegistroImovel.proprietario
   )
   imoveisProprietarios: RegistroImovel[];
+=======
+  
+  @OneToMany(() => ProprietarioImovel, pi => pi.pessoa)
+  imoveisRelacionados: ProprietarioImovel[];
+>>>>>>> 0ece6d6 (fix: Relations proprietários)
 
   // Relação com contratos onde a pessoa é proprietária
   @OneToMany(() => Contrato, (contrato) => contrato.proprietario)
@@ -111,4 +117,5 @@ export class Pessoa {
   // Relação com contratos onde a pessoa é inquilina
   @OneToMany(() => Contrato, (contrato) => contrato.inquilino)
   contratosInquilinos: Contrato[];
+
 }

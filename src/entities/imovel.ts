@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { Contrato } from "./contrato";
-import { PessoaJuridica } from "./pessoaJuridica";
+import { ProprietarioImovel } from "./relations/proprietarioImovel";
 
 @Entity()
 export class RegistroImovel {
@@ -98,13 +98,19 @@ export class RegistroImovel {
   @Column("text", { array: true, nullable: true })
   fotos: string[];
 
+<<<<<<< HEAD
   /*Relacionamentos*/
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.imoveisProprietarios)
   proprietario: Pessoa;
+=======
+>>>>>>> 0ece6d6 (fix: Relations proprietários)
 
-  // Relação com os contratos associados a este imóvel
+  @OneToMany(() => ProprietarioImovel, pi => pi.registroImovel)
+  imoveisProprietarios: ProprietarioImovel[];
+  
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
+    proprietarios: any;
 
   
   /*
