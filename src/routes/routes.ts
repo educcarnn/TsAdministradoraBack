@@ -66,7 +66,7 @@ router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUser, AtualizarImove
 
 // Rotas para Contratos
 router.post("/cadastro-contrato",  isAuthenticated ,isAdmin, CadastrarContrato);
-router.get("/obter-contratos-novo", isAuthenticated , isAdmin, ObterTodosContratos);
+router.get("/obter-contratos-novo", isAuthenticated , isAdminOuUser, ObterTodosContratos);
 router.get("/obter-contrato/:id",  isAuthenticated, isAdminOuUser, ObterContratoPorId);
 router.delete("/contrato-delete/:id",   isAuthenticated ,isAdmin,ExcluirContrato);
 router.patch("/contrato-patch/:id",  isAuthenticated ,isAdmin, AtualizarContrato);

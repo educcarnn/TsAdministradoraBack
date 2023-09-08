@@ -14,15 +14,11 @@ import { RegistroImovel } from "./imovel";
 export class Contrato {
   @PrimaryGeneratedColumn()
   id: number;
-  /*
-  @ManyToMany(() => PessoaJuridica, { nullable: true })
-  @JoinTable()
-  proprietariosPessoaJuridica: PessoaJuridica[];
-*/
+
   @Column()
   tipoContrato: string;
 
-  @Column("jsonb", { nullable: true }) // Armazena os objetos como JSON
+  @Column("jsonb", { nullable: true }) 
   garantia: {
     tipo: string;
     dataInicio: string;
@@ -34,7 +30,7 @@ export class Contrato {
     observacao: string;
   };
 
-  @Column("jsonb", { nullable: true }) // Armazena os objetos como JSON
+  @Column("jsonb", { nullable: true }) 
   detalhesContrato: {
     dataInicio: string;
     dataTermino: string;
