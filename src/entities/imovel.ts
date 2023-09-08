@@ -99,8 +99,8 @@ export class RegistroImovel {
   fotos: string[];
 
   /*Relacionamentos*/
-  @ManyToOne(() => Pessoa, (pessoa) => pessoa.imoveisProprietarios)
-  proprietario: Pessoa;
+  @ManyToMany(() => Pessoa, pessoa => pessoa.imoveisProprietarios)
+  proprietarios: Pessoa[];
 
   // Relação com os contratos associados a este imóvel
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)

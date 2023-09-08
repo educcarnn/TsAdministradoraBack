@@ -18,7 +18,7 @@ export class Pessoa {
   @Column()
   tipo: string;
 
-  @Column('text', { array: true, default: () => 'ARRAY[]::text[]' })
+  @Column("text", { array: true, default: () => "ARRAY[]::text[]" })
   funcao: string[];
 
   @Column()
@@ -67,7 +67,7 @@ export class Pessoa {
     nullable: true,
   })
   role?: string;
-  
+
   @Column()
   genero: string;
 
@@ -98,10 +98,8 @@ export class Pessoa {
   @Column("jsonb", { nullable: true })
   lista_repasse: string[];
 
-  @OneToMany(
-    () => RegistroImovel,
-    (RegistroImovel) => RegistroImovel.proprietario
-  )
+  @ManyToMany(() => RegistroImovel, registroImovel => registroImovel.proprietarios)
+  @JoinTable()  // Este decorador é importante e só é necessário em um lado do relacionamento
   imoveisProprietarios: RegistroImovel[];
 
   // Relação com contratos onde a pessoa é proprietária

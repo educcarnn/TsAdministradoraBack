@@ -23,10 +23,10 @@ export const cadastrarImovel = async (
     throw new Error("Pessoa não encontrada");
   }
 
-  // Crie um novo imóvel e associe a pessoa como proprietário
+  // Crie um novo imóvel e associe a pessoa como um dos proprietários
   const novoImovel = imovelRepository.create({
     ...imovelData,
-    proprietario: pessoa
+    proprietarios: [pessoa]  // Aqui está a mudança principal: agora é uma lista de proprietários.
   });
 
   // Salve o novo imóvel no banco de dados
@@ -35,11 +35,10 @@ export const cadastrarImovel = async (
   return novoImovel;
 };
 
-
 export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository.find({
     relations: {
-      proprietario: true,
+      proprietarios: true,
       contratos: true,
     },
   });

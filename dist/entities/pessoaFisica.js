@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], Pessoa.prototype, "tipo", void 0);
 __decorate([
-    (0, typeorm_1.Column)('text', { array: true, default: () => 'ARRAY[]::text[]' }),
+    (0, typeorm_1.Column)("text", { array: true, default: () => "ARRAY[]::text[]" }),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "funcao", void 0);
 __decorate([
@@ -114,7 +114,9 @@ __decorate([
     __metadata("design:type", Array)
 ], Pessoa.prototype, "lista_repasse", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => imovel_1.RegistroImovel, (RegistroImovel) => RegistroImovel.proprietario),
+    (0, typeorm_1.ManyToMany)(() => imovel_1.RegistroImovel, registroImovel => registroImovel.proprietarios),
+    (0, typeorm_1.JoinTable)() // Este decorador é importante e só é necessário em um lado do relacionamento
+    ,
     __metadata("design:type", Array)
 ], Pessoa.prototype, "imoveisProprietarios", void 0);
 __decorate([

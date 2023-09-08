@@ -73,9 +73,9 @@ __decorate([
     __metadata("design:type", Array)
 ], RegistroImovel.prototype, "fotos", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => pessoaFisica_1.Pessoa, (pessoa) => pessoa.imoveisProprietarios),
-    __metadata("design:type", pessoaFisica_1.Pessoa)
-], RegistroImovel.prototype, "proprietario", void 0);
+    (0, typeorm_1.ManyToMany)(() => pessoaFisica_1.Pessoa, pessoa => pessoa.imoveisProprietarios),
+    __metadata("design:type", Array)
+], RegistroImovel.prototype, "proprietarios", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => contrato_1.Contrato, (contrato) => contrato.imovel),
     __metadata("design:type", Array)

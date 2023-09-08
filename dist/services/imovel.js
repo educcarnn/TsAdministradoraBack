@@ -23,8 +23,9 @@ const cadastrarImovel = (imovelData, pessoaId) => __awaiter(void 0, void 0, void
     if (!pessoa) {
         throw new Error("Pessoa não encontrada");
     }
-    // Crie um novo imóvel e associe a pessoa como proprietário
-    const novoImovel = imovelRepository.create(Object.assign(Object.assign({}, imovelData), { proprietario: pessoa }));
+    // Crie um novo imóvel e associe a pessoa como um dos proprietários
+    const novoImovel = imovelRepository.create(Object.assign(Object.assign({}, imovelData), { proprietarios: [pessoa] // Aqui está a mudança principal: agora é uma lista de proprietários.
+     }));
     // Salve o novo imóvel no banco de dados
     yield imovelRepository.save(novoImovel);
     return novoImovel;
@@ -33,7 +34,7 @@ exports.cadastrarImovel = cadastrarImovel;
 const getImoveisComPessoas = () => __awaiter(void 0, void 0, void 0, function* () {
     const imoveisComPessoas = yield imovelRepository.find({
         relations: {
-            proprietario: true,
+            proprietarios: true,
             contratos: true,
         },
     });
