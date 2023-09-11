@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pessoa = void 0;
 const typeorm_1 = require("typeorm");
-const imovel_1 = require("./imovel");
 const contrato_1 = require("./contrato");
+const proprietarioImovel_1 = require("./relations/proprietarioImovel");
 let Pessoa = class Pessoa {
 };
 exports.Pessoa = Pessoa;
@@ -114,11 +114,9 @@ __decorate([
     __metadata("design:type", Array)
 ], Pessoa.prototype, "lista_repasse", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => imovel_1.RegistroImovel, registroImovel => registroImovel.proprietarios),
-    (0, typeorm_1.JoinTable)() // Este decorador é importante e só é necessário em um lado do relacionamento
-    ,
+    (0, typeorm_1.OneToMany)(() => proprietarioImovel_1.ProprietarioImovel, pi => pi.pessoa),
     __metadata("design:type", Array)
-], Pessoa.prototype, "imoveisProprietarios", void 0);
+], Pessoa.prototype, "imoveisRelacionados", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => contrato_1.Contrato, (contrato) => contrato.proprietario),
     __metadata("design:type", Array)

@@ -105,7 +105,6 @@ export class RegistroImovel {
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
     proprietarios: any;
-
   
   /*
   @ManyToOne(() => PessoaJuridica)

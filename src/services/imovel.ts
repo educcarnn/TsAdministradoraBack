@@ -41,14 +41,18 @@ export const cadastrarImovel = async (
 
 
 export const getImoveisComPessoas = async () => {
-  const imoveisComPessoas = await imovelRepository.find({
-    relations: {
-      imoveisProprietarios: true,
-      contratos: true,
-    },
-  });
+  const imoveisComPessoas = await imovelRepository
+    .createQueryBuilder("imovel")
+    .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
+    .leftJoin("proprietarioImovel.pessoa", "pessoa")
+    .addSelect(["pessoa.nome", "pessoa.id"])
+    .leftJoinAndSelect("imovel.contratos", "contrato")
+    .getMany();
+
   return imoveisComPessoas;
 };
+
+
 
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();
