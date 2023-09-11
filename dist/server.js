@@ -18,7 +18,7 @@ const app_1 = __importDefault(require("./app"));
 data_source_1.AppDataSource.initialize()
     .then(() => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Database connected.");
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 8080;
     app_1.default.listen(PORT, () => {
         console.log(`App is running on https://localhost:${PORT}`);
     });
