@@ -10,6 +10,9 @@ import {
 import { RegistroImovel } from "./imovel";
 import { Contrato } from "./contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
+import { ContratoInquilino } from "./relations/contratoInquilino";
+import { ContratoProprietario } from "./relations/contratoProprietario";
+
 @Entity()
 export class Pessoa {
   @PrimaryGeneratedColumn()
@@ -102,11 +105,11 @@ export class Pessoa {
   imoveisRelacionados: ProprietarioImovel[];
 
   // Relação com contratos onde a pessoa é proprietária
-  @OneToMany(() => Contrato, (contrato) => contrato.proprietario)
-  contratosProprietarios: Contrato[];
+  @OneToMany(() => ContratoProprietario, contratoProprietario => contratoProprietario.proprietario)
+  contratoProprietarioRelacoes: ContratoProprietario[];
 
   // Relação com contratos onde a pessoa é inquilina
-  @OneToMany(() => Contrato, (contrato) => contrato.inquilino)
-  contratosInquilinos: Contrato[];
+  @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.inquilino)
+  contratoRelacoes: ContratoInquilino[];
 
 }
