@@ -31,16 +31,16 @@ export const cadastrarPessoa = async (pessoaData: Partial<Pessoa>): Promise<Pess
 };
 
 export const requeryPessoas = async () => {
-  const requery = await PessoaRepository.find({
-    relations: {
-      imoveisProprietarios: true,
-      contratosProprietarios: true,
-      contratosInquilinos: true,
-    },
-  });
-  return requery;
-};
+  const queryBuilder = PessoaRepository
+    .createQueryBuilder('pessoa')
+    .leftJoinAndSelect('pessoa.imoveisRelacionados', 'proprietarioImovel')
+    .leftJoinAndSelect('proprietarioImovel.registroImovel', 'registroImovel')
+    .addSelect(['registroImovel.caracteristicas']) // Seleciona as características do imóvel
 
+  const result = await queryBuilder.getMany();
+
+  return result;
+};
 export const findPessoaByEmail = async (email: string): Promise<Pessoa | null> => {
   const userWithEmail = await userRepository.findOne({ where: { email: email } });
 
