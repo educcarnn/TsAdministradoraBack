@@ -5,9 +5,10 @@ import bcrypt from "bcrypt";
 import {isEmailInUse} from "../../src/utils/emailUtils"
 import { PessoaRepository } from "./pessoaFisica";
 import { Pessoa } from "../entities/pessoaFisica";
+import { Invite } from '../entities/invite';
 
 export const userRepository = AppDataSource.getRepository(User);
-
+export const inviteRepository = AppDataSource.getRepository(Invite)
 export const createUser = async (userData: Partial<User>): Promise<User> => {
     if (!userData.email) {
         throw new Error("E-mail não fornecido.");
@@ -74,15 +75,16 @@ export const deleteUserById = async (id: number): Promise<void> => {
 };
 
 
-export const createInvite = async (userData: any) => {
-    const userRepository = AppDataSource.getRepository(User);
 
-    // Neste caso, não estamos salvando a senha, pois a ideia é que o usuário defina a senha quando aceitar o convite.
-    const user = new User();
-    user.email = userData.email;
-    user.role = userData.role || "user";
 
-    await userRepository.save(user);
+export const createInvite = async (inviteData: any) => {
+    const inviteRepository = AppDataSource.getRepository(Invite); // Mude para o repositório correto
+
+    const invite = new Invite();
+    invite.email = inviteData.email;
+    invite.role = inviteData.role || "user";
+ 
+    await inviteRepository.save(invite);
     
-    return user;
+    return invite;
 }
