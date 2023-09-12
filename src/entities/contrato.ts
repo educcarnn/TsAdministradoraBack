@@ -3,15 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany,
   JoinTable,
   ManyToMany,
 } from "typeorm";
 import { Pessoa } from "./pessoaFisica";
 import { PessoaJuridica } from "./pessoaJuridica";
 import { RegistroImovel } from "./imovel";
-import { ContratoInquilino } from "./relations/contratoInquilino";
-import { ContratoProprietario } from "./relations/contratoProprietario";
 
 @Entity()
 export class Contrato {
@@ -46,19 +43,20 @@ export class Contrato {
   };
 
   // RELACIONAMENTOS
-  @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.contrato)
-  inquilinoRelacoes: ContratoInquilino[];
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosInquilinos)
+  inquilino: Pessoa;
 
   // Relação com o proprietário no contrato
-  @OneToMany(() => ContratoProprietario, contratoProprietario => contratoProprietario.contrato)
-  proprietarioRelacoes: ContratoProprietario[];
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosProprietarios)
+  proprietario: Pessoa;
 
   // Relação com o imóvel alugado neste contrato
   @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
   imovel: RegistroImovel;
   
   /*
-
+  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
+  proprietario: Pessoa[];
 
 
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
