@@ -45,7 +45,7 @@ export const findPessoaByEmail = async (email: string): Promise<Pessoa | null> =
   const userWithEmail = await userRepository.findOne({ where: { email: email } });
 
   if (userWithEmail) {
-      // Se o e-mail estiver registrado na tabela de User, retornamos null
+
       return null;
   }
 
@@ -70,7 +70,7 @@ export const obterPessoaPorId = async (id: number): Promise<Pessoa | undefined> 
     const pessoa = await PessoaRepository.findOne({ where: { id: id } });
 
     if (pessoa) {
-      // Procura a pessoa nas informações carregadas
+
       const pessoaFind = getPessoa.find(item => item.id === pessoa.id);
 
       if (pessoaFind) {

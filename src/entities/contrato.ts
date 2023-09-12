@@ -57,12 +57,5 @@ export class Contrato {
   @ManyToOne(() => RegistroImovel, (RegistroImovel) => RegistroImovel.contratos)
   imovel: RegistroImovel;
   
-  /*
 
-
-
-  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratos)
-  pessoa: Pessoa;
-  PessoaJuridica: any;
-*/
 }

@@ -11,16 +11,14 @@ import { getContratos } from '../services/contrato';
 
 
 export const CadastrarContrato = async (req: Request, res: Response): Promise<Response> => {
-  const data: Contrato = req.body.data as Contrato;
-  
+  const contrato: Contrato = req.body as Contrato;
 
   const inquilinos: {id: number, percentual: number}[] = req.body.inquilinos;
   const proprietarios: {id: number, percentual: number}[] = req.body.proprietarios;
   const imovelId: number = req.body.imovelId;
 
   try {
- 
-    await cadastrarContrato(data, inquilinos, proprietarios, imovelId); 
+    await cadastrarContrato(contrato, inquilinos, proprietarios, imovelId); 
 
     return res.status(201).json({ message: 'Contrato cadastrado com sucesso!' });
   } catch (error) {
@@ -28,6 +26,7 @@ export const CadastrarContrato = async (req: Request, res: Response): Promise<Re
     return res.status(500).json({ message: 'Erro ao cadastrar Contrato' });
   }
 };
+
 
 export const ObterTodosContratos = async (_req: Request, res: Response): Promise<Response> => {
   try {
