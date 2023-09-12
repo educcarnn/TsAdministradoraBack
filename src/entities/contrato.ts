@@ -43,9 +43,8 @@ export class Contrato {
   };
 
   // RELACIONAMENTOS
-  @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosInquilinos)
-  inquilino: Pessoa;
-
+  @ManyToOne(() => Pessoa, pessoa => pessoa.contratosInquilinos)
+inquilino: Pessoa;
   // Relação com o proprietário no contrato
   @ManyToOne(() => Pessoa, (pessoa) => pessoa.contratosProprietarios)
   proprietario: Pessoa;

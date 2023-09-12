@@ -109,6 +109,7 @@ export class Pessoa {
   contratosProprietarios: Contrato[];
 
   // Relação com contratos onde a pessoa é inquilina
-  @OneToMany(() => Contrato, (contrato) => contrato.inquilino)
+  @OneToMany(() => Contrato, contrato => contrato.inquilino)
   contratosInquilinos: Contrato[];
+  
 }

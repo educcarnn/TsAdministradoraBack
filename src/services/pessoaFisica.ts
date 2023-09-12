@@ -33,9 +33,10 @@ export const cadastrarPessoa = async (pessoaData: Partial<Pessoa>): Promise<Pess
 export const requeryPessoas = async () => {
   const requery = await PessoaRepository.find({
     relations: {
+      contratosInquilinos: true,
       imoveisProprietarios: true,
       contratosProprietarios: true,
-      contratosInquilinos: true,
+
     },
   });
   return requery;
