@@ -71,7 +71,6 @@ export const obterPessoaPorId = async (id: number): Promise<Pessoa | undefined> 
     const pessoa = await PessoaRepository.findOne({ where: { id: id } });
 
     if (pessoa) {
-      // Procura a pessoa nas informações carregadas
       const pessoaFind = getPessoa.find(item => item.id === pessoa.id);
 
       if (pessoaFind) {
