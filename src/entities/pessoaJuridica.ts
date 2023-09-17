@@ -31,9 +31,9 @@ export class PessoaJuridica {
   @Column()
   novoSocioAdministrador: string;
 
-  // Relação OneToOne com a tabela intermediária
+
   @OneToOne(() => PessoaIntermediaria)
-  @JoinColumn()  // Esta anotação indica que a entidade PessoaJuridica possui a chave estrangeira
+  @JoinColumn()  
   dadosComuns: PessoaIntermediaria;  // Este campo contém todas as informações comuns
 
   /*RELACIONAMENTOS*/
