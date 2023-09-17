@@ -1,25 +1,24 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    OneToOne
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToOne,
 } from "typeorm";
-import { PessoaFisica } from "../pessoaFisica";
+import { Pessoa } from "../pessoaFisica";
 import { RegistroImovel } from "../imovel";
 
 @Entity()
 export class Fiador {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    numeroMatriculaRGI: string;
+  @Column()
+  numeroMatriculaRGI: string;
 
-    @OneToOne(() => PessoaFisica)
-    pessoa: PessoaFisica;
+  @OneToOne(() => Pessoa)
+  pessoa: Pessoa;
 
-    @ManyToOne(() => RegistroImovel)
-    imovelComoFianca: RegistroImovel;
-
+  @ManyToOne(() => RegistroImovel)
+  imovelComoFianca: RegistroImovel;
 }

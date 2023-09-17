@@ -4,6 +4,7 @@ import {
   Column,
   OneToOne,
   OneToMany,
+  ManyToOne,
   JoinColumn,
 } from "typeorm";
 import { RegistroImovel } from "./imovel";
@@ -12,15 +13,21 @@ import { ProprietarioImovel } from "./relations/proprietarioImovel";
 import { ContratoInquilino } from "./relations/contratoInquilino";
 import { ContratoProprietario } from "./relations/contratoProprietario";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
+import { Empresa } from "./empresa";
+import { Fiador } from "./pessoas/fiador";
 
 @Entity()
-export class PessoaFisica {
+export class Pessoa {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   nome: string;
 
+  @OneToOne(() => Fiador, fiador => fiador.pessoa)
+  @JoinColumn() // Isso especifica que a coluna de chave estrangeira está nesta entidade.
+  fiador: Fiador;
+  
   @Column()
   cpf: string;
 
@@ -58,6 +65,9 @@ export class PessoaFisica {
 
   @Column()
   genero: string;
+
+  @ManyToOne(() => Empresa, empresa => empresa.pessoas)
+  empresa: Empresa;
 
   @Column()  // Defina a coluna da chave estrangeira
     dadosComunsId: number;

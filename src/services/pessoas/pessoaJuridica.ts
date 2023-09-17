@@ -1,6 +1,6 @@
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
-import { PessoaJuridica } from '../entities/pessoaJuridica';
-import { AppDataSource } from '../data-source';
+import { PessoaJuridica } from '../../entities/pessoaJuridica';
+import { AppDataSource } from '../../data-source';
 
 const PessoaJuridicaRepository: Repository<PessoaJuridica> = AppDataSource.getRepository(PessoaJuridica);
 

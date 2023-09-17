@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import * as UserService from "../../services/user";
-import * as PessoaService from "../../services/pessoaFisica"; // Ajuste o caminho conforme necessário
+import * as PessoaService from "../../services/pessoas/pessoaFisica"; // Ajuste o caminho conforme necessário
 import * as jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 import { createInvite } from "../../services/user";
-import { PessoaFisica } from "../../entities/pessoaFisica";
+import { Pessoa } from "../../entities/pessoaFisica";
 import { User } from "../../entities/user";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
@@ -62,7 +62,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    let user: User | PessoaFisica | null | undefined;
+    let user: User | Pessoa | null | undefined;
 
       user = await UserService.findUserByEmail(req.body.email);
 
@@ -81,7 +81,6 @@ export const loginUser = async (req: Request, res: Response) => {
           return res.status(401).json({ message: "Senha incorreta." });
       }
 
-      // Geração do token JWT
      const tokenExpiration = 24 * 60 * 60; // 24 horas em segundos
 
     const token = jwt.sign(
@@ -96,7 +95,6 @@ export const loginUser = async (req: Request, res: Response) => {
     const expirationDate = new Date();
     expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiration);
 
-    // Retornando o token, a role e a data de expiração no corpo da resposta
     res.status(200).json({
       message: "Login bem-sucedido!",
       token: token,

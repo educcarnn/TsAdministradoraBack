@@ -1,19 +1,19 @@
 import { Repository } from "typeorm";
-import { PessoaFisica } from "../entities/pessoaFisica";
-import { AppDataSource } from "../data-source";
+import { Pessoa } from "../../entities/pessoaFisica";
+import { AppDataSource } from "../../data-source";
 import bcrypt from "bcrypt";
-import { isEmailInUse } from "../utils/emailUtils";
-import { PessoaIntermediaria } from "../entities/pessoas/pessoa";
+import { isEmailInUse } from "../../utils/emailUtils";
+import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
-export const PessoaRepository: Repository<PessoaFisica> =
-  AppDataSource.getRepository(PessoaFisica);
+export const PessoaRepository: Repository<Pessoa> =
+  AppDataSource.getRepository(Pessoa);
 
 export const cadastrarPessoa = async (
-  pessoaData: Partial<PessoaFisica>
-): Promise<PessoaFisica> => {
+  pessoaData: Partial<Pessoa>
+): Promise<Pessoa> => {
   if (!pessoaData.dadosComuns || !pessoaData.dadosComuns.email) {
     throw new Error("E-mail não fornecido.");
   }
@@ -58,7 +58,7 @@ export const requeryPessoas = async () => {
 };
 export const findPessoaByEmail = async (
   email: string
-): Promise<PessoaFisica | null> => {
+): Promise<Pessoa | null> => {
   // Primeiro, busca pelo e-mail na tabela intermediária
   const pessoaIntermediaria = await PessoaIntermediariaRepository.findOne({
     where: { email: email },
@@ -95,11 +95,11 @@ export const checkPassword = async (
   return bcrypt.compare(inputPassword, storedPasswordHash);
 };
 
-export const obterTodasPessoas = async (): Promise<PessoaFisica[]> => {
+export const obterTodasPessoas = async (): Promise<Pessoa[]> => {
   return PessoaRepository.find();
 };
 
-export const obterPessoaPorId = async (id: number): Promise<PessoaFisica | undefined> => {
+export const obterPessoaPorId = async (id: number): Promise<Pessoa | undefined> => {
   // Buscando PessoaFisica junto com seus dados comuns (dados intermediários)
   const pessoaFisica = await PessoaRepository.findOne({
       where: { id: id },
@@ -126,7 +126,7 @@ export const deletarPessoaPorId = async (id: number): Promise<void> => {
 
 export const atualizarPessoaPorId = async (
   id: number,
-  data: PessoaFisica
+  data: Pessoa
 ): Promise<void> => {
   const pessoa = await PessoaRepository.findOne({ where: { id: id } });
   if (!pessoa) throw new Error("Pessoa não encontrada.");

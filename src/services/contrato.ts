@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { Contrato } from "../entities/contrato";
 import { AppDataSource } from "../data-source"; // Certifique-se de importar o dataSource correto
-import { PessoaRepository } from "./pessoaFisica";
+import { PessoaRepository } from "./pessoas/pessoaFisica";
 import { RegistroImovel } from "../entities/imovel";
 import { ContratoInquilino } from "../entities/relations/contratoInquilino";
 import { ContratoProprietario } from "../entities/relations/contratoProprietario";

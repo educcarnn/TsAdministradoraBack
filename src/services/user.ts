@@ -2,9 +2,9 @@ import { User } from "../entities/user"; // Ajuste o caminho conforme necessári
 import { AppDataSource } from "../data-source";
 import bcrypt from "bcrypt";
 import { isEmailInUse } from "../../src/utils/emailUtils";
-import { PessoaFisica } from "../entities/pessoaFisica";
-import { PessoaRepository } from "./pessoaFisica";
-import { PessoaIntermediariaRepository } from "./pessoaFisica";
+import { Pessoa } from "../entities/pessoaFisica";
+import { PessoaRepository } from "./pessoas/pessoaFisica";
+import { PessoaIntermediariaRepository } from "./pessoas/pessoaFisica";
 
 export const userRepository = AppDataSource.getRepository(User);
 
@@ -34,7 +34,7 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
 
 export const findUserByEmail = async (
   email: string
-): Promise<User | PessoaFisica | undefined> => {
+): Promise<User | Pessoa | undefined> => {
   const user = await userRepository.findOne({ where: { email: email } });
 
   // Se já encontrou um usuário, retorna-o

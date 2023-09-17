@@ -6,9 +6,9 @@ import {
   JoinTable,
   ManyToOne,
   JoinColumn,
-  OneToMany
+  OneToMany,
 } from "typeorm";
-
+import { Empresa } from "./empresa";
 import { Contrato } from "./contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 
@@ -95,28 +95,19 @@ export class RegistroImovel {
   @Column("text", { array: true, nullable: true })
   caracteristicas_condominio: string[];
 
-
   @Column("jsonb", { nullable: true })
   ads: {
     title: string;
     description: string;
   };
 
-
   @Column("text", { array: true, nullable: true })
   docs: string[];
 
-
-  @OneToMany(() => ProprietarioImovel, pi => pi.registroImovel)
+  @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietarios: ProprietarioImovel[];
-  
+
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
-    proprietarios: any;
-  
-  /*
-  @ManyToOne(() => PessoaJuridica)
-  @JoinTable()
-  proprietariosPessoaJuridica: PessoaJuridica[];
-*/
+  proprietarios: any;
 }

@@ -6,7 +6,6 @@ import {
   ObterPessoaPorId,
   ObterTodasPessoas,
 } from "../controllers/newCliente";
-
 import {
   CadastrarImovel,
   ObterTodosImoveis,
@@ -36,12 +35,17 @@ import { isAuthenticated } from "../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
 import fisica from "../routes/pessoas/fisica"
 import juridica from "../routes/pessoas/juridica"
-
+import empresa from "../routes/empresa/empresa"
+import fiador from "../routes/pessoas/fiador"
 
 const router = express.Router();
 
 router.use("/", fisica);
 router.use("/", juridica)
+//router.use("/", fiador)
+
+router.use("/", empresa)
+
 
 // Rotas para Imóveis
 router.post("/cadastro-imovel", isAuthenticated, isAdminOuUser, CadastrarImovel);

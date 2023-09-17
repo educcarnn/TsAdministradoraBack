@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Contrato } from "../../entities/contrato"; // Substitua [path_to_contrato_file] pelo caminho correto do arquivo.
-import { PessoaFisica } from "../../entities/pessoaFisica";     // Substitua [path_to_pessoa_file] pelo caminho correto do arquivo.
+import { Pessoa } from "../pessoaFisica";
 
 
 @Entity()
@@ -14,6 +14,6 @@ export class ContratoInquilino {
   @ManyToOne(() => Contrato, contrato => contrato.inquilinoRelacoes)
   contrato: Contrato;
 
-  @ManyToOne(() => PessoaFisica, PessoaFisica => PessoaFisica.contratoRelacoes)
-  inquilino: PessoaFisica;
+  @ManyToOne(() => Pessoa, Pessoa => Pessoa.contratoRelacoes)
+  inquilino: Pessoa;
 }

@@ -1,11 +1,11 @@
 import { Repository } from "typeorm";
 import { Fiador } from "../../entities/pessoas/fiador";
-import { PessoaFisica } from "../../entities/pessoaFisica";
+import { Pessoa } from "../../entities/pessoaFisica";
 import { RegistroImovel } from "../../entities/imovel";
 import { AppDataSource } from "../../data-source";
 
 const FiadorRepository: Repository<Fiador> = AppDataSource.getRepository(Fiador);
-const PessoaFisicaRepository: Repository<PessoaFisica> = AppDataSource.getRepository(PessoaFisica);
+const PessoaFisicaRepository: Repository<Pessoa> = AppDataSource.getRepository(PessoaFisica);
 const RegistroImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
 
 export const cadastrarFiador = async (
@@ -14,7 +14,7 @@ export const cadastrarFiador = async (
   enderecoId: number,
   imovelComoFiancaId: number
 ): Promise<Fiador> => {
-  const pessoa = await PessoaFisicaRepository.findOne(pessoaFisicaId);
+  const pessoa = await PessoaFisicaRepository.findOne(Pessoa);
   if (!pessoa) {
     throw new Error(`Pessoa com ID ${pessoaFisicaId} não encontrada`);
   }

@@ -6,7 +6,6 @@ import {
     DeletarPessoaPorId,
     AtualizarPessoaPorId,
 } from "../../controllers/newCliente";
-
 import { isAuthenticated } from "../../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../../middlewares/ValidationStatusUser";
 

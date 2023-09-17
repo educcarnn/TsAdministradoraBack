@@ -1,10 +1,10 @@
 import { userRepository } from '../services/user';
-import { PessoaIntermediariaRepository } from '../services/pessoaFisica';
+import { PessoaIntermediariaRepository } from '../services/pessoas/pessoaFisica';
 
 export const isEmailInUse = async (email: string): Promise<boolean> => {
     const pessoaIntermediaria = await PessoaIntermediariaRepository.findOne({ where: { email: email } });
     
-    // Se encontrou na tabela intermediária, então o email está em uso.
+
     if (pessoaIntermediaria) {
         return true;
     }

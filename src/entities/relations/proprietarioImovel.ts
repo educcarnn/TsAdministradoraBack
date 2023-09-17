@@ -5,7 +5,7 @@ import {
     Column,
     JoinColumn
   } from 'typeorm';
-import { PessoaFisica } from '../pessoaFisica';
+import { Pessoa } from '../pessoaFisica';
 import { RegistroImovel } from '../imovel';
   
   @Entity()
@@ -13,9 +13,9 @@ import { RegistroImovel } from '../imovel';
       @PrimaryGeneratedColumn()
       id: number;
   
-      @ManyToOne(() => PessoaFisica, PessoaFisica => PessoaFisica.imoveisRelacionados)
+      @ManyToOne(() => Pessoa, Pessoa => Pessoa.imoveisRelacionados)
       @JoinColumn({ name: 'pessoaId' }) 
-      pessoa: PessoaFisica;
+      pessoa: Pessoa;
       
       @ManyToOne(() => RegistroImovel, registroImovel => registroImovel.imoveisProprietarios)
       @JoinColumn({ name: 'registroImovelId' })
