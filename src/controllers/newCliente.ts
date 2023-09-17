@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Pessoa } from '../entities/pessoaFisica';
-import { cadastrarPessoa, obterTodasPessoas, obterPessoaPorId, deletarPessoaPorId, atualizarPessoaPorId} from '../services/pessoaFisica';
-import { requeryPessoas } from '../services/pessoaFisica';
+import { cadastrarPessoa, obterPessoaPorId, deletarPessoaPorId, atualizarPessoaPorId} from '../services/pessoas/pessoaFisica';
+import { requeryPessoas } from '../services/pessoas/pessoaFisica';
 
 export const CadastrarPessoa = async (req: Request, res: Response): Promise<Response> => {
   const data: Pessoa = req.body;

@@ -2,23 +2,19 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToOne,
+  JoinColumn,
   ManyToMany,
-  JoinTable,
   OneToMany,
 } from "typeorm";
 import { Contrato } from "./contrato";
 import { RegistroImovel } from "./imovel";
+import { PessoaIntermediaria } from "./pessoas/pessoa";
 
 @Entity()
 export class PessoaJuridica {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  tipo: string;
-
-  @Column()
-  funcao: string;
 
   @Column()
   cnpj: string;
@@ -35,42 +31,19 @@ export class PessoaJuridica {
   @Column()
   novoSocioAdministrador: string;
 
-  @Column()
-  telefone: string;
-
-  @Column()
-  email: string;
-
-  @Column("jsonb", { nullable: true })
-  endereco: {
-    cep: string;
-    endereco: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-  };
-
-  @Column("jsonb", { nullable: true })
-  dadoBancarios: {
-    chavePix: string;
-    banco: string;
-    agencia: string;
-    conta: string;
-  };
-
-  @Column("jsonb", { nullable: true })
-  anexos: string[];
+  // Relação OneToOne com a tabela intermediária
+  @OneToOne(() => PessoaIntermediaria)
+  @JoinColumn()  // Esta anotação indica que a entidade PessoaJuridica possui a chave estrangeira
+  dadosComuns: PessoaIntermediaria;  // Este campo contém todas as informações comuns
 
   /*RELACIONAMENTOS*/
-  @Column("jsonb", { nullable: true })
-  lista_email: string[];
+  
+  // Seus outros relacionamentos podem permanecer aqui
 
-  @Column("jsonb", { nullable: true })
-  lista_repasse: string[];
-/*
+  /*
   @OneToMany(() => Contrato, contrato => contrato.PessoaJuridica, {nullable: true})
   contratos: Contrato[];
-/*
+
   @OneToMany(() => RegistroImovel, (imovel) => imovel.PessoaJuridica, { nullable: true })
   imoveis: RegistroImovel[];
   */

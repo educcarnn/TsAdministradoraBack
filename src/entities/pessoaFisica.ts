@@ -4,11 +4,17 @@ import {
   Column,
   OneToOne,
   OneToMany,
-  ManyToMany,
-  JoinTable,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { RegistroImovel } from "./imovel";
 import { Contrato } from "./contrato";
+import { ProprietarioImovel } from "./relations/proprietarioImovel";
+import { ContratoInquilino } from "./relations/contratoInquilino";
+import { ContratoProprietario } from "./relations/contratoProprietario";
+import { PessoaIntermediaria } from "./pessoas/pessoa";
+import { Empresa } from "./empresa";
+import { Fiador } from "./pessoas/fiador";
 
 @Entity()
 export class Pessoa {
@@ -16,14 +22,12 @@ export class Pessoa {
   id: number;
 
   @Column()
-  tipo: string;
-
-  @Column('text', { array: true, default: () => 'ARRAY[]::text[]' })
-  funcao: string[];
-
-  @Column()
   nome: string;
 
+  @OneToOne(() => Fiador, fiador => fiador.pessoa)
+  @JoinColumn() // Isso especifica que a coluna de chave estrangeira está nesta entidade.
+  fiador: Fiador;
+  
   @Column()
   cpf: string;
 
@@ -49,15 +53,6 @@ export class Pessoa {
   nacionalidade: string;
 
   @Column({ nullable: true })
-  telefoneFixo: string;
-
-  @Column()
-  telefoneCelular: string;
-
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
   password?: string;
 
   @Column({
@@ -71,44 +66,27 @@ export class Pessoa {
   @Column()
   genero: string;
 
-  @Column("jsonb", { nullable: true })
-  endereco: {
-    cep: string;
-    endereco: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-  };
+  @ManyToOne(() => Empresa, empresa => empresa.pessoas)
+  empresa: Empresa;
 
-  @Column("jsonb", { nullable: true })
-  dadoBancarios: {
-    chavePix: string;
-    banco: string;
-    agencia: string;
-    conta: string;
-  };
+  @Column()  // Defina a coluna da chave estrangeira
+    dadosComunsId: number;
 
-  @Column("jsonb", { nullable: true })
-  anexos: string[];
-
+    @OneToOne(() => PessoaIntermediaria)
+    @JoinColumn({ name: "dadosComunsId" })  // Referencie a coluna aqui
+    dadosComuns: PessoaIntermediaria;
+  
   /*RELACIONAMENTOS*/
-  @Column("jsonb", { nullable: true })
-  lista_email: string[];
-
-  @Column("jsonb", { nullable: true })
-  lista_repasse: string[];
-
-  @OneToMany(
-    () => RegistroImovel,
-    (RegistroImovel) => RegistroImovel.proprietario
-  )
-  imoveisProprietarios: RegistroImovel[];
+  
+  @OneToMany(() => ProprietarioImovel, pi => pi.pessoa)
+  imoveisRelacionados: ProprietarioImovel[];
 
   // Relação com contratos onde a pessoa é proprietária
-  @OneToMany(() => Contrato, (contrato) => contrato.proprietario)
-  contratosProprietarios: Contrato[];
+  @OneToMany(() => ContratoProprietario, contratoProprietario => contratoProprietario.proprietario)
+  contratoProprietarioRelacoes: ContratoProprietario[];
 
   // Relação com contratos onde a pessoa é inquilina
-  @OneToMany(() => Contrato, (contrato) => contrato.inquilino)
-  contratosInquilinos: Contrato[];
+  @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.inquilino)
+  contratoRelacoes: ContratoInquilino[];
+
 }

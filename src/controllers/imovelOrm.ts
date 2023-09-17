@@ -9,12 +9,15 @@ import {
 } from '../services/imovel';
 import { getImoveisComPessoas } from '../services/imovel';
 
+
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const data: RegistroImovel = req.body as RegistroImovel;
-  const pessoaId: number = req.body.pessoaId; // Supondo que você tenha a propriedade pessoaId no corpo da requisição
+
+  // Aqui, em vez de apenas obter os IDs das pessoas, estamos obtendo também os percentuais.
+  const proprietariosData = req.body.proprietarios;
 
   try {
-    await cadastrarImovel(data, pessoaId);
+    await cadastrarImovel(data, proprietariosData);
     return res.status(201).json({ message: 'Imóvel cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Imóvel:', error);

@@ -7,13 +7,6 @@ import {
   ObterTodasPessoas,
 } from "../controllers/newCliente";
 import {
-  CadastrarPessoaJuridica,
-  ObterTodasPessoasJuridicas,
-  ObterPessoaJuridicaPorId,
-  AtualizarPessoaJuridicaPorId,
-  DeletarPessoaJuridicaPorId,
-} from "../controllers/newClienteJuridica";
-import {
   CadastrarImovel,
   ObterTodosImoveis,
   ObterImovelPorId,
@@ -36,26 +29,23 @@ import {
   loginUser,
   updateUser,
   deleteUser,
-} from "../controllers/Auth/AuthOrm";
-import { inviteAdmin } from "../controllers/Auth/AuthOrm";
+} from "../controllers/auth/AuthOrm";
+import { inviteAdmin } from "../controllers/auth/AuthOrm";
 import { isAuthenticated } from "../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
+import fisica from "../routes/pessoas/fisica"
+import juridica from "../routes/pessoas/juridica"
+import empresa from "../routes/empresa/empresa"
+import fiador from "../routes/pessoas/fiador"
 
 const router = express.Router();
 
-// Clientes
-router.post("/cadastrar-nova-pessoa-fisica", CadastrarPessoa);
-router.get("/obter-novas-pessoas", isAuthenticated ,isAdmin, ObterTodasPessoas);
-router.get("/pessoa/:id",  ObterPessoaPorId);
-router.delete("/pessoa-delete/:id", isAuthenticated ,isAdmin,  DeletarPessoaPorId);
-router.patch("/pessoa-patch/:id", isAuthenticated, isAdminOuUser, AtualizarPessoaPorId);
+router.use("/", fisica);
+router.use("/", juridica)
+//router.use("/", fiador)
 
-//Juridica
-router.post("/cadastrar-nova-pessoa-juridica",  CadastrarPessoaJuridica);
-router.get("/obter-novas-pessoas-juridica",  ObterTodasPessoasJuridicas);
-router.get("/pessoa-juridica/:id", ObterPessoaJuridicaPorId);
-router.delete("/pessoa-juridica-delete/:id",DeletarPessoaJuridicaPorId);
-router.patch("/pessoa-juridica-patch/:id",  AtualizarPessoaJuridicaPorId);
+router.use("/", empresa)
+
 
 // Rotas para Imóveis
 router.post("/cadastro-imovel", isAuthenticated, isAdminOuUser, CadastrarImovel);
