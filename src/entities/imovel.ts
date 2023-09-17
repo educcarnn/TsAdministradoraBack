@@ -95,8 +95,16 @@ export class RegistroImovel {
   @Column("text", { array: true, nullable: true })
   caracteristicas_condominio: string[];
 
+
+  @Column("jsonb", { nullable: true })
+  ads: {
+    title: string;
+    description: string;
+  };
+
+
   @Column("text", { array: true, nullable: true })
-  fotos: string[];
+  docs: string[];
 
 
   @OneToMany(() => ProprietarioImovel, pi => pi.registroImovel)

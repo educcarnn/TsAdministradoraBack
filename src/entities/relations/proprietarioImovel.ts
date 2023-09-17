@@ -5,7 +5,7 @@ import {
     Column,
     JoinColumn
   } from 'typeorm';
-import { Pessoa } from '../pessoaFisica';
+import { PessoaFisica } from '../pessoaFisica';
 import { RegistroImovel } from '../imovel';
   
   @Entity()
@@ -13,9 +13,9 @@ import { RegistroImovel } from '../imovel';
       @PrimaryGeneratedColumn()
       id: number;
   
-      @ManyToOne(() => Pessoa, pessoa => pessoa.imoveisRelacionados)
+      @ManyToOne(() => PessoaFisica, PessoaFisica => PessoaFisica.imoveisRelacionados)
       @JoinColumn({ name: 'pessoaId' }) 
-      pessoa: Pessoa;
+      pessoa: PessoaFisica;
       
       @ManyToOne(() => RegistroImovel, registroImovel => registroImovel.imoveisProprietarios)
       @JoinColumn({ name: 'registroImovelId' })
@@ -24,4 +24,3 @@ import { RegistroImovel } from '../imovel';
       @Column({ type: 'float' })
       percentualPropriedade: number;
   }
-  

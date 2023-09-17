@@ -5,7 +5,7 @@ import {
     ManyToOne,
   } from "typeorm";
   import { Contrato } from "../contrato";
-  import { Pessoa } from "../pessoaFisica";
+  import { PessoaFisica } from "../pessoaFisica";
   
   @Entity()
   export class ContratoProprietario {
@@ -18,7 +18,6 @@ import {
     @ManyToOne(() => Contrato, contrato => contrato.proprietarioRelacoes)
     contrato: Contrato;
   
-    @ManyToOne(() => Pessoa, pessoa => pessoa.contratoProprietarioRelacoes)
-    proprietario: Pessoa;
+    @ManyToOne(() => PessoaFisica, PessoaFisica => PessoaFisica.contratoProprietarioRelacoes)
+    proprietario: PessoaFisica;
   }
-  

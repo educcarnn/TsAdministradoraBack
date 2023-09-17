@@ -1,14 +1,14 @@
 import { Repository } from "typeorm";
 import { RegistroImovel } from "../entities/imovel";
-import { Pessoa } from "../entities/pessoaFisica";
+import { PessoaFisica } from "../entities/pessoaFisica";
 import { AppDataSource } from "../data-source";
 import { ProprietarioImovel } from "../entities/relations/proprietarioImovel";
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
-AppDataSource.getRepository(Pessoa);
+AppDataSource.getRepository(PessoaFisica);
 
-const pessoaRepository = AppDataSource.getRepository(Pessoa);
+const pessoaRepository = AppDataSource.getRepository(PessoaFisica);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
 const proprietarioImovelRepository =
   AppDataSource.getRepository(ProprietarioImovel);

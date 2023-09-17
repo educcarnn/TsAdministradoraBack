@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { Pessoa } from '../entities/pessoaFisica';
+import { PessoaFisica } from '../entities/pessoaFisica';
 import { cadastrarPessoa, obterTodasPessoas, obterPessoaPorId, deletarPessoaPorId, atualizarPessoaPorId} from '../services/pessoaFisica';
 import { requeryPessoas } from '../services/pessoaFisica';
 
 export const CadastrarPessoa = async (req: Request, res: Response): Promise<Response> => {
-  const data: Pessoa = req.body;
+  const data: PessoaFisica = req.body;
 
   try {
     await cadastrarPessoa(data);
@@ -59,7 +59,7 @@ export const DeletarPessoaPorId = async (req: Request, res: Response): Promise<R
 
 export const AtualizarPessoaPorId = async (req: Request, res: Response): Promise<Response> => {
   const id: number = Number(req.params.id);
-  const data: Pessoa = req.body;
+  const data: PessoaFisica = req.body;
 
   try {
     await atualizarPessoaPorId(id, data);

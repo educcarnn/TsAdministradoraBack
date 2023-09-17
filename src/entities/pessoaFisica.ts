@@ -4,25 +4,19 @@ import {
   Column,
   OneToOne,
   OneToMany,
-  ManyToMany,
-  JoinTable,
+  JoinColumn,
 } from "typeorm";
 import { RegistroImovel } from "./imovel";
 import { Contrato } from "./contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 import { ContratoInquilino } from "./relations/contratoInquilino";
 import { ContratoProprietario } from "./relations/contratoProprietario";
+import { PessoaIntermediaria } from "./pessoas/pessoa";
 
 @Entity()
-export class Pessoa {
+export class PessoaFisica {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  tipo: string;
-
-  @Column("text", { array: true, default: () => "ARRAY[]::text[]" })
-  funcao: string[];
 
   @Column()
   nome: string;
@@ -52,15 +46,6 @@ export class Pessoa {
   nacionalidade: string;
 
   @Column({ nullable: true })
-  telefoneFixo: string;
-
-  @Column()
-  telefoneCelular: string;
-
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
   password?: string;
 
   @Column({
@@ -74,32 +59,12 @@ export class Pessoa {
   @Column()
   genero: string;
 
-  @Column("jsonb", { nullable: true })
-  endereco: {
-    cep: string;
-    endereco: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-  };
-
-  @Column("jsonb", { nullable: true })
-  dadoBancarios: {
-    chavePix: string;
-    banco: string;
-    agencia: string;
-    conta: string;
-  };
-
-  @Column("jsonb", { nullable: true })
-  anexos: string[];
+  // Relação OneToOne com a tabela intermediária
+  @OneToOne(() => PessoaIntermediaria)
+  @JoinColumn()  // Esta anotação indica que a entidade Pessoa possui a chave estrangeira
+  dadosComuns: PessoaIntermediaria;  // Este campo contém todas as informações comuns
 
   /*RELACIONAMENTOS*/
-  @Column("jsonb", { nullable: true })
-  lista_email: string[];
-
-  @Column("jsonb", { nullable: true })
-  lista_repasse: string[];
   
   @OneToMany(() => ProprietarioImovel, pi => pi.pessoa)
   imoveisRelacionados: ProprietarioImovel[];
