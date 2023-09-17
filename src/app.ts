@@ -7,6 +7,7 @@ const app = express();
 const origensPermitidas = [
     'http://localhost:3000',
     'http://localhost:3001',
+    'http://localhost:3002',
     'http://tsadministradora.onrender.com',
     'https://tsadministradora.onrender.com',
     'https://tsadministradora.com.br',
