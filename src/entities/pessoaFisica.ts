@@ -62,7 +62,7 @@ export class Pessoa {
     nullable: true,
   })
   role?: string;
-  
+
   @Column()
   genero: string;
 

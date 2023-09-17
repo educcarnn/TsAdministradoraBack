@@ -7,7 +7,7 @@
     "dev": "tsnd --cls --rs src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "yarn run dev",
+    "start": "node dist/server.js",
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "keywords": [],

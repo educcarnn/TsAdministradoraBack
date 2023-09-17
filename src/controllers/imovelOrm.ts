@@ -9,7 +9,6 @@ import {
 } from '../services/imovel';
 import { getImoveisComPessoas } from '../services/imovel';
 
-
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const data: RegistroImovel = req.body as RegistroImovel;
 
@@ -24,6 +23,7 @@ export const CadastrarImovel = async (req: Request, res: Response): Promise<Resp
     return res.status(500).json({ message: 'Erro ao cadastrar Imóvel' });
   }
 };
+
 
 export const ObterTodosImoveis = async (_req: Request, res: Response): Promise<Response> => {
   try {

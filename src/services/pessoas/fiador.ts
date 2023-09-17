@@ -5,7 +5,7 @@ import { RegistroImovel } from "../../entities/imovel";
 import { AppDataSource } from "../../data-source";
 
 const FiadorRepository: Repository<Fiador> = AppDataSource.getRepository(Fiador);
-const PessoaFisicaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa);
+const PessoaFisicaRepository: Repository<Pessoa> = AppDataSource.getRepository(PessoaFisica);
 const RegistroImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
 
 export const cadastrarFiador = async (

@@ -4,7 +4,6 @@ import { Pessoa } from "../entities/pessoaFisica";
 import { AppDataSource } from "../data-source";
 import { ProprietarioImovel } from "../entities/relations/proprietarioImovel";
 
-
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
 AppDataSource.getRepository(Pessoa);
@@ -36,16 +35,7 @@ export const cadastrarImovel = async (
     await proprietarioImovelRepository.save(proprietarioImovel);
   }
 
-  // Crie um novo imóvel e associe a pessoa como proprietário
-  const novoImovel = imovelRepository.create({
-    ...imovelData,
-    proprietario: Pessoa
-  });
-
-  // Salve o novo imóvel no banco de dados
-  await imovelRepository.save(novoImovel);
-
-  return novoImovel;
+  return savedImovel;
 };
 
 export const getImoveisComPessoas = async () => {

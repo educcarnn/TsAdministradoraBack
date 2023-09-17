@@ -10,7 +10,6 @@ import {
 } from "typeorm";
 import { Empresa } from "./empresa";
 import { Contrato } from "./contrato";
-import { PessoaJuridica } from "./pessoaJuridica";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 
 @Entity()
