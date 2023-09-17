@@ -59,11 +59,13 @@ export class PessoaFisica {
   @Column()
   genero: string;
 
-  // Relação OneToOne com a tabela intermediária
-  @OneToOne(() => PessoaIntermediaria)
-  @JoinColumn()  // Esta anotação indica que a entidade Pessoa possui a chave estrangeira
-  dadosComuns: PessoaIntermediaria;  // Este campo contém todas as informações comuns
+  @Column()  // Defina a coluna da chave estrangeira
+    dadosComunsId: number;
 
+    @OneToOne(() => PessoaIntermediaria)
+    @JoinColumn({ name: "dadosComunsId" })  // Referencie a coluna aqui
+    dadosComuns: PessoaIntermediaria;
+  
   /*RELACIONAMENTOS*/
   
   @OneToMany(() => ProprietarioImovel, pi => pi.pessoa)

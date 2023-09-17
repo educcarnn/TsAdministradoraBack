@@ -8,7 +8,7 @@ import {
   JoinColumn,
   OneToMany
 } from "typeorm";
-import { Pessoa } from "./pessoaFisica";
+
 import { Contrato } from "./contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 

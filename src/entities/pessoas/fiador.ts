@@ -22,9 +22,4 @@ export class Fiador {
     @ManyToOne(() => RegistroImovel)
     imovelComoFianca: RegistroImovel;
 
-    // Adicione esta parte se você tiver uma entidade Inquilino
-    // @ManyToOne(() => Inquilino)
-    // inquilino: Inquilino;
-
-    // ... outros campos necessários
 }

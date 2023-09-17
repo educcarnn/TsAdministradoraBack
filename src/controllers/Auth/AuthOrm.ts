@@ -4,7 +4,7 @@ import * as PessoaService from "../../services/pessoaFisica"; // Ajuste o caminh
 import * as jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 import { createInvite } from "../../services/user";
-import { Pessoa } from "../../entities/pessoaFisica";
+import { PessoaFisica } from "../../entities/pessoaFisica";
 import { User } from "../../entities/user";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
@@ -62,7 +62,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    let user: User | Pessoa | null | undefined;
+    let user: User | PessoaFisica | null | undefined;
 
       user = await UserService.findUserByEmail(req.body.email);
 

@@ -7,7 +7,8 @@ import {
   JoinTable,
   ManyToMany,
 } from "typeorm";
-import { Pessoa } from "./pessoaFisica";
+
+
 import { PessoaJuridica } from "./pessoaJuridica";
 import { RegistroImovel } from "./imovel";
 import { ContratoInquilino } from "./relations/contratoInquilino";
