@@ -5,47 +5,48 @@ import { RegistroImovel } from "../../entities/imovel";
 import { AppDataSource } from "../../data-source";
 
 const FiadorRepository: Repository<Fiador> = AppDataSource.getRepository(Fiador);
-const PessoaFisicaRepository: Repository<Pessoa> = AppDataSource.getRepository(PessoaFisica);
+const PessoaFisicaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa);
 const RegistroImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
 
 export const cadastrarFiador = async (
   fiadorData: Partial<Fiador>,
   pessoaFisicaId: number,
-  enderecoId: number,
   imovelComoFiancaId: number
 ): Promise<Fiador> => {
-  const pessoa = await PessoaFisicaRepository.findOne(Pessoa);
+  // Busca a pessoa pelo ID
+  const pessoa = await PessoaFisicaRepository.findOne({ where: { id: pessoaFisicaId } });
   if (!pessoa) {
     throw new Error(`Pessoa com ID ${pessoaFisicaId} não encontrada`);
   }
 
-  const endereco = await RegistroImovelRepository.findOne(enderecoId);
-  if (!endereco) {
-    throw new Error(`Endereço com ID ${enderecoId} não encontrado`);
-  }
-
-  const imovelFianca = await RegistroImovelRepository.findOne(imovelComoFiancaId);
+  // Busca o imóvel pelo ID
+  const imovelFianca = await RegistroImovelRepository.findOne({ where: { id: imovelComoFiancaId } });
   if (!imovelFianca) {
     throw new Error(`Imóvel com ID ${imovelComoFiancaId} não encontrado`);
   }
 
+  // Configuração do fiador
   const fiador = new Fiador();
   fiador.pessoa = pessoa;
-  fiador.endereco = endereco;
   fiador.imovelComoFianca = imovelFianca;
-  // ... (preencha outros campos conforme necessário)
   
+  // Salva o fiador e retorna
   return await FiadorRepository.save(fiador);
 };
 
 // Obter Fiador por ID
 export const obterFiadorPorId = async (id: number): Promise<Fiador | undefined> => {
-  return await FiadorRepository.findOne(id, { relations: ["pessoa", "endereco", "imovelComoFianca"] });
+  return await FiadorRepository.findOne({ 
+    where: { id: id },
+    relations: ["pessoa", "imovelComoFianca"] 
+  }) || undefined;
 };
+
 
 // Atualizar Fiador
 export const atualizarFiador = async (id: number, fiadorData: Partial<Fiador>): Promise<Fiador> => {
-  const fiadorExistente = await FiadorRepository.findOne(id);
+  const fiadorExistente = await FiadorRepository.findOne({ where: { id: id } });
+  
   if (!fiadorExistente) {
     throw new Error(`Fiador com ID ${id} não encontrado`);
   }
@@ -56,7 +57,7 @@ export const atualizarFiador = async (id: number, fiadorData: Partial<Fiador>): 
 
 // Deletar Fiador
 export const deletarFiador = async (id: number): Promise<void> => {
-  const fiadorExistente = await FiadorRepository.findOne(id);
+  const fiadorExistente = await FiadorRepository.findOne({ where: { id: id } });
   if (!fiadorExistente) {
     throw new Error(`Fiador com ID ${id} não encontrado`);
   }

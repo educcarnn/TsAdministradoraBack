@@ -29,8 +29,8 @@ import {
   loginUser,
   updateUser,
   deleteUser,
-} from "../controllers/auth/AuthOrm";
-import { inviteAdmin } from "../controllers/auth/AuthOrm";
+} from "../controllers/Auth/AuthOrm";
+import { inviteAdmin } from "../controllers/Auth/AuthOrm";
 import { isAuthenticated } from "../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
 import fisica from "../routes/pessoas/fisica"
@@ -42,7 +42,7 @@ const router = express.Router();
 
 router.use("/", fisica);
 router.use("/", juridica)
-//router.use("/", fiador)
+router.use("/", fiador)
 
 router.use("/", empresa)
 

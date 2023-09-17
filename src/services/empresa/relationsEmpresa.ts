@@ -12,7 +12,8 @@ export const adicionarPessoaAEmpresa = async (
   empresaId: number,
   pessoaData: Partial<Pessoa>
 ): Promise<Pessoa> => {
-  const empresa = await EmpresaRepository.findOne(empresaId);
+  const empresa = await EmpresaRepository.findOne({ where: { id: empresaId } });
+
   if (!empresa) throw new Error("Empresa não encontrada.");
 
   const novaPessoa = PessoaRepository.create(pessoaData);
@@ -25,9 +26,8 @@ export const removerPessoaDaEmpresa = async (
   empresaId: number,
   pessoaId: number
 ): Promise<void> => {
-  const empresa = await EmpresaRepository.findOne(empresaId, {
-    relations: ["pessoas"],
-  });
+  const empresa = await EmpresaRepository.findOne({ where: { id: empresaId } });
+
   if (!empresa) throw new Error("Empresa não encontrada.");
 
   const pessoaIndex = empresa.pessoas.findIndex((p) => p.id === pessoaId);

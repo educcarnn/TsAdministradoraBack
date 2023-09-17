@@ -25,7 +25,7 @@ export class Pessoa {
   nome: string;
 
   @OneToOne(() => Fiador, fiador => fiador.pessoa)
-  @JoinColumn() // Isso especifica que a coluna de chave estrangeira está nesta entidade.
+  @JoinColumn() 
   fiador: Fiador;
   
   @Column()
