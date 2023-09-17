@@ -81,7 +81,6 @@ export class Pessoa {
   @OneToMany(() => ProprietarioImovel, pi => pi.pessoa)
   imoveisRelacionados: ProprietarioImovel[];
 
-<<<<<<< HEAD
   // Relação com contratos onde a pessoa é proprietária
   @OneToMany(() => ContratoProprietario, contratoProprietario => contratoProprietario.proprietario)
   contratoProprietarioRelacoes: ContratoProprietario[];
@@ -90,12 +89,4 @@ export class Pessoa {
   @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.inquilino)
   contratoRelacoes: ContratoInquilino[];
 
-=======
-  @OneToMany(() => Contrato, (contrato) => contrato.proprietario)
-  contratosProprietarios: Contrato[];
-
-  @OneToMany(() => Contrato, contrato => contrato.inquilino)
-  contratosInquilinos: Contrato[];
-  
->>>>>>> 208ca8ccfc7f4c5f21140c698f757f6f45c44fe8
 }

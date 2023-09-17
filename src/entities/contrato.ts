@@ -47,14 +47,9 @@ export class Contrato {
   };
 
   // RELACIONAMENTOS
-<<<<<<< HEAD
   @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.contrato)
   inquilinoRelacoes: ContratoInquilino[];
 
-=======
-  @ManyToOne(() => Pessoa, pessoa => pessoa.contratosInquilinos)
-inquilino: Pessoa;
->>>>>>> 208ca8ccfc7f4c5f21140c698f757f6f45c44fe8
   // Relação com o proprietário no contrato
   @OneToMany(() => ContratoProprietario, contratoProprietario => contratoProprietario.contrato)
   proprietarioRelacoes: ContratoProprietario[];

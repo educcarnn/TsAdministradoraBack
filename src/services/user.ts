@@ -3,15 +3,11 @@ import { AppDataSource } from "../data-source";
 import bcrypt from "bcrypt";
 import { isEmailInUse } from "../../src/utils/emailUtils";
 import { Pessoa } from "../entities/pessoaFisica";
-<<<<<<< HEAD
 import { PessoaRepository } from "./pessoas/pessoaFisica";
 import { PessoaIntermediariaRepository } from "./pessoas/pessoaFisica";
-=======
-import { Invite } from '../entities/invite';
->>>>>>> 208ca8ccfc7f4c5f21140c698f757f6f45c44fe8
 
 export const userRepository = AppDataSource.getRepository(User);
-export const inviteRepository = AppDataSource.getRepository(Invite)
+
 export const createUser = async (userData: Partial<User>): Promise<User> => {
   if (!userData.email) {
     throw new Error("E-mail não fornecido.");
@@ -104,7 +100,6 @@ export const deleteUserById = async (id: number): Promise<void> => {
   await userRepository.remove(user);
 };
 
-<<<<<<< HEAD
 export const createInvite = async (userData: any) => {
   const userRepository = AppDataSource.getRepository(User);
 
@@ -117,19 +112,3 @@ export const createInvite = async (userData: any) => {
 
   return user;
 };
-=======
-
-
-
-export const createInvite = async (inviteData: any) => {
-    const inviteRepository = AppDataSource.getRepository(Invite); // Mude para o repositório correto
-
-    const invite = new Invite();
-    invite.email = inviteData.email;
-    invite.role = inviteData.role || "user";
- 
-    await inviteRepository.save(invite);
-    
-    return invite;
-}
->>>>>>> 208ca8ccfc7f4c5f21140c698f757f6f45c44fe8
