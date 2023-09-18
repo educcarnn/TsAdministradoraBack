@@ -9,10 +9,10 @@ import {
 } from "typeorm";
 
 
-import { PessoaJuridica } from "./pessoaJuridica";
-import { RegistroImovel } from "./imovel";
-import { ContratoInquilino } from "./relations/contratoInquilino";
-import { ContratoProprietario } from "./relations/contratoProprietario";
+import { PessoaJuridica } from "../pessoaJuridica";
+import { RegistroImovel } from "../imovel";
+import { ContratoInquilino } from "../relations/contratoInquilino";
+import { ContratoProprietario } from "../relations/contratoProprietario";
 
 @Entity()
 export class Contrato {

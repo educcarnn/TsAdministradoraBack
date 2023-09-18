@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Empresa } from '../../entities/empresa';
+import { Empresa } from '../../entities/empresa/empresa';
 import {
   criarEmpresa,
   obterTodasEmpresas,

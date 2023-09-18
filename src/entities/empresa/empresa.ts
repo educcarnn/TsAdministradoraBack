@@ -10,10 +10,10 @@ import {
   JoinTable
 } from "typeorm";
 
-import { Pessoa } from "./pessoaFisica";
-import { User } from "./user";
+import { Pessoa } from "../pessoaFisica";
+import { User } from "../user";
 
-import { PessoaJuridica } from "./pessoaJuridica";
+import { PessoaJuridica } from "../pessoaJuridica";
 @Entity("empresas")
 export class Empresa {
   @PrimaryGeneratedColumn()

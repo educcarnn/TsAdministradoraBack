@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Contrato } from "../../entities/contrato"; // Substitua [path_to_contrato_file] pelo caminho correto do arquivo.
+import { Contrato } from "../contratos/contrato"; // Substitua [path_to_contrato_file] pelo caminho correto do arquivo.
 import { Pessoa } from "../pessoaFisica";
 
 

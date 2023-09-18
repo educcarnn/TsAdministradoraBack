@@ -8,8 +8,8 @@ import {
   JoinColumn,
   OneToMany,
 } from "typeorm";
-import { Empresa } from "./empresa";
-import { Contrato } from "./contrato";
+import { Empresa } from "./empresa/empresa";
+import { Contrato } from "./contratos/contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 
 @Entity()

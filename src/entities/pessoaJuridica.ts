@@ -8,10 +8,10 @@ import {
   OneToMany,
   ManyToOne
 } from "typeorm";
-import { Contrato } from "./contrato";
+import { Contrato } from "./contratos/contrato";
 import { RegistroImovel } from "./imovel";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
-import { Empresa } from "./empresa";
+import { Empresa } from "./empresa/empresa";
 @Entity()
 export class PessoaJuridica {
   @PrimaryGeneratedColumn()

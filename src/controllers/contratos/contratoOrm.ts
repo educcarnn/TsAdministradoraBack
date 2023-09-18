@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Contrato } from '../../entities/contrato'; // Certifique-se de importar a entidade correta
+import { Contrato } from '../../entities/contratos/contrato'; // Certifique-se de importar a entidade correta
 import {
   cadastrarContrato,
   obterTodosContratos,

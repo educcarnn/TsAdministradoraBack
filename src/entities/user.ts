@@ -2,12 +2,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
-  ManyToMany,
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { Empresa } from "./empresa";
+import { Empresa } from "./empresa/empresa";
 import { IsEmail } from "class-validator";
 
 @Entity()

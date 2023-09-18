@@ -4,9 +4,11 @@ import {
   Column,
   ManyToOne,
   OneToOne,
+  JoinColumn
 } from "typeorm";
 import { Pessoa } from "../pessoaFisica";
 import { RegistroImovel } from "../imovel";
+
 
 @Entity()
 export class Fiador {
@@ -16,7 +18,7 @@ export class Fiador {
   @Column()
   numeroMatriculaRGI: string;
 
-  @OneToOne(() => Pessoa)
+  @ManyToOne(() => Pessoa, pessoa => pessoa.fiador)
   pessoa: Pessoa;
 
   @ManyToOne(() => RegistroImovel)

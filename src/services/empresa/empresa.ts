@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Empresa } from "../../entities/empresa";
+import { Empresa } from "../../entities/empresa/empresa";
 import { AppDataSource } from "../../data-source";
 import { Pessoa } from "../../entities/pessoaFisica";
 
