@@ -8,7 +8,7 @@ import {
   atualizarImovelPorId
 } from '../services/imovel';
 import { getImoveisComPessoas } from '../services/imovel';
-
+import { getImovelComProprietario } from '../services/imovel';
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const data: RegistroImovel = req.body as RegistroImovel;
 
@@ -40,8 +40,7 @@ export const ObterImovelPorId = async (req: Request, res: Response): Promise<Res
   const { id } = req.params;
 
   try {
-    await getImoveisComPessoas();
-    const imovel = await obterImovelPorId(Number(id));
+    const imovel = await getImovelComProprietario(Number(id));
 
     if (!imovel) {
       return res.status(404).json({ message: 'Imóvel não encontrado' });
@@ -53,6 +52,7 @@ export const ObterImovelPorId = async (req: Request, res: Response): Promise<Res
     return res.status(500).json({ message: 'Erro ao obter Imóvel por ID' });
   }
 };
+
 
 export const ExcluirImovel = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;

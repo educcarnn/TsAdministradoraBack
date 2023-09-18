@@ -38,6 +38,20 @@ export const cadastrarImovel = async (
   return savedImovel;
 };
 
+export const getImovelComProprietario = async (imovelId: number) => {
+  const imovelComProprietario = await imovelRepository
+    .createQueryBuilder("imovel")
+    .where("imovel.id = :imovelId", { imovelId })
+    .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
+    .leftJoin("proprietarioImovel.pessoa", "pessoa")
+    .addSelect(["pessoa.nome", "pessoa.id"])
+    .leftJoinAndSelect("imovel.contratos", "contrato")
+    .getOne(); // Porque agora estamos procurando por um imóvel específico
+
+  return imovelComProprietario;
+};
+
+
 export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository
     .createQueryBuilder("imovel")
