@@ -1,9 +1,9 @@
 /*
-import multer from 'multer';
+import multer, { Options } from 'multer';
 
 const storage = multer.memoryStorage();  // Usamos o armazenamento em memória para uploads temporários antes de enviar para o S3
 
-const fileFilter = (req, file, cb) => {
+const fileFilter: Options['fileFilter'] = (req, file, cb) => {
     const allowedFileTypes = ['image/jpeg', 'image/png', 'application/pdf'];  // Você pode adicionar mais tipos de arquivo conforme necessário
     if (allowedFileTypes.includes(file.mimetype)) {
         cb(null, true);

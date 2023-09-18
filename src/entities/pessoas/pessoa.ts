@@ -36,7 +36,7 @@ import {
       bairro: string;
       cidade: string;
       estado: string;
-    };  // comum entre ambas
+    };  
   
     @Column("jsonb", { nullable: true })
     dadoBancarios: {
