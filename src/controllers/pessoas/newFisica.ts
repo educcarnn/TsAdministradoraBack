@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pessoa } from '../../entities/pessoaFisica';
 import { cadastrarPessoa, obterPessoaPorId, deletarPessoaPorId, atualizarPessoaPorId} from '../../services/pessoas/pessoaFisica';
 import { requeryPessoas } from '../../services/pessoas/pessoaFisica';
+import { requeryPessoaPorId } from '../../services/pessoas/pessoaFisica';
 
 export const CadastrarPessoa = async (req: Request, res: Response): Promise<Response> => {
   const data: Pessoa = req.body;
@@ -35,7 +36,7 @@ export const ObterPessoaPorId = async (req: Request, res: Response): Promise<Res
   const id: number = Number(req.params.id);
 
   try {
-    const pessoa = await obterPessoaPorId(id);
+    const pessoa = await requeryPessoaPorId(id);  // Use requeryPessoaPorId aqui
     if (pessoa) {
       return res.status(200).json(pessoa);
     } else {
@@ -46,6 +47,7 @@ export const ObterPessoaPorId = async (req: Request, res: Response): Promise<Res
     return res.status(500).json({ message: 'Erro ao obter Pessoa por ID' });
   }
 };
+
 
 
 export const DeletarPessoaPorId = async (req: Request, res: Response): Promise<Response> => {

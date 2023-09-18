@@ -110,6 +110,19 @@ export const cadastrarPessoa = async (
   return novaPessoa;
 };
 
+export const requeryPessoaPorId = async (id: number) => {
+  const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
+    .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
+    .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
+    .addSelect(["registroImovel.caracteristicas"])
+    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
+    .where("pessoa.id = :id", { id }); // Adicione esta linha para filtrar por ID
+
+  const result = await queryBuilder.getOne(); // Use getOne ao invés de getMany já que você está buscando uma única pessoa
+
+  return result;
+};
+
 export const requeryPessoas = async () => {
   const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
     .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
