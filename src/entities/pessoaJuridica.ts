@@ -6,11 +6,12 @@ import {
   JoinColumn,
   ManyToMany,
   OneToMany,
+  ManyToOne
 } from "typeorm";
-import { Contrato } from "./contrato";
+import { Contrato } from "./contratos/contrato";
 import { RegistroImovel } from "./imovel";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
-
+import { Empresa } from "./empresa/empresa";
 @Entity()
 export class PessoaJuridica {
   @PrimaryGeneratedColumn()
@@ -31,13 +32,22 @@ export class PessoaJuridica {
   @Column()
   novoSocioAdministrador: string;
 
+  @Column({ nullable: true })
+  password?: string;
+
+  @Column() // Defina a coluna da chave estrangeira
+  dadosComunsId: number;
+
+  @ManyToOne(() => Empresa, (empresa) => empresa.pessoaJuridicas)
+  empresa: Empresa;
+  
 
   @OneToOne(() => PessoaIntermediaria)
-  @JoinColumn()  
-  dadosComuns: PessoaIntermediaria;  // Este campo contém todas as informações comuns
+  @JoinColumn()
+  dadosComuns: PessoaIntermediaria; // Este campo contém todas as informações comuns
 
   /*RELACIONAMENTOS*/
-  
+
   // Seus outros relacionamentos podem permanecer aqui
 
   /*

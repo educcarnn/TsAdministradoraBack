@@ -7,17 +7,12 @@ import {
   atualizarFiador,
 } from "../../services/pessoas/fiador";
 
-
 export const CadastrarFiador = async (req: Request, res: Response): Promise<Response> => {
-  const { pessoaFisicaId, imovelComoFiancaId, ...fiadorData } = req.body;
-
-  if (!pessoaFisicaId || !imovelComoFiancaId) {
-    return res.status(400).json({ message: 'Os IDs da pessoa física e do imóvel são obrigatórios!' });
-  }
+  const { pessoaId, imovelId } = req.body;
 
   try {
-    const fiadorCadastrado = await cadastrarFiador(fiadorData, pessoaFisicaId, imovelComoFiancaId);
-    return res.status(201).json({ message: 'Fiador cadastrado com sucesso!', fiadorCadastrado });
+    await cadastrarFiador(req.body, pessoaId, imovelId);
+    return res.status(201).json({ message: 'Fiador cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Fiador:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Fiador' });

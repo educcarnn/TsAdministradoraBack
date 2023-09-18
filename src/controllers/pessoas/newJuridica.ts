@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { PessoaJuridica } from '../entities/pessoaJuridica';
-import { cadastrarPessoaJuridica, obterTodasPessoasJuridicas, atualizarPessoaJuridicaPorId, deletarPessoaJuridicaPorId, obterPessoaJuridicaPorId} from '../services/pessoas/pessoaJuridica';
+import { PessoaJuridica } from '../../entities/pessoaJuridica';
+import { cadastrarPessoaJuridica, obterTodasPessoasJuridicas, atualizarPessoaJuridicaPorId, deletarPessoaJuridicaPorId, obterPessoaJuridicaPorId} from '../../services/pessoas/pessoaJuridica';
+import { requeryPessoasJuridicas } from '../../services/pessoas/pessoaJuridica';
 
 export const CadastrarPessoaJuridica = async (req: Request, res: Response): Promise<Response> => {
   const data: PessoaJuridica = req.body;
@@ -16,7 +17,7 @@ export const CadastrarPessoaJuridica = async (req: Request, res: Response): Prom
 
 export const ObterTodasPessoasJuridicas = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const pessoasJuridicas = await obterTodasPessoasJuridicas();
+    const pessoasJuridicas = await requeryPessoasJuridicas();
     return res.status(200).json(pessoasJuridicas);
   } catch (error) {
     console.error('Erro ao obter todas as Pessoas Jurídicas:', error);

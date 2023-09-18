@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Empresa } from "../../entities/empresa";
+import { Empresa } from "../../entities/empresa/empresa";
 import { AppDataSource } from "../../data-source";
 import { Pessoa } from "../../entities/pessoaFisica";
 
@@ -13,6 +13,24 @@ export const criarEmpresa = async (
 ): Promise<Empresa> => {
   const novaEmpresa = EmpresaRepository.create(empresaData);
   return await EmpresaRepository.save(novaEmpresa);
+};
+
+export const requeryEmpresas = async () => {
+  const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
+    .select(["empresa.id", "empresa.nome"])
+    // Junta com a tabela Pessoa
+    .leftJoinAndSelect("empresa.pessoas", "pessoa")
+    .addSelect(["pessoa.id", "pessoa.nome"])
+    // Junta com a tabela PessoaJuridica
+    .leftJoinAndSelect("empresa.pessoaJuridicas", "pessoaJuridica")
+    .addSelect(["pessoaJuridica.id", "pessoaJuridica.razaoSocial", "pessoaJuridica.nomeFantasia"])
+    // Junta com a tabela User (administradores - agora será um array, não apenas uma entidade)
+    .leftJoinAndSelect("empresa.administradores", "administrador")
+    .addSelect(["administrador.id", "administrador.nome"]); // Suponho que o User tem um campo chamado "nome". Troque conforme a estrutura real de seu modelo User.
+
+  const result = await queryBuilder.getMany();
+
+  return result;
 };
 
 export const obterTodasEmpresas = async (): Promise<Empresa[]> => {

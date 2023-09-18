@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { Contrato } from '../entities/contrato'; // Certifique-se de importar a entidade correta
+import { Contrato } from '../../entities/contratos/contrato'; // Certifique-se de importar a entidade correta
 import {
   cadastrarContrato,
   obterTodosContratos,
   obterContratoPorId,
   deletarContratoPorId,
   atualizarContratoPorId
-} from '../services/contrato'; // Certifique-se de importar os serviços corretos
-import { getContratos } from '../services/contrato';
+} from '../../services/contratos/contrato'; // Certifique-se de importar os serviços corretos
+import { getContratos } from '../../services/contratos/contrato';
 
 
 export const CadastrarContrato = async (req: Request, res: Response): Promise<Response> => {

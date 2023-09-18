@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Contrato } from "../contrato";
+import { Contrato } from "../contratos/contrato";
 import { Pessoa } from "../pessoaFisica";
 
 @Entity()

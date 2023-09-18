@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Empresa } from '../../entities/empresa';
+import { Empresa } from '../../entities/empresa/empresa';
 import {
   criarEmpresa,
   obterTodasEmpresas,
@@ -7,6 +7,7 @@ import {
   deletarEmpresaPorId,
   atualizarEmpresaPorId
 } from '../../services/empresa/empresa'; // Atualize o caminho do import para o arquivo de serviço
+import { requeryEmpresas } from '../../services/empresa/empresa';
 
 export const CadastrarEmpresa = async (req: Request, res: Response): Promise<Response> => {
   const data: Empresa = req.body as Empresa;
@@ -22,7 +23,7 @@ export const CadastrarEmpresa = async (req: Request, res: Response): Promise<Res
 
 export const ObterTodasEmpresas = async (_req: Request, res: Response): Promise<Response> => {
   try {
-    const empresas = await obterTodasEmpresas();
+    const empresas = await requeryEmpresas();
     return res.status(200).json(empresas);
   } catch (error) {
     console.error('Erro ao obter todas as Empresas:', error);

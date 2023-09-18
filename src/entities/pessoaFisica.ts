@@ -8,12 +8,12 @@ import {
   JoinColumn,
 } from "typeorm";
 import { RegistroImovel } from "./imovel";
-import { Contrato } from "./contrato";
+import { Contrato } from "./contratos/contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 import { ContratoInquilino } from "./relations/contratoInquilino";
 import { ContratoProprietario } from "./relations/contratoProprietario";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
-import { Empresa } from "./empresa";
+import { Empresa } from "./empresa/empresa";
 import { Fiador } from "./pessoas/fiador";
 
 @Entity()
@@ -23,11 +23,9 @@ export class Pessoa {
 
   @Column()
   nome: string;
+  @OneToMany(() => Fiador, fiador => fiador.pessoa)
+  fiador: Fiador[];
 
-  @OneToOne(() => Fiador, fiador => fiador.pessoa)
-  @JoinColumn() 
-  fiador: Fiador;
-  
   @Column()
   cpf: string;
 

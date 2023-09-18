@@ -5,7 +5,7 @@ import {
   DeletarPessoaPorId,
   ObterPessoaPorId,
   ObterTodasPessoas,
-} from "../controllers/newCliente";
+} from "../controllers/pessoas/newFisica";
 import {
   CadastrarImovel,
   ObterTodosImoveis,
@@ -19,24 +19,25 @@ import {
   ObterContratoPorId,
   ExcluirContrato,
   AtualizarContrato,
-} from "../controllers/contratoOrm";
+} from "../controllers/contratos/contratoOrm";
 import {
   atualizarContratoPorId,
   obterContratoPorId,
-} from "../services/contrato";
+} from "../services/contratos/contrato";
 import {
   registerUser,
   loginUser,
   updateUser,
   deleteUser,
-} from "../controllers/Auth/AuthOrm";
-import { inviteAdmin } from "../controllers/Auth/AuthOrm";
+} from "../controllers/user/authOrm";
+import { inviteAdmin } from "../controllers/user/authOrm";
 import { isAuthenticated } from "../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
 import fisica from "../routes/pessoas/fisica"
 import juridica from "../routes/pessoas/juridica"
 import empresa from "../routes/empresa/empresa"
 import fiador from "../routes/pessoas/fiador"
+import relationsempresa from "../routes/empresa/relationsEmpresa"
 
 const router = express.Router();
 
@@ -45,6 +46,7 @@ router.use("/", juridica)
 router.use("/", fiador)
 
 router.use("/", empresa)
+router.use("/", relationsempresa)
 
 
 // Rotas para Imóveis

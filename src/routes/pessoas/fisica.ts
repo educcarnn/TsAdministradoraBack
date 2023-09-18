@@ -5,7 +5,7 @@ import {
     ObterPessoaPorId,
     DeletarPessoaPorId,
     AtualizarPessoaPorId,
-} from "../../controllers/newCliente";
+} from "../../controllers/pessoas/newFisica";
 import { isAuthenticated } from "../../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../../middlewares/ValidationStatusUser";
 
