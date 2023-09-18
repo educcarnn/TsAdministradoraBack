@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import * as UserService from "../../services/user";
+import * as UserService from "../../services/user/user";
 import * as PessoaService from "../../services/pessoas/pessoaFisica"; // Ajuste o caminho conforme necessário
 import * as jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
-import { createInvite } from "../../services/user";
+import { createInvite } from "../../services/user/user";
 import { Pessoa } from "../../entities/pessoaFisica";
 import { User } from "../../entities/user";
 
@@ -58,7 +58,6 @@ export const registerUser = async (req: Request, res: Response) => {
 };
 
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 export const loginUser = async (req: Request, res: Response) => {
   try {

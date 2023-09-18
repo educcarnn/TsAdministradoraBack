@@ -36,7 +36,7 @@ export const cadastrarPessoa = async (
     pessoaData.dadosComuns
   );
 
-  // Em seguida, associamos a entidade intermediária à entidade Pessoa
+ 
   pessoaData.dadosComuns = dadosComunsCriados;
 
   const novaPessoa = PessoaRepository.create(pessoaData);
@@ -50,16 +50,18 @@ export const requeryPessoas = async () => {
   const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
     .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
-    .addSelect(["registroImovel.caracteristicas"]); // Seleciona as características do imóvel
+    .addSelect(["registroImovel.caracteristicas"]) // Seleciona as características do imóvel
+    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria"); // Junta a tabela Pessoa com a PessoaIntermediaria através do campo 'dadosComuns'
 
   const result = await queryBuilder.getMany();
 
   return result;
 };
+
 export const findPessoaByEmail = async (
   email: string
 ): Promise<Pessoa | null> => {
-  // Primeiro, busca pelo e-mail na tabela intermediária
+ 
   const pessoaIntermediaria = await PessoaIntermediariaRepository.findOne({
     where: { email: email },
   });

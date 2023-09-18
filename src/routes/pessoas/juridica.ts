@@ -6,7 +6,7 @@ import {
   ObterPessoaJuridicaPorId,
   AtualizarPessoaJuridicaPorId,
   DeletarPessoaJuridicaPorId,
-} from "../../controllers/newClienteJuridica";
+} from "../../controllers/pessoas/newJuridica";
 import { isAuthenticated } from "../../middlewares/isAuth";
 import { isAdmin, isAdminOuUser } from "../../middlewares/ValidationStatusUser";
 

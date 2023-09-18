@@ -1,4 +1,4 @@
-import { userRepository } from '../services/user';
+import { userRepository } from '../services/user/user';
 import { PessoaIntermediariaRepository } from '../services/pessoas/pessoaFisica';
 
 export const isEmailInUse = async (email: string): Promise<boolean> => {

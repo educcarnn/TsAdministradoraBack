@@ -1,10 +1,10 @@
-import { User } from "../entities/user"; // Ajuste o caminho conforme necessário
-import { AppDataSource } from "../data-source";
+import { User } from "../../entities/user"; // Ajuste o caminho conforme necessário
+import { AppDataSource } from "../../data-source";
 import bcrypt from "bcrypt";
-import { isEmailInUse } from "../../src/utils/emailUtils";
-import { Pessoa } from "../entities/pessoaFisica";
-import { PessoaRepository } from "./pessoas/pessoaFisica";
-import { PessoaIntermediariaRepository } from "./pessoas/pessoaFisica";
+import { isEmailInUse } from "../../utils/emailUtils";
+import { Pessoa } from "../../entities/pessoaFisica";
+import { PessoaRepository } from "../pessoas/pessoaFisica";
+import { PessoaIntermediariaRepository } from "../pessoas/pessoaFisica";
 
 export const userRepository = AppDataSource.getRepository(User);
 
@@ -18,7 +18,7 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
     throw new Error("E-mail já registrado em User ou Pessoa.");
   }
 
-  // Certifique-se de que userData.password esteja definido antes de tentar hasheá-lo
+ 
   if (!userData.password) {
     throw new Error("Senha não fornecida.");
   }
@@ -42,7 +42,6 @@ export const findUserByEmail = async (
     return user;
   }
 
-  // Busca pelo e-mail na tabela intermediária
   const pessoaIntermediaria = await PessoaIntermediariaRepository.findOne({
     where: { email: email },
   });
