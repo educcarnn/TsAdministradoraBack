@@ -3,7 +3,7 @@ import { RegistroImovel } from "../entities/imovel";
 import { Pessoa } from "../entities/pessoaFisica";
 import { AppDataSource } from "../data-source";
 import { ProprietarioImovel } from "../entities/relations/proprietarioImovel";
-
+import { PessoaJuridica } from "../entities/pessoaJuridica";
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
 AppDataSource.getRepository(Pessoa);
@@ -12,23 +12,36 @@ const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
 const proprietarioImovelRepository =
   AppDataSource.getRepository(ProprietarioImovel);
+  
+const pessoaJuridicaRepository = AppDataSource.getRepository(PessoaJuridica)
 
 export const cadastrarImovel = async (
   imovelData: RegistroImovel,
-  proprietariosData: { id: number; percentual: number }[]
+  proprietariosData: { id: number; percentual: number; tipo: "Física" | "Jurídica" }[]
 ): Promise<RegistroImovel> => {
   const savedImovel = await imovelRepository.save(imovelData);
 
   for (const propData of proprietariosData) {
-    const pessoa = await pessoaRepository.findOne({
-      where: { id: propData.id },
-    });
-    if (!pessoa) {
-      throw new Error(`Pessoa com ID ${propData.id} não encontrada`);
+    let proprietario: Pessoa | PessoaJuridica | null;
+
+    if (propData.tipo === "Física") {
+      proprietario = await pessoaRepository.findOne({ where: { id: propData.id } });
+    } else {
+      proprietario = await pessoaJuridicaRepository.findOne({ where: { id: propData.id } });
+    }
+
+    if (!proprietario) {
+      throw new Error(`Proprietário com ID ${propData.id} não encontrado`);
     }
 
     const proprietarioImovel = new ProprietarioImovel();
-    proprietarioImovel.pessoa = pessoa;
+
+    if (propData.tipo === "Física") {
+      proprietarioImovel.pessoa = proprietario as Pessoa;
+    } else {
+      proprietarioImovel.pessoaJuridica = proprietario as PessoaJuridica;
+    }
+
     proprietarioImovel.registroImovel = savedImovel;
     proprietarioImovel.percentualPropriedade = propData.percentual;
 
@@ -38,13 +51,21 @@ export const cadastrarImovel = async (
   return savedImovel;
 };
 
+  
 export const getImovelComProprietario = async (imovelId: number) => {
   const imovelComProprietario = await imovelRepository
     .createQueryBuilder("imovel")
     .where("imovel.id = :imovelId", { imovelId })
     .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
+
+    // Busca por Pessoa Física
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
     .addSelect(["pessoa.nome", "pessoa.id"])
+
+    // Busca por Pessoa Jurídica
+    .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
+    .addSelect(["pessoaJuridica.razaoSocial", "pessoaJuridica.id", "pessoaJuridica.cnpj"])
+
     .leftJoinAndSelect("imovel.contratos", "contrato")
     .getOne(); // Porque agora estamos procurando por um imóvel específico
 
@@ -56,13 +77,21 @@ export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository
     .createQueryBuilder("imovel")
     .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
+
+    // Busca por Pessoa Física
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
     .addSelect(["pessoa.nome", "pessoa.id"])
+
+    // Busca por Pessoa Jurídica
+    .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
+    .addSelect(["pessoaJuridica.razaoSocial", "pessoaJuridica.id", "pessoaJuridica.cnpj"])
+
     .leftJoinAndSelect("imovel.contratos", "contrato")
     .getMany();
 
   return imoveisComPessoas;
 };
+
 
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();

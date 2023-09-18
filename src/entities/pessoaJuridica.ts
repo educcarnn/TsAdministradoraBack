@@ -6,7 +6,7 @@ import {
   JoinColumn,
   ManyToMany,
   OneToMany,
-  ManyToOne
+  ManyToOne,
 } from "typeorm";
 import { Contrato } from "./contratos/contrato";
 import { RegistroImovel } from "./imovel";
@@ -40,10 +40,15 @@ export class PessoaJuridica {
 
   @ManyToOne(() => Empresa, (empresa) => empresa.pessoaJuridicas)
   empresa: Empresa;
-  
+
   @OneToOne(() => PessoaIntermediaria)
   @JoinColumn()
   dadosComuns: PessoaIntermediaria; // Este campo contém todas as informações comuns
+
+  @OneToMany(() => RegistroImovel, (imovel) => imovel.imoveisProprietariosJur, {
+    nullable: true,
+  })
+  imoveisRelacionadosJur: RegistroImovel[];
 
   /*RELACIONAMENTOS*/
 
@@ -53,7 +58,6 @@ export class PessoaJuridica {
   @OneToMany(() => Contrato, contrato => contrato.PessoaJuridica, {nullable: true})
   contratos: Contrato[];
 
-  @OneToMany(() => RegistroImovel, (imovel) => imovel.PessoaJuridica, { nullable: true })
-  imoveis: RegistroImovel[];
+ 
   */
 }

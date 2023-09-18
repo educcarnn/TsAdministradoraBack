@@ -12,7 +12,7 @@ import { getImovelComProprietario } from '../services/imovel';
 export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
   const data: RegistroImovel = req.body as RegistroImovel;
 
-  // Aqui, em vez de apenas obter os IDs das pessoas, estamos obtendo também os percentuais.
+
   const proprietariosData = req.body.proprietarios;
 
   try {

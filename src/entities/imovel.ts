@@ -107,6 +107,11 @@ export class RegistroImovel {
   @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietarios: ProprietarioImovel[];
 
+
+  @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
+  imoveisProprietariosJur: ProprietarioImovel[];
+
+
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
   proprietarios: any;
