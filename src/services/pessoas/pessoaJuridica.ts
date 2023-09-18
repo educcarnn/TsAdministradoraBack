@@ -117,7 +117,7 @@ export const atualizarPessoaJuridicaPorId = async (
   const dataCopy = { ...data }; // Faz uma cópia superficial do objeto
 
   if (dataCopy.dadosComuns && dataCopy.dadosComuns.id) {
-    // Atualizar os dados comuns se eles forem fornecidos
+
     await PessoaIntermediariaRepository.update(
       dataCopy.dadosComuns.id,
       dataCopy.dadosComuns

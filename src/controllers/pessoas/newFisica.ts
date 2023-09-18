@@ -5,15 +5,18 @@ import { requeryPessoas } from '../../services/pessoas/pessoaFisica';
 
 export const CadastrarPessoa = async (req: Request, res: Response): Promise<Response> => {
   const data: Pessoa = req.body;
+  const files = req.files as Express.Multer.File[]; // Obter os arquivos do request
 
   try {
-    await cadastrarPessoa(data);
-    return res.status(201).json({ message: 'Pessoa cadastrada com sucesso!' });
+    const novaPessoa = await cadastrarPessoa(data, files); // Passar os arquivos para a função
+
+    return res.status(201).json({ message: 'Pessoa cadastrada com sucesso!', pessoa: novaPessoa });
   } catch (error) {
     console.error('Erro ao cadastrar Pessoa:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Pessoa' });
   }
 };
+
 
 export const ObterTodasPessoas = async (_req: Request, res: Response): Promise<Response> => {
   try {

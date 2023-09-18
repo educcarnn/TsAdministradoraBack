@@ -41,7 +41,6 @@ export class PessoaJuridica {
   @ManyToOne(() => Empresa, (empresa) => empresa.pessoaJuridicas)
   empresa: Empresa;
   
-
   @OneToOne(() => PessoaIntermediaria)
   @JoinColumn()
   dadosComuns: PessoaIntermediaria; // Este campo contém todas as informações comuns

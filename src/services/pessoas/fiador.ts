@@ -4,28 +4,34 @@ import { Pessoa } from "../../entities/pessoaFisica";
 import { RegistroImovel } from "../../entities/imovel";
 import { AppDataSource } from "../../data-source";
 
-const FiadorRepository: Repository<Fiador> = AppDataSource.getRepository(Fiador);
-const PessoaFisicaRepository: Repository<Pessoa> = AppDataSource.getRepository(Pessoa);
-const RegistroImovelRepository: Repository<RegistroImovel> = AppDataSource.getRepository(RegistroImovel);
+const FiadorRepository: Repository<Fiador> =
+  AppDataSource.getRepository(Fiador);
+const PessoaFisicaRepository: Repository<Pessoa> =
+  AppDataSource.getRepository(Pessoa);
+const RegistroImovelRepository: Repository<RegistroImovel> =
+  AppDataSource.getRepository(RegistroImovel);
 export const cadastrarFiador = async (
   fiadorData: Fiador,
   pessoaId: number,
   imovelId: number
 ): Promise<Fiador> => {
-
-  const pessoa = await PessoaFisicaRepository.findOne({ where: { id: pessoaId } });
+  const pessoa = await PessoaFisicaRepository.findOne({
+    where: { id: pessoaId },
+  });
   if (!pessoa) {
     throw new Error(`Pessoa com ID ${pessoaId} não encontrada`);
   }
 
-  const imovel = await RegistroImovelRepository.findOne({ where: { id: imovelId } });
+  const imovel = await RegistroImovelRepository.findOne({
+    where: { id: imovelId },
+  });
   if (!imovel) {
     throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
   }
 
   // Verifique se é uma atualização ou criação
   if (fiadorData.id) {
-    // Atualização: Garanta que você está atualizando pelo menos um campo ou 
+    // Atualização: Garanta que você está atualizando pelo menos um campo ou
     // reconfigure os valores que já estão configurados para desencadear uma atualização.
     // Adicione ou ajuste os campos conforme necessário.
     fiadorData.pessoa = pessoa;
@@ -42,20 +48,25 @@ export const cadastrarFiador = async (
   }
 };
 
-
 // Obter Fiador por ID
-export const obterFiadorPorId = async (id: number): Promise<Fiador | undefined> => {
-  return await FiadorRepository.findOne({ 
-    where: { id: id },
-    relations: ["pessoa", "imovelComoFianca"] 
-  }) || undefined;
+export const obterFiadorPorId = async (
+  id: number
+): Promise<Fiador | undefined> => {
+  return (
+    (await FiadorRepository.findOne({
+      where: { id: id },
+      relations: ["pessoa", "imovelComoFianca"],
+    })) || undefined
+  );
 };
 
-
 // Atualizar Fiador
-export const atualizarFiador = async (id: number, fiadorData: Partial<Fiador>): Promise<Fiador> => {
+export const atualizarFiador = async (
+  id: number,
+  fiadorData: Partial<Fiador>
+): Promise<Fiador> => {
   const fiadorExistente = await FiadorRepository.findOne({ where: { id: id } });
-  
+
   if (!fiadorExistente) {
     throw new Error(`Fiador com ID ${id} não encontrado`);
   }
@@ -76,5 +87,7 @@ export const deletarFiador = async (id: number): Promise<void> => {
 
 // Listar todos os Fiadores
 export const listarFiadores = async (): Promise<Fiador[]> => {
-  return await FiadorRepository.find({ relations: ["pessoa", "endereco", "imovelComoFianca"] });
+  return await FiadorRepository.find({
+    relations: ["pessoa", "endereco", "imovelComoFianca"],
+  });
 };
