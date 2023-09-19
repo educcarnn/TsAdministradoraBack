@@ -6,17 +6,19 @@ import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
+import { Anexo } from "../../entities/pessoas/anexo";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
 export const PessoaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
+  export const AnexoRepository: Repository<Anexo> =
+  AppDataSource.getRepository(Anexo);
 
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const BUCKET_NAME = 'tsadministradora-files';
 const REGION = 'us-east-1';
-
 
 
 if (!accessKeyId || !secretAccessKey) {
@@ -62,9 +64,9 @@ export const uploadFileToS3 = async (file: Express.Multer.File, key: string): Pr
 
 export const cadastrarPessoa = async (
   pessoaData: Partial<Pessoa>,
-  files?: Express.Multer.File[] // Adicionando o novo argumento 'files'
+  files?: Express.Multer.File[]
 ): Promise<Pessoa> => {
-  
+
   if (!pessoaData.dadosComuns || !pessoaData.dadosComuns.email) {
     throw new Error("E-mail não fornecido.");
   }
@@ -78,33 +80,27 @@ export const cadastrarPessoa = async (
     throw new Error("Senha não fornecida.");
   }
 
-  pessoaData.dadosComuns.password = await hashPassword(
-    pessoaData.dadosComuns.password
-  );
+  pessoaData.dadosComuns.password = await hashPassword(pessoaData.dadosComuns.password);
 
-  // Primeiro, salvamos a entidade intermediária
-  const dadosComunsCriados = await PessoaIntermediariaRepository.save(
-    pessoaData.dadosComuns
-  );
-
-  if (!pessoaData.dadosComuns.anexos) {
-    pessoaData.dadosComuns.anexos = [];
-  }
-
+  // Salva os dados comuns no banco de dados
+  const dadosComunsCriados = await PessoaIntermediariaRepository.save(pessoaData.dadosComuns);
+  
+  // Se houver arquivos, carregue-os no S3 e adicione os URLs à tabela de anexos
   if (files && files.length) {
     for (const file of files) {
       const key = `anexos/${pessoaData.dadosComuns.email}/${file.originalname}`;
       const fileUrl = await uploadFileToS3(file, key);
 
-      // Adicione o URL do arquivo ao array de anexos
-      pessoaData.dadosComuns.anexos.push(fileUrl);
+      const anexo = new Anexo();
+      anexo.url = fileUrl;
+      anexo.pessoa = dadosComunsCriados;
+
+      await AnexoRepository.save(anexo);
     }
   }
 
-  pessoaData.dadosComuns = dadosComunsCriados;
-
+  // Cria e salva a nova pessoa usando os dados fornecidos e os dados comuns criados
   const novaPessoa = PessoaRepository.create(pessoaData);
-
   await PessoaRepository.save(novaPessoa);
 
   return novaPessoa;
@@ -116,6 +112,7 @@ export const requeryPessoaPorId = async (id: number) => {
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
     .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
+    .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos") // Adicione esta linha para buscar os anexos
     .where("pessoa.id = :id", { id }); // Adicione esta linha para filtrar por ID
 
   const result = await queryBuilder.getOne(); // Use getOne ao invés de getMany já que você está buscando uma única pessoa
@@ -178,7 +175,7 @@ export const obterTodasPessoas = async (): Promise<Pessoa[]> => {
 export const obterPessoaPorId = async (
   id: number
 ): Promise<Pessoa | undefined> => {
-  // Buscando PessoaFisica junto com seus dados comuns (dados intermediários)
+
   const pessoaFisica = await PessoaRepository.findOne({
     where: { id: id },
     relations: ["dadosComuns"],
