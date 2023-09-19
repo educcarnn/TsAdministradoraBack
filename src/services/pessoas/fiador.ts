@@ -29,11 +29,8 @@ export const cadastrarFiador = async (
     throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
   }
 
-  // Verifique se é uma atualização ou criação
+
   if (fiadorData.id) {
-    // Atualização: Garanta que você está atualizando pelo menos um campo ou
-    // reconfigure os valores que já estão configurados para desencadear uma atualização.
-    // Adicione ou ajuste os campos conforme necessário.
     fiadorData.pessoa = pessoa;
     fiadorData.imovelComoFianca = imovel;
     return await FiadorRepository.save(fiadorData);

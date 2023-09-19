@@ -10,8 +10,7 @@ import { isAuthenticated } from "../../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../../middlewares/ValidationStatusUser";
 import multer from "multer";
 const router = express.Router();
-// Define onde os arquivos serão armazenados temporariamente
-// Define onde os arquivos serão armazenados temporariamente
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
