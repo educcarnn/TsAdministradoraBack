@@ -35,12 +35,11 @@ export const cadastrarFiador = async (
     fiadorData.imovelComoFianca = imovel;
     return await FiadorRepository.save(fiadorData);
   } else {
-    // Criação: crie um novo Fiador e defina seus valores
+
     const newFiador = new Fiador();
     newFiador.pessoa = pessoa;
     newFiador.imovelComoFianca = imovel;
-    // Copie outros campos do fiadorData conforme necessário
-    // newFiador.outroCampo = fiadorData.outroCampo;
+
     return await FiadorRepository.save(newFiador);
   }
 };

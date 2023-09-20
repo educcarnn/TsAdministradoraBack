@@ -12,12 +12,16 @@ const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
 const proprietarioImovelRepository =
   AppDataSource.getRepository(ProprietarioImovel);
-  
-const pessoaJuridicaRepository = AppDataSource.getRepository(PessoaJuridica)
+
+const pessoaJuridicaRepository = AppDataSource.getRepository(PessoaJuridica);
 
 export const cadastrarImovel = async (
   imovelData: RegistroImovel,
-  proprietariosData: { id: number; percentual: number; tipo: "Física" | "Jurídica" }[]
+  proprietariosData: {
+    id: number;
+    percentual: number;
+    tipo: "Física" | "Jurídica";
+  }[]
 ): Promise<RegistroImovel> => {
   const savedImovel = await imovelRepository.save(imovelData);
 
@@ -25,9 +29,13 @@ export const cadastrarImovel = async (
     let proprietario: Pessoa | PessoaJuridica | null;
 
     if (propData.tipo === "Física") {
-      proprietario = await pessoaRepository.findOne({ where: { id: propData.id } });
+      proprietario = await pessoaRepository.findOne({
+        where: { id: propData.id },
+      });
     } else {
-      proprietario = await pessoaJuridicaRepository.findOne({ where: { id: propData.id } });
+      proprietario = await pessoaJuridicaRepository.findOne({
+        where: { id: propData.id },
+      });
     }
 
     if (!proprietario) {
@@ -51,7 +59,6 @@ export const cadastrarImovel = async (
   return savedImovel;
 };
 
-  
 export const getImovelComProprietario = async (imovelId: number) => {
   const imovelComProprietario = await imovelRepository
     .createQueryBuilder("imovel")
@@ -64,14 +71,19 @@ export const getImovelComProprietario = async (imovelId: number) => {
 
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
-    .addSelect(["pessoaJuridica.razaoSocial", "pessoaJuridica.id", "pessoaJuridica.cnpj"])
+    .addSelect([
+      "pessoaJuridica.razaoSocial",
+      "pessoaJuridica.id",
+      "pessoaJuridica.cnpj",
+    ])
 
     .leftJoinAndSelect("imovel.contratos", "contrato")
+    // Incluindo os anexos aqui
+    .leftJoinAndSelect("imovel.anexos", "anexo")
     .getOne(); // Porque agora estamos procurando por um imóvel específico
 
   return imovelComProprietario;
 };
-
 
 export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository
@@ -84,14 +96,17 @@ export const getImoveisComPessoas = async () => {
 
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
-    .addSelect(["pessoaJuridica.razaoSocial", "pessoaJuridica.id", "pessoaJuridica.cnpj"])
+    .addSelect([
+      "pessoaJuridica.razaoSocial",
+      "pessoaJuridica.id",
+      "pessoaJuridica.cnpj",
+    ])
 
     .leftJoinAndSelect("imovel.contratos", "contrato")
     .getMany();
 
   return imoveisComPessoas;
 };
-
 
 export const obterTodosImoveis = async (): Promise<RegistroImovel[]> => {
   return ImovelRepository.find();
@@ -101,11 +116,10 @@ export const obterImovelPorId = async (
   id: number
 ): Promise<RegistroImovel | undefined> => {
   try {
-    const imoveisComPessoas = await getImoveisComPessoas(); 
+    const imoveisComPessoas = await getImoveisComPessoas();
     const imovel = await ImovelRepository.findOne({ where: { id: id } });
 
     if (imovel) {
-
       const imovelEncontrado = imoveisComPessoas.find(
         (item) => item.id === imovel.id
       );
