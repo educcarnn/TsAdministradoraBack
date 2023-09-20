@@ -13,8 +13,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  nome: string;
+  
   @Column()
   @IsEmail()
   email: string;

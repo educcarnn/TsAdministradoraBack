@@ -38,6 +38,7 @@ import juridica from "../routes/pessoas/juridica"
 import empresa from "../routes/empresa/empresa"
 import fiador from "../routes/pessoas/fiador"
 import relationsempresa from "../routes/empresa/relationsEmpresa"
+import anexosImoveis from "../routes/emails/anexos"
 
 const router = express.Router();
 
@@ -48,6 +49,7 @@ router.use("/", fiador)
 router.use("/", empresa)
 router.use("/", relationsempresa)
 
+router.use("/", anexosImoveis)
 
 // Rotas para Imóveis
 router.post("/cadastro-imovel", isAuthenticated, isAdminOuUser, CadastrarImovel);

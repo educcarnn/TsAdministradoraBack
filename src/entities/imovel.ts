@@ -11,7 +11,7 @@ import {
 import { Empresa } from "./empresa/empresa";
 import { Contrato } from "./contratos/contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
-
+import { Anexo } from "./pessoas/anexo";
 @Entity()
 export class RegistroImovel {
   @PrimaryGeneratedColumn()
@@ -101,8 +101,8 @@ export class RegistroImovel {
     description: string;
   };
 
-  @Column("text", { array: true, nullable: true })
-  anexos: string[];
+  @OneToMany(() => Anexo, anexo => anexo.imovel)
+  anexos: Anexo[];
 
   @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietarios: ProprietarioImovel[];
