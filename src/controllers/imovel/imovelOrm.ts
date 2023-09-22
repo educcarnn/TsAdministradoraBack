@@ -1,29 +1,35 @@
 import { Request, Response } from "express";
-import { RegistroImovel } from "../entities/imovel";
+import { RegistroImovel } from "../../entities/imovel/imovel";
 import {
   cadastrarImovel,
   obterTodosImoveis,
   obterImovelPorId,
   deletarImovelPorId,
   atualizarImovelPorId,
-} from "../services/imovel";
-import { getImoveisComPessoas } from "../services/imovel";
-import { getImovelComProprietario } from "../services/imovel";
-export const CadastrarImovel = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  const data: RegistroImovel = req.body as RegistroImovel;
-  const proprietariosData = req.body.proprietarios;
+} from "../../services/imovel/imovel";
+import { getImoveisComPessoas } from "../../services/imovel/imovel";
+import { getImovelComProprietario } from "../../services/imovel/imovel";
 
+export const CadastrarImovel = async (req: Request, res: Response): Promise<Response> => {
+  const data: RegistroImovel = req.body;
+  const proprietarios = req.body.proprietarios;
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  
   try {
-    const imovelCriado = await cadastrarImovel(data, proprietariosData);
-    return res.status(201).json(imovelCriado);
+    const fotos = files['fotos'];
+ 
+    const anexos = files['anexos'];
+
+    const imovelCriado = await cadastrarImovel(data, proprietarios, anexos, fotos);
+
+    return res.status(201).json({ message: 'Imóvel cadastrado com sucesso!', imovel: imovelCriado });
   } catch (error) {
-    console.error("Erro ao cadastrar Imóvel:", error);
-    return res.status(500).json({ message: "Erro ao cadastrar Imóvel" });
+    console.error('Erro ao cadastrar Imóvel:', error);
+    return res.status(500).json({ message: 'Erro ao cadastrar Imóvel' });
   }
 };
+
+
 
 export const ObterTodosImoveis = async (
   _req: Request,

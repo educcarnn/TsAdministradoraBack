@@ -10,7 +10,7 @@ import {
 
 
 import { PessoaJuridica } from "../pessoaJuridica";
-import { RegistroImovel } from "../imovel";
+import { RegistroImovel } from "../imovel/imovel";
 import { ContratoInquilino } from "../relations/contratoInquilino";
 import { ContratoProprietario } from "../relations/contratoProprietario";
 

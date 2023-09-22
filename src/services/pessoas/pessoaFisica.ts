@@ -4,8 +4,7 @@ import { AppDataSource } from "../../data-source";
 import bcrypt from "bcrypt";
 import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
+import {uploadFileToS3} from "../../config/awsconfig"
 import { Anexo } from "../../entities/pessoas/anexo";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
@@ -15,52 +14,6 @@ export const PessoaRepository: Repository<Pessoa> =
   export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
 
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-const BUCKET_NAME = 'tsadministradora-files';
-const REGION = 'us-east-1';
-
-
-if (!accessKeyId || !secretAccessKey) {
-  throw new Error("AWS credentials are not set in environment variables.");
-}
-
-interface S3Config {
-  region: string;
-  credentials: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
-}
-
-const s3Config: S3Config = {
-  region: "us-east-1",
-  credentials: {
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey,
-  },
-};
-
-const s3Client = new S3Client(s3Config);
-
-export const uploadFileToS3 = async (file: Express.Multer.File, key: string): Promise<string> => {
-  const uploadParams = {
-    Bucket: BUCKET_NAME,
-    Key: key,
-    Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: 'private'
-  };
-
-  const uploader = new Upload({
-    client: s3Client,
-    params: uploadParams
-  });
-
-  await uploader.done();
-
-  return `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${key}`;
-};
 
 export const cadastrarPessoa = async (
   pessoaData: Partial<Pessoa>,

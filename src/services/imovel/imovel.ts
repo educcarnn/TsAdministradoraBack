@@ -1,12 +1,17 @@
 import { Repository } from "typeorm";
-import { RegistroImovel } from "../entities/imovel";
-import { Pessoa } from "../entities/pessoaFisica";
-import { AppDataSource } from "../data-source";
-import { ProprietarioImovel } from "../entities/relations/proprietarioImovel";
-import { PessoaJuridica } from "../entities/pessoaJuridica";
+import { RegistroImovel } from "../../entities/imovel/imovel";
+import { Pessoa } from "../../entities/pessoaFisica";
+import { AppDataSource } from "../../data-source";
+import { ProprietarioImovel } from "../../entities/relations/proprietarioImovel";
+import { PessoaJuridica } from "../../entities/pessoaJuridica";
+import { uploadFileToS3 } from "../../config/awsconfig";
+import { Anexo } from "../../entities/pessoas/anexo";
+import { Foto } from "../../entities/imovel/fotos";
+
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
-AppDataSource.getRepository(Pessoa);
+const AnexoRepository: Repository<Anexo> = AppDataSource.getRepository(Anexo);
+const FotoRepository: Repository<Foto> = AppDataSource.getRepository(Foto); // Repositório da entidade de Fotos
 
 const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
@@ -21,7 +26,9 @@ export const cadastrarImovel = async (
     id: number;
     percentual: number;
     tipo: "Física" | "Jurídica";
-  }[]
+  }[],
+  anexos?: Express.Multer.File[], // Lista de anexos
+  fotos?: Express.Multer.File[] // Lista de fotos
 ): Promise<RegistroImovel> => {
   const savedImovel = await imovelRepository.save(imovelData);
 
@@ -54,6 +61,60 @@ export const cadastrarImovel = async (
     proprietarioImovel.percentualPropriedade = propData.percentual;
 
     await proprietarioImovelRepository.save(proprietarioImovel);
+
+    // Realize o upload dos anexos para o S3 (se necessário, como já implementado)
+  }
+
+  // Realize o upload dos anexos para o S3
+  if (anexos && anexos.length > 0) {
+    const anexosArray: Anexo[] = []; // Array para armazenar objetos de Anexo
+
+    for (const anexoFile of anexos) {
+      const key = `imoveis/${savedImovel.id}/${anexoFile.originalname}`;
+      const fileUrl = await uploadFileToS3(anexoFile, key);
+
+      // Crie um objeto Anexo e atribua a URL
+      const anexo = new Anexo();
+      anexo.url = fileUrl;
+
+      // Salve o objeto Anexo no banco de dados
+      await AnexoRepository.save(anexo);
+
+      // Adicione o objeto Anexo ao array
+      anexosArray.push(anexo);
+    }
+
+    // Atribua o array de objetos de Anexo à propriedade anexos do RegistroImovel
+    savedImovel.anexos = anexosArray;
+
+    // Atualize o RegistroImovel no banco de dados com os objetos de Anexo
+    await imovelRepository.save(savedImovel);
+  }
+
+  // Realize o upload das fotos para o S3
+  if (fotos && fotos.length > 0) {
+    const fotosArray: Foto[] = []; // Array para armazenar objetos de Foto
+
+    for (const fotoFile of fotos) {
+      const key = `imoveisfotos/${savedImovel.id}/${fotoFile.originalname}`;
+      const fileUrl = await uploadFileToS3(fotoFile, key);
+
+      // Crie um objeto Foto e atribua a URL
+      const foto = new Foto();
+      foto.url = fileUrl;
+
+      // Salve o objeto Foto no banco de dados
+      await FotoRepository.save(foto);
+
+      // Adicione o objeto Foto ao array
+      fotosArray.push(foto);
+    }
+
+    // Atribua o array de objetos de Foto à propriedade fotos do RegistroImovel
+    savedImovel.fotos = fotosArray;
+
+    // Atualize o RegistroImovel no banco de dados com os objetos de Foto
+    await imovelRepository.save(savedImovel);
   }
 
   return savedImovel;
@@ -64,11 +125,11 @@ export const getImovelComProprietario = async (imovelId: number) => {
     .createQueryBuilder("imovel")
     .where("imovel.id = :imovelId", { imovelId })
     .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
-
+    
     // Busca por Pessoa Física
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
     .addSelect(["pessoa.nome", "pessoa.id"])
-
+    
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
     .addSelect([
@@ -76,10 +137,14 @@ export const getImovelComProprietario = async (imovelId: number) => {
       "pessoaJuridica.id",
       "pessoaJuridica.cnpj",
     ])
-
+    
     .leftJoinAndSelect("imovel.contratos", "contrato")
     // Incluindo os anexos aqui
     .leftJoinAndSelect("imovel.anexos", "anexo")
+    
+    // Incluindo também as fotos
+    .leftJoinAndSelect("imovel.fotos", "foto")
+    
     .getOne(); // Porque agora estamos procurando por um imóvel específico
 
   return imovelComProprietario;
