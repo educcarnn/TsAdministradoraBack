@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { Fiador } from "../../entities/pessoas/fiador";
 import { Pessoa } from "../../entities/pessoaFisica";
-import { RegistroImovel } from "../../entities/imovel";
+import { RegistroImovel } from "../../entities/imovel/imovel";
 import { AppDataSource } from "../../data-source";
 
 const FiadorRepository: Repository<Fiador> =

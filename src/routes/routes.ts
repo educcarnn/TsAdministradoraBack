@@ -12,7 +12,7 @@ import {
   ObterImovelPorId,
   ExcluirImovel,
   AtualizarImovel,
-} from "../controllers/imovelOrm";
+} from "../controllers/imovel/imovelOrm";
 import {
   CadastrarContrato,
   ObterTodosContratos,
@@ -38,7 +38,15 @@ import juridica from "../routes/pessoas/juridica"
 import empresa from "../routes/empresa/empresa"
 import fiador from "../routes/pessoas/fiador"
 import relationsempresa from "../routes/empresa/relationsEmpresa"
-import anexosImoveis from "../routes/emails/anexos"
+import { removerAnexoDoImovelPorIdController } from "../controllers/imovel/anexos";
+import { adicionarAnexoAoImovelController } from "../controllers/imovel/anexos";
+import { adicionarFotoAoImovelController } from "../controllers/imovel/anexos";
+import { removerFotoDoImovelPorIdController } from "../controllers/imovel/anexos";
+
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const router = express.Router();
 
@@ -49,14 +57,30 @@ router.use("/", fiador)
 router.use("/", empresa)
 router.use("/", relationsempresa)
 
-router.use("/", anexosImoveis)
-
 // Rotas para Imóveis
-router.post("/cadastro-imovel", isAuthenticated, isAdminOuUser, CadastrarImovel);
+router.post("/cadastro-imovel", 
+  upload.fields([
+    { name: 'fotos', maxCount: 10 }, // Campo para fotos (até 10 arquivos)
+    { name: 'anexos', maxCount: 10 }, // Campo para anexos (até 10 arquivos)
+  
+  ]),
+  isAuthenticated,
+  isAdminOuUser,
+  CadastrarImovel
+);
+
+module.exports = router;
 router.get("/obter-imoveis-novo", isAuthenticated ,isAdmin, ObterTodosImoveis);
 router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUser, ObterImovelPorId);
 router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
 router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUser, AtualizarImovel);
+
+//Rotas para anexos
+router.delete("/remover-anexos-imovel",removerAnexoDoImovelPorIdController )
+router.post("/adicionar-anexos-imovel", upload.array('listaAnexos', 10), adicionarAnexoAoImovelController)
+
+router.post("/adicionar-fotos-imovel", upload.array('listaFotos', 10), adicionarFotoAoImovelController)
+router.delete("/remover-fotos-imovel", removerFotoDoImovelPorIdController)
 
 // Rotas para Contratos
 router.post("/cadastro-contrato",  isAuthenticated ,isAdmin, CadastrarContrato);

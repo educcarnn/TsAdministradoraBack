@@ -8,10 +8,12 @@ import {
   JoinColumn,
   OneToMany,
 } from "typeorm";
-import { Empresa } from "./empresa/empresa";
-import { Contrato } from "./contratos/contrato";
-import { ProprietarioImovel } from "./relations/proprietarioImovel";
-import { Anexo } from "./pessoas/anexo";
+import { Empresa } from "../empresa/empresa";
+import { Contrato } from "../contratos/contrato";
+import { ProprietarioImovel } from "../relations/proprietarioImovel";
+import { Anexo } from "../pessoas/anexo";
+import { Foto } from "./fotos";
+
 @Entity()
 export class RegistroImovel {
   @PrimaryGeneratedColumn()
@@ -86,8 +88,6 @@ export class RegistroImovel {
     numero: number;
   };
 
-  @Column({ nullable: true })
-  percentual: number;
 
   @Column("text", { array: true, nullable: true })
   caracteristicas_imovel: string[];
@@ -98,11 +98,16 @@ export class RegistroImovel {
   @Column("jsonb", { nullable: true })
   anuncio: {
     title: string;
+    contrato: string;
     description: string;
   };
 
-  @OneToMany(() => Anexo, anexo => anexo.imovel)
+  @OneToMany(() => Anexo, anexo => anexo.imovel, {nullable: true })
   anexos: Anexo[];
+
+  @OneToMany(() => Foto, (foto) => foto.registroImovel, {nullable: true })
+  fotos: Foto[];
+
 
   @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietarios: ProprietarioImovel[];

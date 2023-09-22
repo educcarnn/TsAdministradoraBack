@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { RegistroImovel } from "./imovel";
+import { RegistroImovel } from "./imovel/imovel";
 import { Contrato } from "./contratos/contrato";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 import { ContratoInquilino } from "./relations/contratoInquilino";

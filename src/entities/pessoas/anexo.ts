@@ -6,7 +6,7 @@ import {
     JoinColumn
   } from "typeorm";
 import { PessoaIntermediaria } from "./pessoa";
-import { RegistroImovel } from "../imovel";
+import { RegistroImovel } from "../imovel/imovel";
 
   @Entity()
   export class Anexo {

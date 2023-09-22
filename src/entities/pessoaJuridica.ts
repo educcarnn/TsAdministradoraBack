@@ -9,7 +9,7 @@ import {
   ManyToOne,
 } from "typeorm";
 import { Contrato } from "./contratos/contrato";
-import { RegistroImovel } from "./imovel";
+import { RegistroImovel } from "./imovel/imovel";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
 import { Empresa } from "./empresa/empresa";
 @Entity()

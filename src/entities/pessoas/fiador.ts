@@ -7,7 +7,7 @@ import {
   JoinColumn
 } from "typeorm";
 import { Pessoa } from "../pessoaFisica";
-import { RegistroImovel } from "../imovel";
+import { RegistroImovel } from "../imovel/imovel";
 
 
 @Entity()
