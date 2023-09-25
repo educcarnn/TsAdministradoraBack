@@ -42,6 +42,8 @@ import { removerAnexoDoImovelPorIdController } from "../controllers/imovel/anexo
 import { adicionarAnexoAoImovelController } from "../controllers/imovel/anexos";
 import { adicionarFotoAoImovelController } from "../controllers/imovel/anexos";
 import { removerFotoDoImovelPorIdController } from "../controllers/imovel/anexos";
+import { adicionarContratoAoImovelController } from "../controllers/imovel/contratoservico";
+import { removerContratoDoImovelPorIdController } from "../controllers/imovel/contratoservico";
 
 import multer from "multer";
 
@@ -49,6 +51,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = express.Router();
+module.exports = router;
 
 router.use("/", fisica);
 router.use("/", juridica)
@@ -57,19 +60,19 @@ router.use("/", fiador)
 router.use("/", empresa)
 router.use("/", relationsempresa)
 
+
 // Rotas para Imóveis
 router.post("/cadastro-imovel", 
   upload.fields([
-    { name: 'fotos', maxCount: 10 }, // Campo para fotos (até 10 arquivos)
-    { name: 'anexos', maxCount: 10 }, // Campo para anexos (até 10 arquivos)
-  
+    { name: 'fotos', maxCount: 10 },
+    { name: 'anexos', maxCount: 10 }, 
+    {name: 'contratos', maxCount: 10}
   ]),
   isAuthenticated,
   isAdminOuUser,
   CadastrarImovel
 );
 
-module.exports = router;
 router.get("/obter-imoveis-novo", isAuthenticated ,isAdmin, ObterTodosImoveis);
 router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUser, ObterImovelPorId);
 router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
@@ -81,6 +84,9 @@ router.post("/adicionar-anexos-imovel", upload.array('listaAnexos', 10), adicion
 
 router.post("/adicionar-fotos-imovel", upload.array('listaFotos', 10), adicionarFotoAoImovelController)
 router.delete("/remover-fotos-imovel", removerFotoDoImovelPorIdController)
+
+router.post("/adicionar-para-contratos-imovel", upload.array('listaContratos', 10), adicionarContratoAoImovelController )
+router.delete("/remover-contratos-imovel", removerContratoDoImovelPorIdController)
 
 // Rotas para Contratos
 router.post("/cadastro-contrato",  isAuthenticated ,isAdmin, CadastrarContrato);

@@ -6,11 +6,14 @@ import { Anexo } from "../../entities/pessoas/anexo";
 import { Repository } from "typeorm";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Foto } from "../../entities/imovel/fotos";
+import { ContratoServico } from "../../entities/imovel/contratoservico";
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
 const AnexoRepository: Repository<Anexo> = AppDataSource.getRepository(Anexo);
-const FotoRepository: Repository<Foto> = AppDataSource.getRepository(Foto)
+const FotoRepository: Repository<Foto> = AppDataSource.getRepository(Foto);
+const ContratoServicoRepository: Repository<ContratoServico> =
+  AppDataSource.getRepository(ContratoServico);
 
 export const removerAnexoDoImovelPorId = async (
   imovelId: number,
@@ -71,7 +74,6 @@ export const adicionarAnexoAoImovel = async (
   }
 
   try {
-
     const imovel = await ImovelRepository.findOne({
       where: { id: imovelId },
       relations: ["anexos"],
@@ -84,7 +86,6 @@ export const adicionarAnexoAoImovel = async (
     const novosAnexosArray: Anexo[] = []; // Array para armazenar novos objetos de Anexo
 
     for (const anexoFile of anexoData) {
-
       const s3FileKey = `imoveis/${imovelId}/${anexoFile.originalname}`;
       const s3FileUrl = await uploadFileToS3(anexoFile, s3FileKey);
 
@@ -112,104 +113,194 @@ export const adicionarAnexoAoImovel = async (
   }
 };
 
+export const adicionarContratosAoImovel = async (
+  imovelId: number,
+  novosContratos: Express.Multer.File[]
+) => {
+  if (!imovelId) {
+    throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
+  }
+
+  try {
+    // Consulte o imóvel pelo ID
+    const imovel = await ImovelRepository.findOne({
+      where: { id: imovelId },
+      relations: ["servicocontratos"], // Supondo que você tenha uma relação chamada "fotos" no seu modelo de imóvel
+    });
+
+    if (!imovel) {
+      throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
+    }
+
+    const contratosParaAdicionar = [];
+
+    // Faça o upload das novas fotos para o Amazon S3
+    for (const novaFoto of novosContratos) {
+      const key = `servicoscontrato/${imovelId}/${novaFoto.originalname}`;
+      const fileUrl = await uploadFileToS3(novaFoto, key);
+
+      // Crie um objeto de Foto com a URL
+      const contrato = new ContratoServico();
+      contrato.url = fileUrl;
+
+      await ContratoServicoRepository.save(contrato);
+
+      // Adicione o objeto Foto ao array
+      contratosParaAdicionar.push(contrato);
+    }
+
+    // Adicione as novas fotos ao array de fotos do imóvel
+    imovel.servicocontratos = [...imovel.servicocontratos, ...contratosParaAdicionar];
+
+    // Salve as alterações no imóvel
+    await ImovelRepository.save(imovel);
+
+    return imovel.servicocontratos;
+  } catch (error) {
+    console.error("Erro ao adicionar fotos ao imóvel:", error);
+    throw error;
+  }
+};
+
+export const removerContratoDoImovelPorId = async (
+  imovelId: number,
+  contratoId: number
+) => {
+  if (!imovelId || !contratoId) {
+    throw new Error("Parâmetros inválidos.");
+  }
+
+  try {
+    // Consulte o imóvel pelo ID
+    const imovel = await ImovelRepository.findOne({
+      where: { id: imovelId },
+      relations: ["servicocontratos"],
+    });
+
+    if (!imovel) {
+      throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
+    }
+
+    // Consulte o contrato pelo ID
+    const contratoParaRemover = await ContratoServicoRepository.findOne({
+      where: { id: contratoId },
+    });
+
+    if (!contratoParaRemover) {
+      throw new Error(`Contrato com ID ${contratoId} não encontrado`);
+    }
+
+    // Remova o contrato do imóvel
+    imovel.servicocontratos = imovel.servicocontratos.filter(
+      (contrato) => contrato.id !== contratoId
+    );
+
+    // Remova o contrato do Amazon S3, supondo que o contrato tenha uma URL associada
+    if (contratoParaRemover.url) {
+      await deleteFileFromS3(contratoParaRemover.url);
+    }
+
+    // Salve as alterações no imóvel
+    await ImovelRepository.save(imovel);
+
+    return imovel.servicocontratos;
+  } catch (error) {
+    console.error("Erro ao remover o contrato do imóvel:", error);
+    throw error;
+  }
+};
+
 export const adicionarFotosAoImovel = async (
-    imovelId: number,
-    novasFotos: Express.Multer.File[]
-  ) => {
+  imovelId: number,
+  novasFotos: Express.Multer.File[]
+) => {
+  if (!imovelId) {
+    throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
+  }
 
-    if (!imovelId) {
-        throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
-      }
-  
-    try {
-      // Consulte o imóvel pelo ID
-      const imovel = await ImovelRepository.findOne({
-        where: { id: imovelId },
-        relations: ["fotos"], // Supondo que você tenha uma relação chamada "fotos" no seu modelo de imóvel
-      });
-  
-      if (!imovel) {
-        throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
-      }
-  
-      const fotosParaAdicionar = [];
-  
-      // Faça o upload das novas fotos para o Amazon S3
-      for (const novaFoto of novasFotos) {
-        const key = `imoveisfotos/${imovelId}/${novaFoto.originalname}`;
-        const fileUrl = await uploadFileToS3(novaFoto, key);
-  
-        // Crie um objeto de Foto com a URL
-        const foto = new Foto();
-        foto.url = fileUrl;
-        
-        // Salve o objeto Foto no banco de dados
-        await FotoRepository.save(foto);
-        
-        // Adicione o objeto Foto ao array
-        fotosParaAdicionar.push(foto);
-      }
-  
-      // Adicione as novas fotos ao array de fotos do imóvel
-      imovel.fotos = [...imovel.fotos, ...fotosParaAdicionar];
-  
-      // Salve as alterações no imóvel
-      await ImovelRepository.save(imovel);
-  
-      return imovel.fotos;
-    } catch (error) {
-      console.error("Erro ao adicionar fotos ao imóvel:", error);
-      throw error;
-    }
-  };
+  try {
+    // Consulte o imóvel pelo ID
+    const imovel = await ImovelRepository.findOne({
+      where: { id: imovelId },
+      relations: ["fotos"], // Supondo que você tenha uma relação chamada "fotos" no seu modelo de imóvel
+    });
 
+    if (!imovel) {
+      throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
+    }
 
-  export const removerFotosDoImovel = async (
-    imovelId: number,
-    anexoId: number
-  ) => {
-    if (!imovelId || !anexoId) {
-      throw new Error("Parâmetros inválidos.");
+    const fotosParaAdicionar = [];
+
+    // Faça o upload das novas fotos para o Amazon S3
+    for (const novaFoto of novasFotos) {
+      const key = `imoveisfotos/${imovelId}/${novaFoto.originalname}`;
+      const fileUrl = await uploadFileToS3(novaFoto, key);
+
+      // Crie um objeto de Foto com a URL
+      const foto = new Foto();
+      foto.url = fileUrl;
+
+      await FotoRepository.save(foto);
+
+      // Adicione o objeto Foto ao array
+      fotosParaAdicionar.push(foto);
     }
-  
-    try {
-      // Consulte o imóvel pelo ID
-      const imovel = await ImovelRepository.findOne({
-        where: { id: imovelId },
-        relations: ["fotos"], // Supondo que você tenha uma relação chamada "fotos" no seu modelo de imóvel
-      });
-  
-      if (!imovel) {
-        throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
-      }
-  
-      const fotoParaRemover = imovel.fotos.find((foto) => foto.id === anexoId);
-  
-      if (!fotoParaRemover) {
-        throw new Error(`Anexo com ID ${anexoId} não encontrado no imóvel`);
-      }
-  
-      // Remova a foto do Amazon S3 usando a propriedade 'url' da foto
-      if (fotoParaRemover.url) {
-        await deleteFileFromS3(fotoParaRemover.url);
-      }
-  
-      // Remova a referência da foto do array de fotos do imóvel
-      const novoArrayDeFotos = imovel.fotos.filter(
-        (foto) => foto.id !== anexoId
-      );
-  
-      // Atualize o array de fotos do imóvel com o novo array
-      imovel.fotos = novoArrayDeFotos;
-  
-      // Salve as alterações no imóvel
-      await ImovelRepository.save(imovel);
-  
-      return novoArrayDeFotos;
-    } catch (error) {
-      console.error("Erro ao remover a foto do imóvel:", error);
-      throw error;
+
+    // Adicione as novas fotos ao array de fotos do imóvel
+    imovel.fotos = [...imovel.fotos, ...fotosParaAdicionar];
+
+    // Salve as alterações no imóvel
+    await ImovelRepository.save(imovel);
+
+    return imovel.fotos;
+  } catch (error) {
+    console.error("Erro ao adicionar fotos ao imóvel:", error);
+    throw error;
+  }
+};
+
+export const removerFotosDoImovel = async (
+  imovelId: number,
+  anexoId: number
+) => {
+  if (!imovelId || !anexoId) {
+    throw new Error("Parâmetros inválidos.");
+  }
+
+  try {
+    // Consulte o imóvel pelo ID
+    const imovel = await ImovelRepository.findOne({
+      where: { id: imovelId },
+      relations: ["fotos"], // Supondo que você tenha uma relação chamada "fotos" no seu modelo de imóvel
+    });
+
+    if (!imovel) {
+      throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
     }
-  };
-  
-  
+
+    const fotoParaRemover = imovel.fotos.find((foto) => foto.id === anexoId);
+
+    if (!fotoParaRemover) {
+      throw new Error(`Anexo com ID ${anexoId} não encontrado no imóvel`);
+    }
+
+    // Remova a foto do Amazon S3 usando a propriedade 'url' da foto
+    if (fotoParaRemover.url) {
+      await deleteFileFromS3(fotoParaRemover.url);
+    }
+
+    // Remova a referência da foto do array de fotos do imóvel
+    const novoArrayDeFotos = imovel.fotos.filter((foto) => foto.id !== anexoId);
+
+    // Atualize o array de fotos do imóvel com o novo array
+    imovel.fotos = novoArrayDeFotos;
+
+    // Salve as alterações no imóvel
+    await ImovelRepository.save(imovel);
+
+    return novoArrayDeFotos;
+  } catch (error) {
+    console.error("Erro ao remover a foto do imóvel:", error);
+    throw error;
+  }
+};
