@@ -8,14 +8,14 @@ import {
   import { RegistroImovel } from "./imovel";
   
   @Entity()
-  export class ContratoServico {
+  export class Servico {
     @PrimaryGeneratedColumn()
     id: number;
   
     @Column()
     url: string;
   
-    @ManyToOne(() => RegistroImovel, (registroImovel) => registroImovel.servicocontratos)
+    @ManyToOne(() => RegistroImovel, (registroImovel) => registroImovel.servicos)
     @JoinColumn({ name: "registro_imovel_id" })
     registroImovel: RegistroImovel;
   }
