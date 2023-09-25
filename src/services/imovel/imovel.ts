@@ -7,11 +7,14 @@ import { PessoaJuridica } from "../../entities/pessoaJuridica";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Anexo } from "../../entities/pessoas/anexo";
 import { Foto } from "../../entities/imovel/fotos";
+import { ContratoServico } from "../../entities/imovel/contratoservico";
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
 const AnexoRepository: Repository<Anexo> = AppDataSource.getRepository(Anexo);
 const FotoRepository: Repository<Foto> = AppDataSource.getRepository(Foto); // Repositório da entidade de Fotos
+const ContratoRepository: Repository<ContratoServico> =
+  AppDataSource.getRepository(ContratoServico);
 
 const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
@@ -27,8 +30,10 @@ export const cadastrarImovel = async (
     percentual: number;
     tipo: "Física" | "Jurídica";
   }[],
+
   anexos?: Express.Multer.File[], // Lista de anexos
-  fotos?: Express.Multer.File[] // Lista de fotos
+  fotos?: Express.Multer.File[], // Lista de fotos
+  contratos?: Express.Multer.File[]
 ): Promise<RegistroImovel> => {
   const savedImovel = await imovelRepository.save(imovelData);
 
@@ -65,7 +70,6 @@ export const cadastrarImovel = async (
     // Realize o upload dos anexos para o S3 (se necessário, como já implementado)
   }
 
-  // Realize o upload dos anexos para o S3
   if (anexos && anexos.length > 0) {
     const anexosArray: Anexo[] = []; // Array para armazenar objetos de Anexo
 
@@ -91,7 +95,6 @@ export const cadastrarImovel = async (
     await imovelRepository.save(savedImovel);
   }
 
-  // Realize o upload das fotos para o S3
   if (fotos && fotos.length > 0) {
     const fotosArray: Foto[] = []; // Array para armazenar objetos de Foto
 
@@ -117,6 +120,29 @@ export const cadastrarImovel = async (
     await imovelRepository.save(savedImovel);
   }
 
+  if (contratos && contratos.length > 0) {
+    const contratosArray: ContratoServico[] = []; // Array para armazenar objetos de Foto
+
+    for (const contratoFile of contratos) {
+      const key = `servicoscontrato/${savedImovel.id}/${contratoFile.originalname}`;
+      const fileUrl = await uploadFileToS3(contratoFile, key);
+
+      // Crie um objeto Foto e atribua a URL
+      const contrato = new ContratoServico();
+      contrato.url = fileUrl;
+
+      // Salve o objeto Foto no banco de dados
+      await ContratoRepository.save(contrato);
+
+      // Adicione o objeto Foto ao array
+      contratosArray.push(contrato);
+    }
+
+    savedImovel.servicocontratos = contratosArray;
+
+    await imovelRepository.save(savedImovel);
+  }
+
   return savedImovel;
 };
 
@@ -125,11 +151,11 @@ export const getImovelComProprietario = async (imovelId: number) => {
     .createQueryBuilder("imovel")
     .where("imovel.id = :imovelId", { imovelId })
     .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
-    
+
     // Busca por Pessoa Física
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
     .addSelect(["pessoa.nome", "pessoa.id"])
-    
+
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
     .addSelect([
@@ -137,14 +163,15 @@ export const getImovelComProprietario = async (imovelId: number) => {
       "pessoaJuridica.id",
       "pessoaJuridica.cnpj",
     ])
-    
+
     .leftJoinAndSelect("imovel.contratos", "contrato")
-    // Incluindo os anexos aqui
+
     .leftJoinAndSelect("imovel.anexos", "anexo")
-    
+
     // Incluindo também as fotos
     .leftJoinAndSelect("imovel.fotos", "foto")
-    
+    .leftJoinAndSelect("imovel.servicocontratos", "servicocontratos")
+
     .getOne(); // Porque agora estamos procurando por um imóvel específico
 
   return imovelComProprietario;
@@ -168,6 +195,7 @@ export const getImoveisComPessoas = async () => {
     ])
 
     .leftJoinAndSelect("imovel.contratos", "contrato")
+    .leftJoinAndSelect("imovel.servicocontratos", "servicocontratos")
     .getMany();
 
   return imoveisComPessoas;

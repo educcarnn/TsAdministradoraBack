@@ -27,7 +27,6 @@ export const removerAnexoDoImovelPorIdController = async (
   }
 };
 
-
 export const adicionarAnexoAoImovelController = async (
     req: Request,
     res: Response
