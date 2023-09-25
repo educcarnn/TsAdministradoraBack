@@ -7,14 +7,14 @@ import { PessoaJuridica } from "../../entities/pessoaJuridica";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Anexo } from "../../entities/pessoas/anexo";
 import { Foto } from "../../entities/imovel/fotos";
-import { ContratoServico } from "../../entities/imovel/contratoservico";
+import { Servico } from "../../entities/imovel/servico";
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
 const AnexoRepository: Repository<Anexo> = AppDataSource.getRepository(Anexo);
 const FotoRepository: Repository<Foto> = AppDataSource.getRepository(Foto); // Repositório da entidade de Fotos
-const ContratoRepository: Repository<ContratoServico> =
-  AppDataSource.getRepository(ContratoServico);
+const ContratoRepository: Repository<Servico> =
+  AppDataSource.getRepository(Servico);
 
 const pessoaRepository = AppDataSource.getRepository(Pessoa);
 const imovelRepository = AppDataSource.getRepository(RegistroImovel);
@@ -121,24 +121,23 @@ export const cadastrarImovel = async (
   }
 
   if (contratos && contratos.length > 0) {
-    const contratosArray: ContratoServico[] = []; // Array para armazenar objetos de Foto
+    const contratosArray: Servico[] = []; // Array para armazenar objetos de Foto
 
     for (const contratoFile of contratos) {
       const key = `servicoscontrato/${savedImovel.id}/${contratoFile.originalname}`;
       const fileUrl = await uploadFileToS3(contratoFile, key);
 
       // Crie um objeto Foto e atribua a URL
-      const contrato = new ContratoServico();
+      const contrato = new Servico();
       contrato.url = fileUrl;
 
-      // Salve o objeto Foto no banco de dados
       await ContratoRepository.save(contrato);
 
-      // Adicione o objeto Foto ao array
+ 
       contratosArray.push(contrato);
     }
 
-    savedImovel.servicocontratos = contratosArray;
+    savedImovel.servicos = contratosArray;
 
     await imovelRepository.save(savedImovel);
   }
@@ -170,9 +169,9 @@ export const getImovelComProprietario = async (imovelId: number) => {
 
     // Incluindo também as fotos
     .leftJoinAndSelect("imovel.fotos", "foto")
-    .leftJoinAndSelect("imovel.servicocontratos", "servicocontratos")
+    .leftJoinAndSelect("imovel.servicos", "servicos")
 
-    .getOne(); // Porque agora estamos procurando por um imóvel específico
+    .getOne();
 
   return imovelComProprietario;
 };
@@ -195,7 +194,7 @@ export const getImoveisComPessoas = async () => {
     ])
 
     .leftJoinAndSelect("imovel.contratos", "contrato")
-    .leftJoinAndSelect("imovel.servicocontratos", "servicocontratos")
+    .leftJoinAndSelect("imovel.servicos", "servicos")
     .getMany();
 
   return imoveisComPessoas;

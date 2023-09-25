@@ -6,14 +6,15 @@ import { Anexo } from "../../entities/pessoas/anexo";
 import { Repository } from "typeorm";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Foto } from "../../entities/imovel/fotos";
-import { ContratoServico } from "../../entities/imovel/contratoservico";
+
+import { Servico } from "../../entities/imovel/servico";
 
 const ImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
 const AnexoRepository: Repository<Anexo> = AppDataSource.getRepository(Anexo);
 const FotoRepository: Repository<Foto> = AppDataSource.getRepository(Foto);
-const ContratoServicoRepository: Repository<ContratoServico> =
-  AppDataSource.getRepository(ContratoServico);
+const ServicoRepository: Repository<Servico> =
+  AppDataSource.getRepository(Servico);
 
 export const removerAnexoDoImovelPorId = async (
   imovelId: number,
@@ -125,7 +126,7 @@ export const adicionarContratosAoImovel = async (
     // Consulte o imóvel pelo ID
     const imovel = await ImovelRepository.findOne({
       where: { id: imovelId },
-      relations: ["servicocontratos"], // Supondo que você tenha uma relação chamada "fotos" no seu modelo de imóvel
+      relations: ["servicos"],
     });
 
     if (!imovel) {
@@ -134,28 +135,27 @@ export const adicionarContratosAoImovel = async (
 
     const contratosParaAdicionar = [];
 
-    // Faça o upload das novas fotos para o Amazon S3
-    for (const novaFoto of novosContratos) {
-      const key = `servicoscontrato/${imovelId}/${novaFoto.originalname}`;
-      const fileUrl = await uploadFileToS3(novaFoto, key);
+    for (const contratoFile of novosContratos) {
+      const key = `servicoscontrato/${imovelId}/${contratoFile.originalname}`;
+      const fileUrl = await uploadFileToS3(contratoFile, key);
 
       // Crie um objeto de Foto com a URL
-      const contrato = new ContratoServico();
+      const contrato = new Servico();
       contrato.url = fileUrl;
 
-      await ContratoServicoRepository.save(contrato);
+      await ServicoRepository.save(contrato);
 
       // Adicione o objeto Foto ao array
       contratosParaAdicionar.push(contrato);
     }
 
-    // Adicione as novas fotos ao array de fotos do imóvel
-    imovel.servicocontratos = [...imovel.servicocontratos, ...contratosParaAdicionar];
+
+    imovel.servicos = [...imovel.servicos, ...contratosParaAdicionar];
 
     // Salve as alterações no imóvel
     await ImovelRepository.save(imovel);
 
-    return imovel.servicocontratos;
+    return imovel.servicos;
   } catch (error) {
     console.error("Erro ao adicionar fotos ao imóvel:", error);
     throw error;
@@ -174,7 +174,7 @@ export const removerContratoDoImovelPorId = async (
     // Consulte o imóvel pelo ID
     const imovel = await ImovelRepository.findOne({
       where: { id: imovelId },
-      relations: ["servicocontratos"],
+      relations: ["servicos"],
     });
 
     if (!imovel) {
@@ -182,7 +182,7 @@ export const removerContratoDoImovelPorId = async (
     }
 
     // Consulte o contrato pelo ID
-    const contratoParaRemover = await ContratoServicoRepository.findOne({
+    const contratoParaRemover = await ServicoRepository.findOne({
       where: { id: contratoId },
     });
 
@@ -191,11 +191,11 @@ export const removerContratoDoImovelPorId = async (
     }
 
     // Remova o contrato do imóvel
-    imovel.servicocontratos = imovel.servicocontratos.filter(
+    imovel.servicos = imovel.servicos.filter(
       (contrato) => contrato.id !== contratoId
     );
 
-    // Remova o contrato do Amazon S3, supondo que o contrato tenha uma URL associada
+   
     if (contratoParaRemover.url) {
       await deleteFileFromS3(contratoParaRemover.url);
     }
@@ -203,7 +203,7 @@ export const removerContratoDoImovelPorId = async (
     // Salve as alterações no imóvel
     await ImovelRepository.save(imovel);
 
-    return imovel.servicocontratos;
+    return imovel.servicos;
   } catch (error) {
     console.error("Erro ao remover o contrato do imóvel:", error);
     throw error;

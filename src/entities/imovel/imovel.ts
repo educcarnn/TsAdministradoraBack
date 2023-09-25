@@ -13,7 +13,7 @@ import { Contrato } from "../contratos/contrato";
 import { ProprietarioImovel } from "../relations/proprietarioImovel";
 import { Anexo } from "../pessoas/anexo";
 import { Foto } from "./fotos";
-import { ContratoServico } from "./contratoservico";
+import { Servico } from "./servico";
 
 @Entity()
 export class RegistroImovel {
@@ -109,12 +109,11 @@ export class RegistroImovel {
   @OneToMany(() => Foto, (foto) => foto.registroImovel, {nullable: true })
   fotos: Foto[];
 
-  @OneToMany(() => ContratoServico, (contratoServico) => contratoServico.registroImovel, {nullable: true})
-  servicocontratos: ContratoServico[];
-  
+  @OneToMany(() => Servico, (Servico) => Servico.registroImovel, {nullable: true })
+  servicos: Servico[];
+
   @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietarios: ProprietarioImovel[];
-
 
   @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietariosJur: ProprietarioImovel[];
