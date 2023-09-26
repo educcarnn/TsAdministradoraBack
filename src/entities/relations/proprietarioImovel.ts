@@ -12,13 +12,17 @@ import { PessoaJuridica } from "../pessoaJuridica";
 @Entity()
 export class ProprietarioImovel {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
-  @ManyToOne(() => Pessoa, (Pessoa) => Pessoa.imoveisRelacionados, { nullable: true })
+  @ManyToOne(() => Pessoa, (Pessoa) => Pessoa.imoveisRelacionados, {
+    nullable: true,
+  })
   @JoinColumn({ name: "pessoaId" })
   pessoa?: Pessoa;
 
-  @ManyToOne(() => PessoaJuridica, (Pessoa) => Pessoa.imoveisRelacionadosJur, { nullable: true })
+  @ManyToOne(() => PessoaJuridica, (Pessoa) => Pessoa.imoveisRelacionadosJur, {
+    nullable: true,
+  })
   @JoinColumn({ name: "pessoaJuridicaId" })
   pessoaJuridica?: PessoaJuridica;
 
@@ -32,4 +36,3 @@ export class ProprietarioImovel {
   @Column({ type: "float" })
   percentualPropriedade: number;
 }
-

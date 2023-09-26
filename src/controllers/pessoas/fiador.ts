@@ -3,22 +3,21 @@ import { Fiador } from "../../entities/pessoas/fiador";
 import {
   cadastrarFiador,
   obterFiadorPorId,
-  deletarFiador,
+  excluirContratoDeFiador,
   atualizarFiador,
 } from "../../services/pessoas/fiador";
 
 export const CadastrarFiador = async (req: Request, res: Response): Promise<Response> => {
-  const { pessoaId, imovelId } = req.body;
+  const { pessoaId, imovelId, numeroMatriculaRGI } = req.body; // Adicione "numeroMatriculaRGI" aqui
 
   try {
-    await cadastrarFiador(req.body, pessoaId, imovelId);
+    await cadastrarFiador(pessoaId, imovelId, numeroMatriculaRGI); // Passe "numeroMatriculaRGI" para a função do serviço
     return res.status(201).json({ message: 'Fiador cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Fiador:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Fiador' });
   }
 };
-
 export const ObterFiadorPorId = async (
   req: Request,
   res: Response
@@ -43,10 +42,10 @@ export const ExcluirFiador = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { id } = req.params;
+  const { fiadorId } = req.body;
 
   try {
-    await deletarFiador(Number(id));
+    await excluirContratoDeFiador(Number(fiadorId));
     return res.status(200).json({ message: "Fiador excluído com sucesso" });
   } catch (error) {
     console.error("Erro ao excluir Fiador:", error);

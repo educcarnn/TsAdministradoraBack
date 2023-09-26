@@ -10,10 +10,11 @@ const PessoaFisicaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
 const RegistroImovelRepository: Repository<RegistroImovel> =
   AppDataSource.getRepository(RegistroImovel);
+
 export const cadastrarFiador = async (
-  fiadorData: Fiador,
   pessoaId: number,
-  imovelId: number
+  imovelId: number,
+  numeroMatriculaRGI: string
 ): Promise<Fiador> => {
   const pessoa = await PessoaFisicaRepository.findOne({
     where: { id: pessoaId },
@@ -29,19 +30,12 @@ export const cadastrarFiador = async (
     throw new Error(`Imóvel com ID ${imovelId} não encontrado`);
   }
 
+  const newFiador = new Fiador();
+  newFiador.pessoa = pessoa;
+  newFiador.imovelComoFianca = imovel;
+  newFiador.numeroMatriculaRGI = numeroMatriculaRGI; // Defina o número de matrícula de RGI
 
-  if (fiadorData.id) {
-    fiadorData.pessoa = pessoa;
-    fiadorData.imovelComoFianca = imovel;
-    return await FiadorRepository.save(fiadorData);
-  } else {
-
-    const newFiador = new Fiador();
-    newFiador.pessoa = pessoa;
-    newFiador.imovelComoFianca = imovel;
-
-    return await FiadorRepository.save(newFiador);
-  }
+  return await FiadorRepository.save(newFiador);
 };
 
 // Obter Fiador por ID
@@ -56,7 +50,6 @@ export const obterFiadorPorId = async (
   );
 };
 
-// Atualizar Fiador
 export const atualizarFiador = async (
   id: number,
   fiadorData: Partial<Fiador>
@@ -71,16 +64,18 @@ export const atualizarFiador = async (
   return await FiadorRepository.save(fiadorExistente);
 };
 
-// Deletar Fiador
-export const deletarFiador = async (id: number): Promise<void> => {
-  const fiadorExistente = await FiadorRepository.findOne({ where: { id: id } });
-  if (!fiadorExistente) {
-    throw new Error(`Fiador com ID ${id} não encontrado`);
+
+
+export const excluirContratoDeFiador = async (fiadorId: number): Promise<void> => {
+  // Encontre o fiador pelo ID
+  const fiador = await FiadorRepository.findOne({ where: { id: fiadorId } });
+  if (!fiador) {
+    throw new Error(`Fiador com ID ${fiadorId} não encontrado`);
   }
 
-  await FiadorRepository.remove(fiadorExistente);
+  // Exclua o fiador
+  await FiadorRepository.remove(fiador);
 };
-
 // Listar todos os Fiadores
 export const listarFiadores = async (): Promise<Fiador[]> => {
   return await FiadorRepository.find({

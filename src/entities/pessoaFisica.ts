@@ -23,7 +23,7 @@ export class Pessoa {
 
   @Column()
   nome: string;
-  @OneToMany(() => Fiador, fiador => fiador.pessoa)
+  @OneToMany(() => Fiador, (fiador) => fiador.pessoa)
   fiador: Fiador[];
 
   @Column()
@@ -64,27 +64,32 @@ export class Pessoa {
   @Column()
   genero: string;
 
-  @ManyToOne(() => Empresa, empresa => empresa.pessoas)
+  @ManyToOne(() => Empresa, (empresa) => empresa.pessoas)
   empresa: Empresa;
 
-  @Column()  // Defina a coluna da chave estrangeira
-    dadosComunsId: number;
+  @Column() // Defina a coluna da chave estrangeira
+  dadosComunsId: number;
 
-    @OneToOne(() => PessoaIntermediaria)
-    @JoinColumn({ name: "dadosComunsId" })  // Referencie a coluna aqui
-    dadosComuns: PessoaIntermediaria;
-  
+  @OneToOne(() => PessoaIntermediaria)
+  @JoinColumn({ name: "dadosComunsId" }) // Referencie a coluna aqui
+  dadosComuns: PessoaIntermediaria;
+
   /*RELACIONAMENTOS*/
-  
-  @OneToMany(() => ProprietarioImovel, pi => pi.pessoa)
+
+  @OneToMany(() => ProprietarioImovel, (pi) => pi.pessoa)
   imoveisRelacionados: ProprietarioImovel[];
 
   // Relação com contratos onde a pessoa é proprietária
-  @OneToMany(() => ContratoProprietario, contratoProprietario => contratoProprietario.proprietario)
+  @OneToMany(
+    () => ContratoProprietario,
+    (contratoProprietario) => contratoProprietario.proprietario
+  )
   contratoProprietarioRelacoes: ContratoProprietario[];
 
   // Relação com contratos onde a pessoa é inquilina
-  @OneToMany(() => ContratoInquilino, contratoInquilino => contratoInquilino.inquilino)
+  @OneToMany(
+    () => ContratoInquilino,
+    (contratoInquilino) => contratoInquilino.inquilino
+  )
   contratoRelacoes: ContratoInquilino[];
-
 }
