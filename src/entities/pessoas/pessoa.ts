@@ -39,7 +39,7 @@ export class PessoaIntermediaria {
     banco: string;
     agencia: string;
     conta: string;
-  }; // comum entre ambas
+  }; 
 
   @OneToMany(() => Anexo, (anexo) => anexo.pessoa)
   anexos: Anexo[];

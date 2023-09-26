@@ -149,7 +149,6 @@ export const adicionarContratosAoImovel = async (
       contratosParaAdicionar.push(contrato);
     }
 
-
     imovel.servicos = [...imovel.servicos, ...contratosParaAdicionar];
 
     // Salve as alterações no imóvel

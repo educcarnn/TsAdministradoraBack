@@ -4,22 +4,20 @@ import { AppDataSource } from "../../data-source";
 import bcrypt from "bcrypt";
 import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
-import {uploadFileToS3} from "../../config/awsconfig"
+import { uploadFileToS3 } from "../../config/awsconfig";
 import { Anexo } from "../../entities/pessoas/anexo";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
 export const PessoaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
-  export const AnexoRepository: Repository<Anexo> =
+export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
-
 
 export const cadastrarPessoa = async (
   pessoaData: Partial<Pessoa>,
   files?: Express.Multer.File[]
 ): Promise<Pessoa> => {
-
   if (!pessoaData.dadosComuns || !pessoaData.dadosComuns.email) {
     throw new Error("E-mail não fornecido.");
   }
@@ -33,11 +31,15 @@ export const cadastrarPessoa = async (
     throw new Error("Senha não fornecida.");
   }
 
-  pessoaData.dadosComuns.password = await hashPassword(pessoaData.dadosComuns.password);
+  pessoaData.dadosComuns.password = await hashPassword(
+    pessoaData.dadosComuns.password
+  );
 
   // Salva os dados comuns no banco de dados
-  const dadosComunsCriados = await PessoaIntermediariaRepository.save(pessoaData.dadosComuns);
-  
+  const dadosComunsCriados = await PessoaIntermediariaRepository.save(
+    pessoaData.dadosComuns
+  );
+
   // Se houver arquivos, carregue-os no S3 e adicione os URLs à tabela de anexos
   if (files && files.length) {
     for (const file of files) {
@@ -64,11 +66,15 @@ export const requeryPessoaPorId = async (id: number) => {
     .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
-    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
-    .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos") // Adicione esta linha para buscar os anexos
-    .where("pessoa.id = :id", { id }); // Adicione esta linha para filtrar por ID
 
-  const result = await queryBuilder.getOne(); // Use getOne ao invés de getMany já que você está buscando uma única pessoa
+    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
+    .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
+
+    .leftJoinAndSelect("pessoa.fiador", "fiador")
+    .leftJoinAndSelect("fiador.imovelComoFianca", "imovelComoFianca")
+    .where("pessoa.id = :id", { id });
+
+  const result = await queryBuilder.getOne(); 
 
   return result;
 };
@@ -128,7 +134,6 @@ export const obterTodasPessoas = async (): Promise<Pessoa[]> => {
 export const obterPessoaPorId = async (
   id: number
 ): Promise<Pessoa | undefined> => {
-
   const pessoaFisica = await PessoaRepository.findOne({
     where: { id: id },
     relations: ["dadosComuns"],
