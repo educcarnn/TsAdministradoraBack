@@ -12,7 +12,7 @@ import { PessoaJuridica } from "../pessoaJuridica";
 @Entity()
 export class ProprietarioImovel {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @ManyToOne(() => Pessoa, (Pessoa) => Pessoa.imoveisRelacionados, {
     nullable: true,

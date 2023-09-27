@@ -19,13 +19,15 @@ export class Inquilino {
   @JoinColumn({ name: "pessoa_id" })
   pessoa: Pessoa;
 
+  @ManyToOne(() => PessoaJuridica)
+  @JoinColumn({ name: "pessoa_juridica_id" })
+  pessoaJuridica: PessoaJuridica;
+
+
   @ManyToOne(() => RegistroImovel, { nullable: true })
   @JoinColumn({ name: "registro_imovel_id" })
   registroImovel: RegistroImovel;
 
-  @ManyToOne(() => PessoaJuridica) // Adicione esta relação
-  @JoinColumn({ name: "pessoa_juridica_id" })
-  pessoaJuridica: PessoaJuridica;
 
   @Column({ nullable: true })
   status: string;
