@@ -38,6 +38,7 @@ import juridica from "../routes/pessoas/juridica"
 import empresa from "../routes/empresa/empresa"
 import fiador from "../routes/pessoas/fiador"
 import inquilino from "../routes/pessoas/inquilino"
+import proprietario from "../routes/pessoas/proprietario"
 import relationsempresa from "../routes/empresa/relationsEmpresa"
 import { removerAnexoDoImovelPorIdController } from "../controllers/imovel/anexos";
 import { adicionarAnexoAoImovelController } from "../controllers/imovel/anexos";
@@ -58,6 +59,7 @@ router.use("/", fisica);
 router.use("/", juridica)
 router.use("/", fiador)
 router.use("/", inquilino)
+router.use("/", proprietario)
 
 router.use("/", empresa)
 router.use("/", relationsempresa)

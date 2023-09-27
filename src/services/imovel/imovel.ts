@@ -152,7 +152,7 @@ export const getImovelComProprietario = async (imovelId: number) => {
 
     .addSelect(["proprietarioImovel.percentualPropriedade"])
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
-    .addSelect(["pessoa.nome", "pessoa.id"])
+    .addSelect(["pessoa.nome", "pessoa.id", "proprietarioImovel.id"])
 
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
@@ -188,18 +188,18 @@ export const getImovelComProprietario = async (imovelId: number) => {
 export const getImoveisComPessoas = async () => {
   const imoveisComPessoas = await imovelRepository
     .createQueryBuilder("imovel")
-    .leftJoinAndSelect("imovel.imoveisProprietarios", "proprietarioImovel")
+    .leftJoin("imovel.imoveisProprietarios", "proprietarioImovel")
 
-    // Busca por Pessoa Física
+    .addSelect(["proprietarioImovel.percentualPropriedade"])
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
-    .addSelect(["pessoa.nome", "pessoa.id"])
+    .addSelect(["pessoa.nome", "pessoa.id", "proprietarioImovel.id"])
 
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
     .addSelect([
       "pessoaJuridica.razaoSocial",
-      "pessoaJuridica.id",
       "pessoaJuridica.cnpj",
+      "pessoaJuridica.id",
     ])
 
     //Inquilinos

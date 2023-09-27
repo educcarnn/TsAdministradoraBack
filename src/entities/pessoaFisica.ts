@@ -16,6 +16,7 @@ import { PessoaIntermediaria } from "./pessoas/pessoa";
 import { Empresa } from "./empresa/empresa";
 import { Fiador } from "./pessoas/fiador";
 import { Inquilino } from "./pessoas/inquilino";
+import { Proprietario } from "./pessoas/proprietario";
 
 @Entity()
 export class Pessoa {
@@ -82,6 +83,9 @@ export class Pessoa {
 
   @OneToMany(() => Inquilino, (inquilino) => inquilino.pessoa)
   inquilino: Inquilino[];
+
+  @OneToMany(() => Proprietario, (Proprietario) => Proprietario.pessoa)
+  proprietario: Proprietario[];
 
   // Relação com contratos onde a pessoa é proprietária
   @OneToMany(
