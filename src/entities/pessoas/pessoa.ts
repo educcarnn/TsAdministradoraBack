@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Anexo } from "./anexo";
-
+import { Inquilino } from "./inquilino";
 @Entity()
 export class PessoaIntermediaria {
   @PrimaryGeneratedColumn()
@@ -39,7 +39,7 @@ export class PessoaIntermediaria {
     banco: string;
     agencia: string;
     conta: string;
-  }; 
+  };
 
   @OneToMany(() => Anexo, (anexo) => anexo.pessoa)
   anexos: Anexo[];
