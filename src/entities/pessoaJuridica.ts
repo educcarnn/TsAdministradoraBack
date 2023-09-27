@@ -12,10 +12,15 @@ import { Contrato } from "./contratos/contrato";
 import { RegistroImovel } from "./imovel/imovel";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
 import { Empresa } from "./empresa/empresa";
+import { Inquilino } from "./pessoas/inquilino";
 @Entity()
+
 export class PessoaJuridica {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(() => Inquilino, (pi) => pi.pessoa)
+  inquilino: Inquilino[];
 
   @Column()
   cnpj: string;
@@ -49,8 +54,6 @@ export class PessoaJuridica {
     nullable: true,
   })
   imoveisRelacionadosJur: RegistroImovel[];
-
-  /*RELACIONAMENTOS*/
 
   // Seus outros relacionamentos podem permanecer aqui
 

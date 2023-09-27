@@ -14,11 +14,14 @@ import { ProprietarioImovel } from "../relations/proprietarioImovel";
 import { Anexo } from "../pessoas/anexo";
 import { Foto } from "./fotos";
 import { Servico } from "./servico";
+import { Inquilino } from "../pessoas/inquilino";
 
 @Entity()
 export class RegistroImovel {
   @PrimaryGeneratedColumn()
   id: number;
+
+
 
   @Column()
   tipoImovel: string;
@@ -118,7 +121,9 @@ export class RegistroImovel {
   @OneToMany(() => ProprietarioImovel, (pi) => pi.registroImovel)
   imoveisProprietariosJur: ProprietarioImovel[];
 
-
+  @OneToMany(() => Inquilino, (inquilino) => inquilino.registroImovel)
+  inquilinos: Inquilino[]; // Adiciona a relação com Inquilino
+  
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
   proprietarios: any;

@@ -37,18 +37,18 @@ export const cadastrarImovel = async (
 ): Promise<RegistroImovel> => {
   const savedImovel = await imovelRepository.save(imovelData);
 
-for (const propData of proprietariosData) {
-  let proprietario: Pessoa | PessoaJuridica | null;
+  for (const propData of proprietariosData) {
+    let proprietario: Pessoa | PessoaJuridica | null;
 
-  if (propData.tipo === "Física") {
-    proprietario = await pessoaRepository.findOne({
-      where: { id: propData.id }, // Use pessoaId em vez de id
-    });
-  } else {
-    proprietario = await pessoaJuridicaRepository.findOne({
-      where: { id: propData.id }, // Use pessoaId em vez de id
-    });
-  }
+    if (propData.tipo === "Física") {
+      proprietario = await pessoaRepository.findOne({
+        where: { id: propData.id }, // Use pessoaId em vez de id
+      });
+    } else {
+      proprietario = await pessoaJuridicaRepository.findOne({
+        where: { id: propData.id }, // Use pessoaId em vez de id
+      });
+    }
 
     if (!proprietario) {
       throw new Error(`Proprietário com ID ${propData.id} não encontrado`);
@@ -131,7 +131,6 @@ for (const propData of proprietariosData) {
 
       await ContratoRepository.save(contrato);
 
- 
       contratosArray.push(contrato);
     }
 
@@ -143,7 +142,6 @@ for (const propData of proprietariosData) {
   return savedImovel;
 };
 
-
 export const getImovelComProprietario = async (imovelId: number) => {
   const imovelComProprietario = await imovelRepository
     .createQueryBuilder("imovel")
@@ -151,13 +149,29 @@ export const getImovelComProprietario = async (imovelId: number) => {
 
     // Busca por Pessoa Física
     .leftJoin("imovel.imoveisProprietarios", "proprietarioImovel")
+
     .addSelect(["proprietarioImovel.percentualPropriedade"])
     .leftJoin("proprietarioImovel.pessoa", "pessoa")
     .addSelect(["pessoa.nome", "pessoa.id"])
 
     // Busca por Pessoa Jurídica
     .leftJoin("proprietarioImovel.pessoaJuridica", "pessoaJuridica")
-    .addSelect(["pessoaJuridica.razaoSocial", "pessoaJuridica.cnpj", "pessoaJuridica.id"])
+    .addSelect([
+      "pessoaJuridica.razaoSocial",
+      "pessoaJuridica.cnpj",
+      "pessoaJuridica.id",
+    ])
+
+    // Inquilinos
+    .leftJoinAndSelect("imovel.inquilinos", "inquilino")
+    .leftJoin("inquilino.pessoa", "pessoaInquilino")
+    .addSelect(["pessoaInquilino.nome", "pessoaInquilino.id"])
+    .leftJoin("inquilino.pessoaJuridica", "pessoaJuridicaInquilino")
+    .addSelect([
+      "pessoaJuridicaInquilino.id",
+      "pessoaJuridicaInquilino.razaoSocial",
+      "pessoaJuridicaInquilino.cnpj",
+    ])
 
     .leftJoinAndSelect("imovel.contratos", "contrato")
     .leftJoinAndSelect("imovel.anexos", "anexo")
@@ -186,6 +200,17 @@ export const getImoveisComPessoas = async () => {
       "pessoaJuridica.razaoSocial",
       "pessoaJuridica.id",
       "pessoaJuridica.cnpj",
+    ])
+
+    //Inquilinos
+    .leftJoinAndSelect("imovel.inquilinos", "inquilino")
+    .leftJoin("inquilino.pessoa", "pessoaInquilino")
+    .addSelect(["pessoaInquilino.nome", "pessoaInquilino.id"])
+    .leftJoin("inquilino.pessoaJuridica", "pessoaJuridicaInquilino")
+    .addSelect([
+      "pessoaJuridicaInquilino.id",
+      "pessoaJuridicaInquilino.razaoSocial",
+      "pessoaJuridicaInquilino.cnpj",
     ])
 
     .leftJoinAndSelect("imovel.contratos", "contrato")
