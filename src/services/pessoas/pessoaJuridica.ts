@@ -37,6 +37,7 @@ export const cadastrarPessoaJuridica = async (
   if (emailInUse) {
     throw new Error("E-mail já registrado em User ou PessoaJuridica.");
   }
+  
 */
   if (!pessoaJuridicaData.dadosComuns.password) {
     throw new Error("Senha não fornecida.");
@@ -63,15 +64,39 @@ export const cadastrarPessoaJuridica = async (
 };
 
 export const requeryPessoasJuridicas = async () => {
-  const queryBuilder = PessoaJuridicaRepository.createQueryBuilder("pessoaJuridica")
-    // Se houver outras relações no modelo PessoaJuridica, você pode adicioná-las aqui como fizemos anteriormente. Por exemplo:
-    // .leftJoinAndSelect("pessoaJuridica.imoveisRelacionados", "proprietarioImovel")
-    .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada") // Junta a tabela PessoaJuridica com a Empresa através do campo 'empresa'
-    .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria"); // Junta a tabela PessoaJuridica com a PessoaIntermediaria através do campo 'dadosComuns'
+  const queryBuilder =
+    PessoaJuridicaRepository.createQueryBuilder("pessoaJuridica");
 
-  const result = await queryBuilder.getMany();
+  const pessoasJuridicas = await queryBuilder
+    .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
+    .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
+    .leftJoinAndSelect(
+      "pessoaJuridica.imoveisRelacionadosJur",
+      "proprietarioImovel"
+    )
+    .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
+    .addSelect(["registroImovel.caracteristicas"])
+    .getMany();
 
-  return result;
+  return pessoasJuridicas;
+};
+
+export const requeryPessoaJuridicaPorId = async (id: number) => {
+  const queryBuilder = PessoaJuridicaRepository.createQueryBuilder("pessoaJuridica");
+
+  const pessoaJuridica = await queryBuilder
+    .where("pessoaJuridica.id = :id", { id })
+    .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
+    .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
+    .leftJoinAndSelect(
+      "pessoaJuridica.imoveisRelacionadosJur",
+      "proprietarioImovel"
+    )
+    .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
+    .addSelect(["registroImovel.caracteristicas"])
+    .getOne();
+
+  return pessoaJuridica;
 };
 
 export const obterTodasPessoasJuridicas = async (): Promise<
@@ -117,7 +142,6 @@ export const atualizarPessoaJuridicaPorId = async (
   const dataCopy = { ...data }; // Faz uma cópia superficial do objeto
 
   if (dataCopy.dadosComuns && dataCopy.dadosComuns.id) {
-
     await PessoaIntermediariaRepository.update(
       dataCopy.dadosComuns.id,
       dataCopy.dadosComuns

@@ -259,11 +259,23 @@ export const atualizarImovelPorId = async (
     await ImovelRepository.save(imovel);
   }
 };
-
 export const deletarImovelPorId = async (id: number): Promise<void> => {
-  const imovel = await ImovelRepository.findOne({ where: { id: id } });
+  // Verifique se o imóvel existe
+  const imovel = await imovelRepository.findOne({
+    where: { id: id },
+  });
 
   if (imovel) {
-    await ImovelRepository.remove(imovel);
+    // Primeiro, remova as referências do imóvel na tabela "proprietario_imovel"
+    await imovelRepository.manager
+      .createQueryBuilder()
+      .delete()
+      .from(ProprietarioImovel)
+      .where("registroImovelId = :registroImovelId", { registroImovelId: id })
+      .execute();
+
+    // Em seguida, exclua o imóvel
+    await imovelRepository.remove(imovel);
   }
+
 };

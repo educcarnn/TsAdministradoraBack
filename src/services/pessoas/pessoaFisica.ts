@@ -54,7 +54,6 @@ export const cadastrarPessoa = async (
     }
   }
 
-  // Cria e salva a nova pessoa usando os dados fornecidos e os dados comuns criados
   const novaPessoa = PessoaRepository.create(pessoaData);
   await PessoaRepository.save(novaPessoa);
 
@@ -69,7 +68,6 @@ export const requeryPessoaPorId = async (id: number) => {
 
     .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
     .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
-
     .leftJoinAndSelect("pessoa.fiador", "fiador")
     .leftJoinAndSelect("fiador.imovelComoFianca", "imovelComoFianca")
     .where("pessoa.id = :id", { id });
@@ -83,8 +81,19 @@ export const requeryPessoas = async () => {
   const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
     .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
-    .addSelect(["registroImovel.caracteristicas"]) // Seleciona as características do imóvel
-    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria"); // Junta a tabela Pessoa com a PessoaIntermediaria através do campo 'dadosComuns'
+    .addSelect(["registroImovel.caracteristicas"]) 
+    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria"); 
+
+  const result = await queryBuilder.getMany();
+
+  return result;
+};
+export const requeryPessoasComCaracteristicas = async () => {
+  const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
+    .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
+    .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
+    .addSelect(["registroImovel.caracteristicas"])
+    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria");
 
   const result = await queryBuilder.getMany();
 
@@ -164,7 +173,7 @@ export const atualizarPessoaPorId = async (
   const dataCopy = { ...data }; // Faz uma cópia superficial do objeto
 
   if (dataCopy.dadosComuns && dataCopy.dadosComuns.id) {
-    // Atualizar os dados comuns se eles forem fornecidos
+
     await PessoaIntermediariaRepository.update(
       dataCopy.dadosComuns.id,
       dataCopy.dadosComuns
@@ -174,4 +183,4 @@ export const atualizarPessoaPorId = async (
   await PessoaRepository.update(id, dataCopy);
 };
 
-// ... Resto do código ...
+
