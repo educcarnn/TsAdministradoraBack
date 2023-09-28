@@ -33,6 +33,9 @@ export class PessoaIntermediaria {
     estado: string;
   };
 
+  @Column({ nullable: true })
+  tipoPagamento: string; 
+
   @Column("jsonb", { nullable: true })
   dadoBancarios: {
     chavePix: string;
@@ -41,7 +44,7 @@ export class PessoaIntermediaria {
     conta: string;
   };
 
-  @OneToMany(() => Anexo, (anexo) => anexo.pessoa)
+  @OneToMany(() => Anexo, (anexo) => anexo.pessoa, {nullable: true})
   anexos: Anexo[];
 
   @Column("jsonb", { nullable: true })

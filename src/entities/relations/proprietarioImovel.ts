@@ -20,11 +20,9 @@ export class ProprietarioImovel {
   @JoinColumn({ name: "pessoaId" })
   pessoa?: Pessoa;
 
-  @ManyToOne(() => PessoaJuridica, (Pessoa) => Pessoa.imoveisRelacionadosJur, {
-    nullable: true,
-  })
+  @ManyToOne(() => PessoaJuridica, (Pessoa) => Pessoa.imoveisRelacionadosJur)
   @JoinColumn({ name: "pessoaJuridicaId" })
-  pessoaJuridica?: PessoaJuridica;
+  pessoaJuridica: PessoaJuridica;
 
   @ManyToOne(
     () => RegistroImovel,

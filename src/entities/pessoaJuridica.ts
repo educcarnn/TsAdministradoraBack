@@ -13,6 +13,7 @@ import { RegistroImovel } from "./imovel/imovel";
 import { PessoaIntermediaria } from "./pessoas/pessoa";
 import { Empresa } from "./empresa/empresa";
 import { Inquilino } from "./pessoas/inquilino";
+import { ProprietarioImovel } from "./relations/proprietarioImovel";
 @Entity()
 
 export class PessoaJuridica {
@@ -50,17 +51,15 @@ export class PessoaJuridica {
   @JoinColumn()
   dadosComuns: PessoaIntermediaria; // Este campo contém todas as informações comuns
 
-  @OneToMany(() => RegistroImovel, (imovel) => imovel.imoveisProprietariosJur, {
+  @OneToMany(() => ProprietarioImovel, (imovel) => imovel.pessoaJuridica, {
     nullable: true,
   })
-  imoveisRelacionadosJur: RegistroImovel[];
+  imoveisRelacionadosJur: ProprietarioImovel[];
 
-  // Seus outros relacionamentos podem permanecer aqui
 
   /*
   @OneToMany(() => Contrato, contrato => contrato.PessoaJuridica, {nullable: true})
   contratos: Contrato[];
 
- 
   */
 }

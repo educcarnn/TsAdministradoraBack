@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PessoaJuridica } from '../../entities/pessoaJuridica';
 import { cadastrarPessoaJuridica, obterTodasPessoasJuridicas, atualizarPessoaJuridicaPorId, deletarPessoaJuridicaPorId, obterPessoaJuridicaPorId} from '../../services/pessoas/pessoaJuridica';
 import { requeryPessoasJuridicas } from '../../services/pessoas/pessoaJuridica';
+import { requeryPessoaJuridicaPorId } from '../../services/pessoas/pessoaJuridica';
 
 export const CadastrarPessoaJuridica = async (req: Request, res: Response): Promise<Response> => {
   const data: PessoaJuridica = req.body;
@@ -54,7 +55,9 @@ export const ObterPessoaJuridicaPorId = async (req: Request, res: Response): Pro
   const id: number = Number(req.params.id);
 
   try {
-    const pessoaJuridica = await obterPessoaJuridicaPorId(id);
+
+    const pessoaJuridica = await requeryPessoaJuridicaPorId(id);
+
     if (pessoaJuridica) {
       return res.status(200).json(pessoaJuridica);
     } else {
