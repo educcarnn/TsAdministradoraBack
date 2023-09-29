@@ -11,8 +11,6 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-
-
 // Rotas para pessoas físicas
 router.post(
   "/adicionar-anexo-pessoa-fisica",
