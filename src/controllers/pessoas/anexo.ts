@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   adicionarAnexoAPessoaFisica,
 removerAnexoDaPessoaFisicaPorId,
-  adicionarFotosAPessoaJuridica,
+ adicionarAnexoAPessoaJuridica,
   removerAnexoDaPessoaJuridicaPorId,
 } from "../../services/pessoas/anexo";
 
@@ -53,7 +53,7 @@ export const adicionarAnexoAPessoaJuridicaController = async (
     const { pessoaJuridicaId } = req.body;
     const anexos = req.files as Express.Multer.File[];
 
-    const novosAnexos = await adicionarFotosAPessoaJuridica(
+    const novosAnexos = await adicionarAnexoAPessoaJuridica(
       parseInt(pessoaJuridicaId, 10),
       anexos
     );
