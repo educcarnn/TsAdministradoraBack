@@ -5,11 +5,12 @@ import { requeryPessoasJuridicas } from '../../services/pessoas/pessoaJuridica';
 import { requeryPessoaJuridicaPorId } from '../../services/pessoas/pessoaJuridica';
 
 export const CadastrarPessoaJuridica = async (req: Request, res: Response): Promise<Response> => {
-  const data: PessoaJuridica = req.body;
+  const pessoaJuridicaData: Partial<PessoaJuridica> = req.body;
+  const files = req.files as Express.Multer.File[]; 
 
   try {
-    await cadastrarPessoaJuridica(data);
-    return res.status(201).json({ message: 'Pessoa jurídica cadastrada com sucesso!' });
+    const novaPessoaJuridica = await cadastrarPessoaJuridica(pessoaJuridicaData, files);
+    return res.status(201).json({ message: 'Pessoa jurídica cadastrada com sucesso!', novaPessoaJuridica });
   } catch (error) {
     console.error('Erro ao cadastrar Pessoa Jurídica:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Pessoa Jurídica' });

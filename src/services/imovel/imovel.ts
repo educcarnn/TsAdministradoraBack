@@ -266,7 +266,7 @@ export const deletarImovelPorId = async (id: number): Promise<void> => {
   });
 
   if (imovel) {
-    // Primeiro, remova as referências do imóvel na tabela "proprietario_imovel"
+
     await imovelRepository.manager
       .createQueryBuilder()
       .delete()

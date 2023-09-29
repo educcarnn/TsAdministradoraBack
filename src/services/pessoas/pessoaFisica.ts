@@ -40,7 +40,7 @@ export const cadastrarPessoa = async (
     pessoaData.dadosComuns
   );
 
-  // Se houver arquivos, carregue-os no S3 e adicione os URLs à tabela de anexos
+
   if (files && files.length) {
     for (const file of files) {
       const key = `anexos/${pessoaData.dadosComuns.email}/${file.originalname}`;
@@ -88,6 +88,7 @@ export const requeryPessoas = async () => {
 
   return result;
 };
+
 export const requeryPessoasComCaracteristicas = async () => {
   const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
     .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
@@ -157,7 +158,6 @@ export const deletarPessoaPorId = async (id: number): Promise<void> => {
 
   await PessoaRepository.delete(id);
 
-  // Deletar também os dados na tabela intermediária
   if (pessoa.dadosComuns && pessoa.dadosComuns.id) {
     await PessoaIntermediariaRepository.delete(pessoa.dadosComuns.id);
   }
