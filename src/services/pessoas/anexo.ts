@@ -5,12 +5,15 @@ import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 import { Repository } from "typeorm";
 import { deleteFileFromS3 } from "../../config/awsconfig";
 import { Pessoa } from "../../entities/pessoaFisica";
+import { PessoaJuridica } from "../../entities/pessoaJuridica";
 
 const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
 const AnexoRepository: Repository<Anexo> = AppDataSource.getRepository(Anexo);
 const PessoaFisicaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
+  const PessoaJuridicaRepository: Repository<PessoaJuridica> =
+  AppDataSource.getRepository(PessoaJuridica);
 
 export const adicionarAnexoAPessoaFisica = async (
   pessoaFisicaId: number,
@@ -50,7 +53,6 @@ export const adicionarAnexoAPessoaFisica = async (
       ...novosAnexosArray,
     ];
 
-    // Salve as alterações na pessoa física
     await PessoaFisicaRepository.save(pessoaFisica);
     await PessoaIntermediariaRepository.save(pessoaFisica.dadosComuns);
 
@@ -109,57 +111,54 @@ export const removerAnexoDaPessoaFisicaPorId = async (
 };
 
 
-export const adicionarFotosAPessoaJuridica = async (
+export const adicionarAnexoAPessoaJuridica = async (
   pessoaJuridicaId: number,
-  novasFotos: Express.Multer.File[]
+  anexoData: Express.Multer.File[] // Lista de anexos
 ) => {
-  if (!pessoaJuridicaId) {
-    throw new Error(
-      `Pessoa jurídica com ID ${pessoaJuridicaId} não encontrada`
-    );
+  if (!pessoaJuridicaId || !anexoData || anexoData.length === 0) {
+    throw new Error("Parâmetros inválidos.");
   }
 
   try {
-    // Consulte a pessoa jurídica pelo ID
-    const pessoaJuridica = await PessoaIntermediariaRepository.findOne({
+    const pessoaJuridica = await PessoaJuridicaRepository.findOne({
       where: { id: pessoaJuridicaId },
-      relations: ["anexos"],
+      relations: ["dadosComuns.anexos"], // Certifique-se de que os anexos sejam carregados
     });
 
     if (!pessoaJuridica) {
-      throw new Error(
-        `Pessoa jurídica com ID ${pessoaJuridicaId} não encontrada`
-      );
+      throw new Error(`Pessoa jurídica com ID ${pessoaJuridicaId} não encontrada`);
     }
 
-    const fotosParaAdicionar = [];
+    const novosAnexosArray: Anexo[] = [];
 
-    for (const novaFoto of novasFotos) {
-      const key = `anexosjuridica/${pessoaJuridicaId}/${novaFoto.originalname}`;
-      const fileUrl = await uploadFileToS3(novaFoto, key);
+    for (const anexoFile of anexoData) {
+      const s3FileKey = `anexos/${pessoaJuridica.dadosComuns.email}/${anexoFile.originalname}`;
+      const s3FileUrl = await uploadFileToS3(anexoFile, s3FileKey);
 
-      // Crie um objeto de Anexo com a URL
-      const anexo = new Anexo();
-      anexo.url = fileUrl;
+      const novoAnexo = new Anexo();
+      novoAnexo.url = s3FileUrl;
 
-      // Salve o anexo no banco de dados
-      await PessoaIntermediariaRepository.save(anexo);
+      // Salve o novo objeto Anexo no banco de dados
+      const anexoSalvo = await AnexoRepository.save(novoAnexo);
 
-      // Adicione o objeto Anexo ao array
-      fotosParaAdicionar.push(anexo);
+      novosAnexosArray.push(anexoSalvo);
     }
 
-    // Adicione as novas fotos ao array de anexos da pessoa jurídica
-    pessoaJuridica.anexos = [...pessoaJuridica.anexos, ...fotosParaAdicionar];
+    pessoaJuridica.dadosComuns.anexos = [
+      ...pessoaJuridica.dadosComuns.anexos,
+      ...novosAnexosArray,
+    ];
 
-    await PessoaIntermediariaRepository.save(pessoaJuridica);
+    await PessoaJuridicaRepository.save(pessoaJuridica);
+    await PessoaIntermediariaRepository.save(pessoaJuridica.dadosComuns);
 
-    return pessoaJuridica.anexos;
+    return novosAnexosArray;
   } catch (error) {
-    console.error("Erro ao adicionar fotos à pessoa jurídica:", error);
+    console.error("Erro ao adicionar anexos à pessoa jurídica:", error);
     throw error;
   }
 };
+
 
 export const removerAnexoDaPessoaJuridicaPorId = async (
   pessoaJuridicaId: number,
@@ -171,41 +170,37 @@ export const removerAnexoDaPessoaJuridicaPorId = async (
 
   try {
     // Consulte a pessoa jurídica pelo ID
-    const pessoaJuridica = await PessoaIntermediariaRepository.findOne({
+    const pessoaJuridica = await PessoaJuridicaRepository.findOne({
       where: { id: pessoaJuridicaId },
-      relations: ["anexos"],
+      relations: ["dadosComuns.anexos"],
     });
 
     if (!pessoaJuridica) {
-      throw new Error(
-        `Pessoa jurídica com ID ${pessoaJuridicaId} não encontrada`
-      );
+      throw new Error(`Pessoa jurídica com ID ${pessoaJuridicaId} não encontrada`);
     }
 
-    // Encontre o anexo pelo ID
-    const anexoParaRemover = pessoaJuridica.anexos.find(
+    // Encontre o índice do anexo pelo ID
+    const indexAnexoParaRemover = pessoaJuridica.dadosComuns.anexos.findIndex(
       (anexo) => anexo.id === anexoId
     );
 
-    if (!anexoParaRemover) {
-      throw new Error(
-        `Anexo com ID ${anexoId} não encontrado na pessoa jurídica`
-      );
+    if (indexAnexoParaRemover === -1) {
+      throw new Error(`Anexo com ID ${anexoId} não encontrado`);
     }
 
-    if (anexoParaRemover.url) {
-      await deleteFileFromS3(anexoParaRemover.url);
+    // Remova o anexo do Amazon S3 usando a propriedade 'url' do anexo
+    if (pessoaJuridica.dadosComuns.anexos[indexAnexoParaRemover].url) {
+      await deleteFileFromS3(pessoaJuridica.dadosComuns.anexos[indexAnexoParaRemover].url);
     }
 
-    // Remova a referência do anexo do array de anexos da pessoa jurídica
-    pessoaJuridica.anexos = pessoaJuridica.anexos.filter(
-      (anexo) => anexo.id !== anexoId
-    );
+    // Remova o anexo do array de anexos da pessoa jurídica
+    pessoaJuridica.dadosComuns.anexos.splice(indexAnexoParaRemover, 1);
 
     // Salve as alterações na pessoa jurídica
-    await PessoaIntermediariaRepository.save(pessoaJuridica);
+    await PessoaJuridicaRepository.save(pessoaJuridica);
+    await PessoaIntermediariaRepository.save(pessoaJuridica.dadosComuns);
 
-    return pessoaJuridica.anexos; // Retorna o novo array de anexos da pessoa jurídica após a remoção
+    return pessoaJuridica.dadosComuns.anexos; // Retorna o novo array de anexos da pessoa jurídica após a remoção
   } catch (error) {
     console.error("Erro ao remover o anexo da pessoa jurídica:", error);
     throw error;

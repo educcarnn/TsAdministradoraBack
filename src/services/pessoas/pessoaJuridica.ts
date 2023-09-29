@@ -11,7 +11,7 @@ export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
 export const PessoaJuridicaRepository: Repository<PessoaJuridica> =
   AppDataSource.getRepository(PessoaJuridica);
-  export const AnexoRepository: Repository<Anexo> =
+export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
 export const hashPassword = async (password: string): Promise<string> => {
   const saltRounds = 10;
@@ -87,28 +87,41 @@ export const requeryPessoasJuridicas = async () => {
   const pessoasJuridicas = await queryBuilder
     .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
     .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
+
     .leftJoinAndSelect(
       "pessoaJuridica.imoveisRelacionadosJur",
       "proprietarioImovel"
     )
+    //Anexos
+    .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
+
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
+
     .getMany();
 
   return pessoasJuridicas;
 };
 
 export const requeryPessoaJuridicaPorId = async (id: number) => {
-  const queryBuilder = PessoaJuridicaRepository.createQueryBuilder("pessoaJuridica");
+  const queryBuilder =
+    PessoaJuridicaRepository.createQueryBuilder("pessoaJuridica");
 
   const pessoaJuridica = await queryBuilder
     .where("pessoaJuridica.id = :id", { id })
     .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
     .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
+
+
+  //Anexos
+  .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
+  
+  //Imóveis
     .leftJoinAndSelect(
       "pessoaJuridica.imoveisRelacionadosJur",
       "proprietarioImovel"
     )
+
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
     .getOne();
