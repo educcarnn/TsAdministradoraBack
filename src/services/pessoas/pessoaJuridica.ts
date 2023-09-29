@@ -4,12 +4,15 @@ import { AppDataSource } from "../../data-source";
 import bcrypt from "bcrypt";
 import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
+import { Anexo } from "../../entities/pessoas/anexo";
+import { uploadFileToS3 } from "../../config/awsconfig";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
 export const PessoaJuridicaRepository: Repository<PessoaJuridica> =
   AppDataSource.getRepository(PessoaJuridica);
-
+  export const AnexoRepository: Repository<Anexo> =
+  AppDataSource.getRepository(Anexo);
 export const hashPassword = async (password: string): Promise<string> => {
   const saltRounds = 10;
   return bcrypt.hash(password, saltRounds);
@@ -23,7 +26,8 @@ export const checkPassword = async (
 };
 
 export const cadastrarPessoaJuridica = async (
-  pessoaJuridicaData: Partial<PessoaJuridica>
+  pessoaJuridicaData: Partial<PessoaJuridica>,
+  files?: Express.Multer.File[]
 ): Promise<PessoaJuridica> => {
   if (
     !pessoaJuridicaData.dadosComuns ||
@@ -54,6 +58,19 @@ export const cadastrarPessoaJuridica = async (
 
   // Em seguida, associamos a entidade intermediária à entidade PessoaJuridica
   pessoaJuridicaData.dadosComuns = dadosComunsCriados;
+
+  if (files && files.length) {
+    for (const file of files) {
+      const key = `anexosjuridica/${pessoaJuridicaData.dadosComuns.email}/${file.originalname}`;
+      const fileUrl = await uploadFileToS3(file, key);
+
+      const anexo = new Anexo();
+      anexo.url = fileUrl;
+      anexo.pessoa = dadosComunsCriados;
+
+      await AnexoRepository.save(anexo);
+    }
+  }
 
   const novaPessoaJuridica =
     PessoaJuridicaRepository.create(pessoaJuridicaData);

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from "typeorm";
 import { Anexo } from "./anexo";
 import { Inquilino } from "./inquilino";
 @Entity()
@@ -6,17 +6,17 @@ export class PessoaIntermediaria {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   tipo: string; // comum entre ambas
 
-  @Column("text", { array: true, default: () => "ARRAY[]::text[]" })
+  @Column("text", { array: true, default: () => "ARRAY[]::text[]",  nullable: true })
   funcao: string[]; // comum entre ambas
 
   @Column({ nullable: true })
-  telefoneFixo: string; // em PessoaJuridica, é apenas "telefone"
+  telefoneFixo: string; 
 
-  @Column()
-  telefoneCelular: string; // assumindo que é o mesmo que "telefone" de PessoaJuridica
+  @Column({ nullable: true })
+  telefoneCelular: string; 
 
   @Column({ nullable: true })
   email: string; // comum entre ambas
@@ -44,12 +44,13 @@ export class PessoaIntermediaria {
     conta: string;
   };
 
-  @OneToMany(() => Anexo, (anexo) => anexo.pessoa, {nullable: true})
-  anexos: Anexo[];
+  @OneToMany(() => Anexo, (anexo) => anexo.pessoa, { nullable: true })
+  anexos: Anexo[]
 
   @Column("jsonb", { nullable: true })
   lista_email: string[]; // comum entre ambas
 
   @Column("jsonb", { nullable: true })
   lista_repasse: string[]; // comum entre ambas
+
 }

@@ -40,6 +40,7 @@ import fiador from "../routes/pessoas/fiador"
 import inquilino from "../routes/pessoas/inquilino"
 import proprietario from "../routes/pessoas/proprietario"
 import relationsempresa from "../routes/empresa/relationsEmpresa"
+import anexoPessoa from "../routes/pessoas/anexo"
 import { removerAnexoDoImovelPorIdController } from "../controllers/imovel/anexos";
 import { adicionarAnexoAoImovelController } from "../controllers/imovel/anexos";
 import { adicionarFotoAoImovelController } from "../controllers/imovel/anexos";
@@ -63,6 +64,7 @@ router.use("/", proprietario)
 
 router.use("/", empresa)
 router.use("/", relationsempresa)
+router.use("/", anexoPessoa)
 
 
 // Rotas para Imóveis

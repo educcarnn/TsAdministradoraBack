@@ -90,7 +90,6 @@ export const adicionarAnexoAoImovel = async (
       const s3FileKey = `imoveis/${imovelId}/${anexoFile.originalname}`;
       const s3FileUrl = await uploadFileToS3(anexoFile, s3FileKey);
 
-      // Crie um novo objeto de Anexo com a URL do arquivo no S3
       const novoAnexo = new Anexo();
       novoAnexo.url = s3FileUrl;
 
