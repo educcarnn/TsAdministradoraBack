@@ -112,11 +112,10 @@ export const requeryPessoaJuridicaPorId = async (id: number) => {
     .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
     .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
 
+    //Anexos
+    .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
 
-  //Anexos
-  .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
-  
-  //Imóveis
+    //Imóveis
     .leftJoinAndSelect(
       "pessoaJuridica.imoveisRelacionadosJur",
       "proprietarioImovel"
