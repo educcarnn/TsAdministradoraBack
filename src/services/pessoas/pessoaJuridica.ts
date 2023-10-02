@@ -6,6 +6,7 @@ import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 import { Anexo } from "../../entities/pessoas/anexo";
 import { uploadFileToS3 } from "../../config/awsconfig";
+import { Socio } from "../../entities/pessoas/juridica/socio";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
@@ -13,6 +14,9 @@ export const PessoaJuridicaRepository: Repository<PessoaJuridica> =
   AppDataSource.getRepository(PessoaJuridica);
 export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
+export const SocioRepository: Repository<Socio> =
+  AppDataSource.getRepository(Socio);
+
 export const hashPassword = async (password: string): Promise<string> => {
   const saltRounds = 10;
   return bcrypt.hash(password, saltRounds);
@@ -27,6 +31,7 @@ export const checkPassword = async (
 
 export const cadastrarPessoaJuridica = async (
   pessoaJuridicaData: Partial<PessoaJuridica>,
+  socioData: { nome: string }[],
   files?: Express.Multer.File[]
 ): Promise<PessoaJuridica> => {
   if (
@@ -35,14 +40,13 @@ export const cadastrarPessoaJuridica = async (
   ) {
     throw new Error("E-mail não fornecido.");
   }
-
   /*
   const emailInUse = await isEmailInUse(pessoaJuridicaData.dadosComuns.email);
   if (emailInUse) {
     throw new Error("E-mail já registrado em User ou PessoaJuridica.");
   }
-  
-*/
+  */
+
   if (!pessoaJuridicaData.dadosComuns.password) {
     throw new Error("Senha não fornecida.");
   }
@@ -56,27 +60,39 @@ export const cadastrarPessoaJuridica = async (
     pessoaJuridicaData.dadosComuns
   );
 
-  // Em seguida, associamos a entidade intermediária à entidade PessoaJuridica
   pessoaJuridicaData.dadosComuns = dadosComunsCriados;
+  const novaPessoaJuridica = PessoaJuridicaRepository.create(pessoaJuridicaData);
 
+  // Salve a nova instância de PessoaJuridica no banco de dados
+  await PessoaJuridicaRepository.save(novaPessoaJuridica);
+  
+
+  for (const socioInfo of socioData) {
+    const socio = new Socio();
+    socio.nome = socioInfo.nome;
+  
+    // Associe o sócio à nova instância de PessoaJuridica
+    socio.pessoaJuridica = novaPessoaJuridica;
+  
+    // Salve cada instância de Socio
+    await SocioRepository.save(socio);
+  }
+  
+  // Se houver arquivos a serem salvos, faça isso depois de associar os sócios
   if (files && files.length) {
     for (const file of files) {
       const key = `anexosjuridica/${pessoaJuridicaData.dadosComuns.email}/${file.originalname}`;
       const fileUrl = await uploadFileToS3(file, key);
-
+  
       const anexo = new Anexo();
       anexo.url = fileUrl;
       anexo.pessoa = dadosComunsCriados;
-
+  
       await AnexoRepository.save(anexo);
     }
   }
-
-  const novaPessoaJuridica =
-    PessoaJuridicaRepository.create(pessoaJuridicaData);
-
-  await PessoaJuridicaRepository.save(novaPessoaJuridica);
-
+  
+  // Retorne a nova instância de PessoaJuridica
   return novaPessoaJuridica;
 };
 
@@ -86,6 +102,7 @@ export const requeryPessoasJuridicas = async () => {
 
   const pessoasJuridicas = await queryBuilder
     .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
+    .leftJoinAndSelect("pessoaJuridica.socios", "socio")
     .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
 
     .leftJoinAndSelect(
@@ -110,6 +127,7 @@ export const requeryPessoaJuridicaPorId = async (id: number) => {
   const pessoaJuridica = await queryBuilder
     .where("pessoaJuridica.id = :id", { id })
     .leftJoinAndSelect("pessoaJuridica.empresa", "empresaRelacionada")
+    .leftJoinAndSelect("pessoaJuridica.socios", "socio")
     .leftJoinAndSelect("pessoaJuridica.dadosComuns", "pessoaIntermediaria")
 
     //Anexos

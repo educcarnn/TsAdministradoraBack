@@ -47,6 +47,7 @@ import { adicionarFotoAoImovelController } from "../controllers/imovel/anexos";
 import { removerFotoDoImovelPorIdController } from "../controllers/imovel/anexos";
 import { adicionarContratoAoImovelController } from "../controllers/imovel/contratoservico";
 import { removerContratoDoImovelPorIdController } from "../controllers/imovel/contratoservico";
+import socio from "../routes/pessoas/Jurídica/socio"
 
 import multer from "multer";
 
@@ -61,6 +62,7 @@ router.use("/", juridica)
 router.use("/", fiador)
 router.use("/", inquilino)
 router.use("/", proprietario)
+router.use("/", socio)
 
 router.use("/", empresa)
 router.use("/", relationsempresa)

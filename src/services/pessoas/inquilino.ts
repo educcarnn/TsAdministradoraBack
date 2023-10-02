@@ -72,7 +72,6 @@ const RegistroImovelRepository: Repository<RegistroImovel> =
     return novosInquilinos;
   };
 
-// Obter Inquilino por ID
 export const obterInquilinoPorId = async (
   id: number
 ): Promise<Inquilino | undefined> => {

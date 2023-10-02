@@ -8,12 +8,13 @@ import {
   OneToMany,
   ManyToOne,
 } from "typeorm";
-import { Contrato } from "./contratos/contrato";
-import { RegistroImovel } from "./imovel/imovel";
+
 import { PessoaIntermediaria } from "./pessoas/pessoa";
 import { Empresa } from "./empresa/empresa";
 import { Inquilino } from "./pessoas/inquilino";
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
+import { Socio } from "./pessoas/juridica/socio";
+
 @Entity()
 
 export class PessoaJuridica {
@@ -35,13 +36,13 @@ export class PessoaJuridica {
   @Column()
   dataAberturaEmpresa: string;
 
-  @Column()
-  novoSocioAdministrador: string;
+  @OneToMany(() => Socio, (socio) => socio.pessoaJuridica, { cascade: true })
+  socios: Socio[];
 
   @Column({ nullable: true })
   password?: string;
 
-  @Column() // Defina a coluna da chave estrangeira
+  @Column() 
   dadosComunsId: number;
 
   @ManyToOne(() => Empresa, (empresa) => empresa.pessoaJuridicas)
@@ -55,6 +56,8 @@ export class PessoaJuridica {
     nullable: true,
   })
   imoveisRelacionadosJur: ProprietarioImovel[];
+  
+  nome: string;
 
 
   /*
