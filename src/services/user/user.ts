@@ -7,7 +7,6 @@ import { PessoaRepository } from "../pessoas/pessoaFisica";
 import { PessoaIntermediariaRepository } from "../pessoas/pessoaFisica";
 
 export const userRepository = AppDataSource.getRepository(User);
-
 export const createUser = async (userData: Partial<User>): Promise<User> => {
   if (!userData.email) {
     throw new Error("E-mail não fornecido.");
@@ -18,9 +17,12 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
     throw new Error("E-mail já registrado em User ou Pessoa.");
   }
 
- 
   if (!userData.password) {
     throw new Error("Senha não fornecida.");
+  }
+
+  if (userData.role === "admin") {
+    throw new Error("A criação de usuários 'admin' não é permitida aqui.");
   }
 
   userData.password = await hashPassword(userData.password);
@@ -50,7 +52,6 @@ export const findUserByEmail = async (
     return undefined;
   }
 
-  // Busca na tabela de PessoaFisica baseado na relação com a PessoaIntermediaria
   const pessoa = await PessoaRepository.findOne({
     where: { dadosComunsId: pessoaIntermediaria.id },
   });
@@ -98,11 +99,11 @@ export const deleteUserById = async (id: number): Promise<void> => {
 
   await userRepository.remove(user);
 };
-
+/*
 export const createInvite = async (userData: any) => {
   const userRepository = AppDataSource.getRepository(User);
 
-  // Neste caso, não estamos salvando a senha, pois a ideia é que o usuário defina a senha quando aceitar o convite.
+ 
   const user = new User();
   user.email = userData.email;
   user.role = userData.role || "user";
@@ -111,3 +112,4 @@ export const createInvite = async (userData: any) => {
 
   return user;
 };
+*/

@@ -7,8 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { RegistroImovel } from "./imovel/imovel";
-import { Contrato } from "./contratos/contrato";
+
 import { ProprietarioImovel } from "./relations/proprietarioImovel";
 import { ContratoInquilino } from "./relations/contratoInquilino";
 import { ContratoProprietario } from "./relations/contratoProprietario";
@@ -87,7 +86,7 @@ export class Pessoa {
   @OneToMany(() => Proprietario, (Proprietario) => Proprietario.pessoa)
   proprietario: Proprietario[];
 
-  // Relação com contratos onde a pessoa é proprietária
+
   @OneToMany(
     () => ContratoProprietario,
     (contratoProprietario) => contratoProprietario.proprietario

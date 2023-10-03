@@ -5,7 +5,6 @@ import {
   OneToMany,
 
 } from "typeorm";
-
 import { Pessoa } from "../pessoaFisica";
 import { User } from "../user";
 
