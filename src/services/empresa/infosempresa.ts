@@ -36,6 +36,6 @@ export const obterImoveisDaEmpresa = async (
 
     return imoveisDaEmpresa;
   } catch (error) {
-    throw new Error(`Erro ao obter imóveis da empresa: ${error.message}`);
+    throw new Error(`Erro ao obter imóveis da empresa`);
   }
 };
