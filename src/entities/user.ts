@@ -23,12 +23,12 @@ export class User {
 
   @Column({
     type: "enum",
-    enum: ["admin", "user"],
+    enum: ["admin", "user", "Jurídica"],
     default: "user",
   })
   role: string;
 
   @ManyToOne(() => Empresa, empresa => empresa.administradores)
-  @JoinColumn({ name: "empresaId" })  // A coluna que vai guardar o ID da empresa no User
+  @JoinColumn({ name: "empresaId" })
   empresaAdministrada: Empresa;
 }

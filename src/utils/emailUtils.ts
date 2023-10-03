@@ -11,6 +11,6 @@ export const isEmailInUse = async (email: string): Promise<boolean> => {
 
     const user = await userRepository.findOne({ where: { email: email } });
 
-    // Verifique na tabela de usuários se o email está em uso.
+    
     return !!user;
 };

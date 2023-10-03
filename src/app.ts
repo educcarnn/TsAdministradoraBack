@@ -3,7 +3,6 @@ import routes from "./routes/routes";
 
 const app = express();
 
-// Lista dos domínios que você quer permitir
 const origensPermitidas = [
     'http://localhost:3000',
     'http://localhost:3001',

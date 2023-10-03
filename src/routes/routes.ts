@@ -30,7 +30,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/user/authOrm";
-import { inviteAdmin } from "../controllers/user/authOrm";
+
 import { isAuthenticated } from "../middlewares/isAuth";
 import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
 import fisica from "../routes/pessoas/fisica"
@@ -48,6 +48,7 @@ import { removerFotoDoImovelPorIdController } from "../controllers/imovel/anexos
 import { adicionarContratoAoImovelController } from "../controllers/imovel/contratoservico";
 import { removerContratoDoImovelPorIdController } from "../controllers/imovel/contratoservico";
 import socio from "../routes/pessoas/Jurídica/socio"
+import invite from "../routes/emails/invite"
 
 import multer from "multer";
 
@@ -56,14 +57,18 @@ const upload = multer({ storage: storage });
 
 const router = express.Router();
 module.exports = router;
-
+// Pessoa
 router.use("/", fisica);
 router.use("/", juridica)
+
+router.use("/", invite)
+
 router.use("/", fiador)
 router.use("/", inquilino)
 router.use("/", proprietario)
 router.use("/", socio)
 
+// Empresa
 router.use("/", empresa)
 router.use("/", relationsempresa)
 router.use("/", anexoPessoa)
@@ -86,7 +91,7 @@ router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUser, ObterImovelPorI
 router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
 router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUser, AtualizarImovel);
 
-//Rotas para anexos
+
 router.delete("/remover-anexos-imovel",removerAnexoDoImovelPorIdController )
 router.post("/adicionar-anexos-imovel", upload.array('listaAnexos', 10), adicionarAnexoAoImovelController)
 
@@ -104,7 +109,6 @@ router.delete("/contrato-delete/:id",   isAuthenticated ,isAdmin,ExcluirContrato
 router.patch("/contrato-patch/:id",  isAuthenticated ,isAdmin, AtualizarContrato);
 
 // User
-router.post("/users/invite-admin", inviteAdmin);
 router.post("/admin/register", registerUser)
 router.post("/users/login", loginUser);
 router.patch("/users/:id", updateUser);

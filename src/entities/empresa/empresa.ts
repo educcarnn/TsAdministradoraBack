@@ -3,11 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-  ManyToMany,
-  JoinTable
+
 } from "typeorm";
 
 import { Pessoa } from "../pessoaFisica";
@@ -34,8 +30,8 @@ export class Empresa {
   @OneToMany(() => PessoaJuridica, (PessoaJuridica) => PessoaJuridica.empresa, {
     cascade: true,
   })
-  pessoaJuridicas: PessoaJuridica[]; // mudança do nome de pessoaJuridica para pessoaJuridicas indicando ser uma lista
+  pessoaJuridicas: PessoaJuridica[]; 
 
   @OneToMany(() => User, user => user.empresaAdministrada)
-  administradores: User[];  // Nome mudado para "administradores" para refletir que pode haver vários
+  administradores: User[];
 }
