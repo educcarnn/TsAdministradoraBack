@@ -26,7 +26,7 @@ export const requeryEmpresas = async () => {
     .addSelect(["pessoaJuridica.id", "pessoaJuridica.razaoSocial", "pessoaJuridica.nomeFantasia"])
     // Junta com a tabela User (administradores - agora será um array, não apenas uma entidade)
     .leftJoinAndSelect("empresa.administradores", "administrador")
-    .addSelect(["administrador.id", "administrador.nome"]); // Suponho que o User tem um campo chamado "nome". Troque conforme a estrutura real de seu modelo User.
+   
 
   const result = await queryBuilder.getMany();
 
