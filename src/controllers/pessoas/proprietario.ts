@@ -57,18 +57,21 @@ export const ExcluirProprietario = async (
   }
 };
 
-export const AtualizarProprietario = async (
+export const AtualizarProprietarios = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { id } = req.params;
-  const data: ProprietarioImovel = req.body as ProprietarioImovel;
+  const { proprietarios } = req.body; // Receba a lista de Proprietários a serem atualizados
 
   try {
-    await atualizarProprietario(Number(id), data);
-    return res.status(200).json({ message: "Proprietário atualizado com sucesso" });
+    // Itere pela lista de Proprietários e atualize cada um deles
+    for (const proprietario of proprietarios) {
+      await atualizarProprietario(proprietario.id, proprietario);
+    }
+
+    return res.status(200).json({ message: "Proprietários atualizados com sucesso" });
   } catch (error) {
-    console.error("Erro ao atualizar Proprietário:", error);
-    return res.status(500).json({ message: "Erro ao atualizar Proprietário" });
+    console.error("Erro ao atualizar Proprietários:", error);
+    return res.status(500).json({ message: "Erro ao atualizar Proprietários" });
   }
 };

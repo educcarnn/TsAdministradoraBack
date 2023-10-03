@@ -3,7 +3,7 @@ import {
   CadastrarProprietario,
   ObterProprietarioPorId,
   ExcluirProprietario,
-  AtualizarProprietario
+  AtualizarProprietarios
 } from "../../controllers/pessoas/proprietario";
 
 const router = express.Router();
@@ -11,6 +11,6 @@ const router = express.Router();
 router.post("/cadastrar-proprietario", CadastrarProprietario);
 router.get("/obter-proprietario/:id", ObterProprietarioPorId);
 router.delete("/deletar-proprietario", ExcluirProprietario);
-router.patch("/atualizar-proprietario/:id", AtualizarProprietario);
+router.patch("/atualizar-proprietario", AtualizarProprietarios);
 
 export default router;

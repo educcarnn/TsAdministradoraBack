@@ -8,7 +8,7 @@ import {
   atualizarEmpresaPorId
 } from '../../services/empresa/empresa'; // Atualize o caminho do import para o arquivo de serviço
 import { requeryEmpresas } from '../../services/empresa/empresa';
-
+import { requeryEmpresaPorId } from '../../services/empresa/empresa';
 export const CadastrarEmpresa = async (req: Request, res: Response): Promise<Response> => {
   const data: Empresa = req.body as Empresa;
 
@@ -35,7 +35,7 @@ export const ObterEmpresaPorId = async (req: Request, res: Response): Promise<Re
   const { id } = req.params;
 
   try {
-    const empresa = await obterEmpresaPorId(Number(id));
+    const empresa = await requeryEmpresaPorId(Number(id));
 
     if (!empresa) {
       return res.status(404).json({ message: 'Empresa não encontrada' });

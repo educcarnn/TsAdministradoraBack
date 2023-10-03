@@ -1,23 +1,22 @@
-import { createInvite } from "../user/user";
 import sgMail from "@sendgrid/mail";
 import { Request, Response } from "express";
-
 import * as jwt from "jsonwebtoken";
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
 
 export const inviteAdmin = async (req: Request, res: Response) => {
   try {
-    const newInvite = await createInvite(req.body);
+    const data = req.body;
 
     const token = jwt.sign(
-      { userId: newInvite.id, role: newInvite.role },
+      { role: data.role },
       process.env.JWT_SECRET as string,
       { expiresIn: "3h" }
     );
 
     let baseActivationURL = "";
 
-    switch (newInvite.role) {
+    switch (data.role) {
       case "admin":
         baseActivationURL = "https://tsadministradora.com.br/invite-admin";
         break;
@@ -37,24 +36,31 @@ export const inviteAdmin = async (req: Request, res: Response) => {
     const activationLink = `${baseActivationURL}?token=${token}`;
 
     const msg = {
-      to: newInvite.email,
+      to: data.email,
       from: "tsadmsistema@gmail.com",
-      subject: "Ative sua conta - Ts Administradora",
-      text: `Olá! Ative sua conta e defina sua senha clicando no seguinte link: ${activationLink}`,
-      html: `<p>Olá! Ative sua conta e defina sua senha clicando no seguinte <a href="${activationLink}">link</a>. A partir do momento que foi enviado o link terá 3 horas de acesso, passado esse horário, só poderá ser feito o cadastro mediante a reenvio</p>`,
+      subject: "Convite para Ts Administradora",
+      text: `Você foi convidado para se juntar à Ts Administradora. Clique no link a seguir para preencher seus dados: ${activationLink}`,
+      html: `<p>Você foi convidado para se juntar à Ts Administradora. Clique no <a href="${activationLink}">link</a> a seguir para preencher seus dados. O link será válido por 3 horas.</p>`,
     };
 
+    // Envie o convite por e-mail
     await sgMail.send(msg);
-    res.status(201).json({ message: "Convite enviado!" });
+
+    // Não crie um usuário aqui, apenas envie o convite
+
+    // Redirecione para a URL apropriada com base no tipo de pessoa
+    if (baseActivationURL) {
+      res.redirect(baseActivationURL);
+    } else {
+      res.status(400).json({ message: "Tipo de pessoa inválido." });
+    }
   } catch (error) {
     console.error("Erro detalhado:", error);
 
     if ((error as Error).message === "Role desconhecida") {
       res.status(400).json({ message: "Role desconhecida" });
     } else {
-      res
-        .status(400)
-        .json({ message: "E-mail em uso ou falha ao enviar o convite" });
+      res.status(400).json({ message: "Falha ao enviar o convite" });
     }
   }
 };

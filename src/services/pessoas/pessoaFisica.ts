@@ -35,7 +35,7 @@ export const cadastrarPessoa = async (
     pessoaData.dadosComuns.password
   );
 
-  // Salva os dados comuns no banco de dados
+
   const dadosComunsCriados = await PessoaIntermediariaRepository.save(
     pessoaData.dadosComuns
   );

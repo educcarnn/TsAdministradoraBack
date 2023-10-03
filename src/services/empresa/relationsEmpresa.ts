@@ -6,16 +6,16 @@ import { User } from "../../entities/user";
 import { PessoaJuridica } from "../../entities/pessoaJuridica";
 
 export const EmpresaRepository: Repository<Empresa> =
-  AppDataSource.getRepository(Empresa);
+AppDataSource.getRepository(Empresa);
 export const PessoaRepository: Repository<Pessoa> =
-  AppDataSource.getRepository(Pessoa);
-  export const UserRepository: Repository<User> =
-  AppDataSource.getRepository(User); 
-  export const PessoaJuridicaRepository: Repository<PessoaJuridica> =
-  AppDataSource.getRepository(PessoaJuridica);
+AppDataSource.getRepository(Pessoa);
+export const UserRepository: Repository<User> =
+AppDataSource.getRepository(User); 
+export const PessoaJuridicaRepository: Repository<PessoaJuridica> =
+AppDataSource.getRepository(PessoaJuridica);
 
 export const adicionarPessoaAEmpresa = async (
-  empresaId: number,
+empresaId: number,
   pessoaId: number
 ): Promise<Pessoa> => {
 
@@ -51,16 +51,16 @@ export const associarAdminAEmpresa = async (
 ): Promise<void> => {
   const empresa = await EmpresaRepository.findOne({ 
     where: { id: empresaId }, 
-    relations: ["administradores"]  // Carregar os administradores existentes
+    relations: ["administradores"]  
   });
   if (!empresa) throw new Error("Empresa não encontrada.");
 
   const user = await UserRepository.findOne({ where: { id: userId } });
   if (!user) throw new Error("Administrador não encontrado.");
 
-  // Verificar se o usuário já é um administrador
+
   if (!empresa.administradores.some(admin => admin.id === user.id)) {
-    empresa.administradores.push(user);  // Adicionar novo administrador à lista existente
+    empresa.administradores.push(user);  
   }
 
   await EmpresaRepository.save(empresa);
