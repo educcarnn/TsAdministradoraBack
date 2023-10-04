@@ -66,6 +66,7 @@ export class Pessoa {
   genero: string;
 
   @ManyToOne(() => Empresa, (empresa) => empresa.pessoas)
+  @JoinColumn({ name: "empresaId" })
   empresa: Empresa;
 
   @Column() // Defina a coluna da chave estrangeira
