@@ -61,6 +61,7 @@ export const loginUser = async (req: Request, res: Response) => {
       message: "Login bem-sucedido!",
       token: token,
       role: user.role || "user",
+      empresa: user.empresa || null,
       tokenExpiresAt: expirationDate,
     });
   } catch (error) {

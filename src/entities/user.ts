@@ -13,7 +13,6 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  
   @Column()
   @IsEmail()
   email: string;
@@ -28,7 +27,7 @@ export class User {
   })
   role: string;
 
-  @ManyToOne(() => Empresa, empresa => empresa.administradores)
+  @ManyToOne(() => Empresa, (empresa) => empresa.administradores)
   @JoinColumn({ name: "empresaId" })
-  empresaAdministrada: Empresa;
+  empresa: Empresa;
 }

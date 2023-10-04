@@ -39,7 +39,6 @@ export const findUserByEmail = async (
 ): Promise<User | Pessoa | undefined> => {
   const user = await userRepository.findOne({ where: { email: email } });
 
-  // Se já encontrou um usuário, retorna-o
   if (user) {
     return user;
   }

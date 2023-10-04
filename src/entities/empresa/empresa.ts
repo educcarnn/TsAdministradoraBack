@@ -31,6 +31,7 @@ export class Empresa {
   })
   pessoaJuridicas: PessoaJuridica[]; 
 
-  @OneToMany(() => User, user => user.empresaAdministrada)
+  @OneToMany(() => User, user => user.empresa)
   administradores: User[];
+  empresaId: null;
 }

@@ -46,9 +46,7 @@ export const inviteAdmin = async (req: Request, res: Response) => {
     
     await sgMail.send(msg);
 
-    // Não crie um usuário aqui, apenas envie o convite
 
-    // Redirecione para a URL apropriada com base no tipo de pessoa
     if (baseActivationURL) {
 
       res.redirect(baseActivationURL);
