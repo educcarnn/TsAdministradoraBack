@@ -43,14 +43,16 @@ export const inviteAdmin = async (req: Request, res: Response) => {
       html: `<p>Você foi convidado para se juntar à Ts Administradora. Clique no <a href="${activationLink}">link</a> a seguir para preencher seus dados. O link será válido por 3 horas.</p>`,
     };
 
-    // Envie o convite por e-mail
+    
     await sgMail.send(msg);
 
     // Não crie um usuário aqui, apenas envie o convite
 
     // Redirecione para a URL apropriada com base no tipo de pessoa
     if (baseActivationURL) {
+
       res.redirect(baseActivationURL);
+
     } else {
       res.status(400).json({ message: "Tipo de pessoa inválido." });
     }
