@@ -61,11 +61,11 @@ export const AtualizarProprietarios = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { proprietarios } = req.body; // Receba a lista de Proprietários a serem atualizados
+  const { imoveisProprietarios  } = req.body; // Receba a lista de Proprietários a serem atualizados
 
   try {
-    // Itere pela lista de Proprietários e atualize cada um deles
-    for (const proprietario of proprietarios) {
+
+    for (const proprietario of imoveisProprietarios) {
       await atualizarProprietario(proprietario.id, proprietario);
     }
 

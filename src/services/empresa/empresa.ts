@@ -18,10 +18,6 @@ export const requeryEmpresas = async () => {
   const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
     .select(["empresa.id", "empresa.nome"])
     .leftJoinAndSelect("empresa.pessoas", "pessoa")
-    .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
-    .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
-    .addSelect(["registroImovel.caracteristicas"])
-    .addSelect(["pessoa.id", "pessoa.nome"])
 
     .leftJoinAndSelect("empresa.pessoaJuridicas", "pessoaJuridica")
     .addSelect([
@@ -41,11 +37,7 @@ export const requeryEmpresaPorId = async (empresaId: number) => {
   const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
     .select(["empresa.id", "empresa.nome"])
     .leftJoinAndSelect("empresa.pessoas", "pessoa")
-    .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
-    .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
-    .addSelect(["registroImovel.caracteristicas"])
-    .addSelect(["pessoa.id", "pessoa.nome"])
-
+  
     .leftJoinAndSelect("empresa.pessoaJuridicas", "pessoaJuridica")
     .addSelect([
       "pessoaJuridica.id",

@@ -49,7 +49,7 @@ import { adicionarContratoAoImovelController } from "../controllers/imovel/contr
 import { removerContratoDoImovelPorIdController } from "../controllers/imovel/contratoservico";
 import socio from "../routes/pessoas/Jurídica/socio"
 import invite from "../routes/emails/invite"
-
+import infosempresa from "../routes/empresa/infosempresa"
 import multer from "multer";
 
 const storage = multer.memoryStorage();
@@ -70,6 +70,7 @@ router.use("/", socio)
 
 // Empresa
 router.use("/", empresa)
+router.use("/", infosempresa)
 router.use("/", relationsempresa)
 router.use("/", anexoPessoa)
 

@@ -5,36 +5,57 @@ import { ProprietarioImovel } from "../../entities/relations/proprietarioImovel"
 import { RegistroImovel } from "../../entities/imovel/imovel";
 import { AppDataSource } from "../../data-source";
 
-const empresaRepository: Repository<Empresa> = AppDataSource.getRepository(
-    Empresa
-  );
-  const pessoaRepository: Repository<Pessoa> = AppDataSource.getRepository(
-    Pessoa
-  );
-export const obterImoveisDaEmpresa = async (
-  empresaId: number
-) => {
+const empresaRepository: Repository<Empresa> =
+  AppDataSource.getRepository(Empresa);
+
+export const obterImoveisDaEmpresa = async (empresaId: number) => {
   try {
     const empresa = await empresaRepository
       .createQueryBuilder("empresa")
       .where("empresa.id = :empresaId", { empresaId })
       .leftJoinAndSelect("empresa.pessoas", "pessoa")
-      .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
-      .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
+      .leftJoinAndSelect(
+        "pessoa.imoveisRelacionados",
+        "proprietarioImovelPessoa"
+      )
+      .leftJoinAndSelect("empresa.pessoaJuridicas", "pessoaJuridica")
+      .leftJoinAndSelect(
+        "pessoaJuridica.imoveisRelacionadosJur",
+        "proprietarioImovelJuridico"
+      )
+      .leftJoinAndSelect(
+        "proprietarioImovelJuridico.registroImovel",
+        "registroImovelJuridico"
+      )
+      .leftJoinAndSelect(
+        "proprietarioImovelPessoa.registroImovel",
+        "registroImovelPessoa"
+      )
+      .leftJoinAndSelect(
+        "proprietarioImovelJuridico.registroImovel",
+        "registroImovel"
+      )
+      .addSelect(["registroImovel.caracteristicas"])
       .getOne();
 
     if (!empresa) {
       throw new Error("Empresa não encontrada.");
     }
 
-    // Extraia os imóveis da empresa
-    const imoveisDaEmpresa = empresa.pessoas.flatMap((pessoa) =>
-      pessoa.imoveisRelacionados.map(
-        (proprietarioImovel) => proprietarioImovel.registroImovel
-      )
-    );
+    const imoveisDaEmpresa = [
+      ...empresa.pessoas.flatMap((pessoa) =>
+        pessoa.imoveisRelacionados.map(
+          (proprietarioImovel) => proprietarioImovel.registroImovel
+        )
+      ),
+      ...empresa.pessoaJuridicas.flatMap((pessoaJuridica) =>
+        pessoaJuridica.imoveisRelacionadosJur.map(
+          (proprietarioImovel) => proprietarioImovel.registroImovel
+        )
+      ),
+    ];
 
-    return imoveisDaEmpresa;
+    return imoveisDaEmpresa.filter((imovel) => imovel !== null);
   } catch (error) {
     throw new Error(`Erro ao obter imóveis da empresa`);
   }
