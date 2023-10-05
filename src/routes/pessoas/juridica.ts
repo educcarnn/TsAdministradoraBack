@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 router.post("/cadastrar-nova-pessoa-juridica", upload.array('dadosComuns[anexos][]', 10), CadastrarPessoaJuridica);
 router.get("/obter-novas-pessoas-juridica", ObterTodasPessoasJuridicas);
 router.get("/pessoa-juridica/:id", ObterPessoaJuridicaPorId);
-router.delete("/pessoa-juridica-delete/:id", DeletarPessoaJuridicaPorId);
+router.delete("/pessoa-juridica-delete", DeletarPessoaJuridicaPorId);
 router.patch("/pessoa-juridica-patch/:id", AtualizarPessoaJuridicaPorId);
 
 export default router

@@ -122,9 +122,9 @@ export class RegistroImovel {
   imoveisProprietariosJur: ProprietarioImovel[];
 
   @OneToMany(() => Inquilino, (inquilino) => inquilino.registroImovel)
-  inquilinos: Inquilino[]; // Adiciona a relação com Inquilino
+  inquilinos: Inquilino[]; 
   
   @OneToMany(() => Contrato, (contrato) => contrato.imovel)
   contratos: Contrato[];
-  proprietarios: any;
+
 }

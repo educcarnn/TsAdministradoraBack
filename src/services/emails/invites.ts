@@ -24,7 +24,7 @@ export const inviteAdmin = async (req: Request, res: Response) => {
         baseActivationURL =
           "https://tsadministradora.com.br/clientes-pessoa-fisica";
         break;
-      case "Jurídica":
+      case "userjur":
         baseActivationURL =
           "https://tsadministradora.com.br/clientes-pessoa-juridica";
         break;

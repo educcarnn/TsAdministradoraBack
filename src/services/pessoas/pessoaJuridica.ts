@@ -29,6 +29,28 @@ export const checkPassword = async (
   return bcrypt.compare(inputPassword, storedPasswordHash);
 };
 
+export const findPessoaJuridicaByEmail = async (
+  email: string
+): Promise<PessoaJuridica | null> => {
+  const pessoaIntermediaria = await PessoaIntermediariaRepository.findOne({
+    where: { email: email },
+  });
+
+  if (!pessoaIntermediaria) {
+    return null;
+  }
+
+  const pessoaJuridica = await PessoaJuridicaRepository.findOne({
+    where: { dadosComunsId: pessoaIntermediaria.id }, // Use 'pessoaIntermediaria.id' como a condição de pesquisa
+  });
+
+  if (!pessoaJuridica) {
+    return null;
+  }
+
+  return pessoaJuridica;
+};
+
 export const cadastrarPessoaJuridica = async (
   pessoaJuridicaData: Partial<PessoaJuridica>,
   socioData: { nome: string }[],
@@ -40,58 +62,51 @@ export const cadastrarPessoaJuridica = async (
   ) {
     throw new Error("E-mail não fornecido.");
   }
-  /*
+
   const emailInUse = await isEmailInUse(pessoaJuridicaData.dadosComuns.email);
   if (emailInUse) {
     throw new Error("E-mail já registrado em User ou PessoaJuridica.");
   }
-  */
 
-  if (!pessoaJuridicaData.dadosComuns.password) {
+  if (!pessoaJuridicaData.password) {
     throw new Error("Senha não fornecida.");
   }
 
-  pessoaJuridicaData.dadosComuns.password = await hashPassword(
-    pessoaJuridicaData.dadosComuns.password
-  );
+  pessoaJuridicaData.password = await hashPassword(pessoaJuridicaData.password);
 
-  // Primeiro, salvamos a entidade intermediária
   const dadosComunsCriados = await PessoaIntermediariaRepository.save(
     pessoaJuridicaData.dadosComuns
   );
 
   pessoaJuridicaData.dadosComuns = dadosComunsCriados;
-  const novaPessoaJuridica = PessoaJuridicaRepository.create(pessoaJuridicaData);
+  const novaPessoaJuridica =
+    PessoaJuridicaRepository.create(pessoaJuridicaData);
 
-  // Salve a nova instância de PessoaJuridica no banco de dados
   await PessoaJuridicaRepository.save(novaPessoaJuridica);
-  
 
   for (const socioInfo of socioData) {
     const socio = new Socio();
     socio.nome = socioInfo.nome;
-  
-    // Associe o sócio à nova instância de PessoaJuridica
+
     socio.pessoaJuridica = novaPessoaJuridica;
-  
-    // Salve cada instância de Socio
+
     await SocioRepository.save(socio);
   }
-  
+
   // Se houver arquivos a serem salvos, faça isso depois de associar os sócios
   if (files && files.length) {
     for (const file of files) {
       const key = `anexosjuridica/${pessoaJuridicaData.dadosComuns.email}/${file.originalname}`;
       const fileUrl = await uploadFileToS3(file, key);
-  
+
       const anexo = new Anexo();
       anexo.url = fileUrl;
       anexo.pessoa = dadosComunsCriados;
-  
+
       await AnexoRepository.save(anexo);
     }
   }
-  
+
   // Retorne a nova instância de PessoaJuridica
   return novaPessoaJuridica;
 };
@@ -163,17 +178,20 @@ export const obterPessoaJuridicaPorId = async (
   return pessoaJuridica || undefined;
 };
 
-export const deletarPessoaJuridicaPorId = async (id: number): Promise<void> => {
+export const deletarPessoaJuridicaPorId = async (
+  idPessoaJuridica: number,
+  idIntermediario: number
+): Promise<void> => {
   const pessoaJuridica = await PessoaJuridicaRepository.findOne({
-    where: { id: id },
+    where: { id: idPessoaJuridica },
   });
   if (!pessoaJuridica) throw new Error("PessoaJuridica não encontrada.");
 
-  await PessoaJuridicaRepository.delete(id);
+  // Deleta a pessoa jurídica em PessoaJuridicaRepository
+  await PessoaJuridicaRepository.delete(idPessoaJuridica);
 
-  // Deletar também os dados na tabela intermediária
-  if (pessoaJuridica.dadosComuns && pessoaJuridica.dadosComuns.id) {
-    await PessoaIntermediariaRepository.delete(pessoaJuridica.dadosComuns.id);
+  if (idIntermediario) {
+    await PessoaIntermediariaRepository.delete(idIntermediario);
   }
 };
 
@@ -186,7 +204,7 @@ export const atualizarPessoaJuridicaPorId = async (
   });
   if (!pessoaJuridica) throw new Error("PessoaJuridica não encontrada.");
 
-  const dataCopy = { ...data }; // Faz uma cópia superficial do objeto
+  const dataCopy = { ...data };
 
   if (dataCopy.dadosComuns && dataCopy.dadosComuns.id) {
     await PessoaIntermediariaRepository.update(

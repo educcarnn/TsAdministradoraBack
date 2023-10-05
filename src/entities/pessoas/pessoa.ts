@@ -10,7 +10,7 @@ export class PessoaIntermediaria {
   tipo: string; // comum entre ambas
 
   @Column("text", { array: true, default: () => "ARRAY[]::text[]",  nullable: true })
-  funcao: string[]; // comum entre ambas
+  funcao: string[]; 
 
   @Column({ nullable: true })
   telefoneFixo: string; 
@@ -21,8 +21,6 @@ export class PessoaIntermediaria {
   @Column({ nullable: true })
   email: string; // comum entre ambas
 
-  @Column({ nullable: true })
-  password?: string;
 
   @Column("jsonb", { nullable: true })
   endereco: {
@@ -31,6 +29,8 @@ export class PessoaIntermediaria {
     bairro: string;
     cidade: string;
     estado: string;
+    andar: string;
+    numero: string;
   };
 
   @Column({ nullable: true })

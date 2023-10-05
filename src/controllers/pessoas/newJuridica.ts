@@ -55,10 +55,10 @@ export const DeletarPessoaJuridicaPorId = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const id: number = Number(req.params.id);
+  const { idPessoaJuridica, idIntermediario } = req.body;
 
   try {
-    await deletarPessoaJuridicaPorId(id);
+    await deletarPessoaJuridicaPorId(idPessoaJuridica, idIntermediario);
     return res
       .status(200)
       .json({ message: "Pessoa jurídica deletada com sucesso!" });

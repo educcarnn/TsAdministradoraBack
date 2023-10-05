@@ -49,12 +49,11 @@ export const ObterPessoaPorId = async (req: Request, res: Response): Promise<Res
 };
 
 
-
 export const DeletarPessoaPorId = async (req: Request, res: Response): Promise<Response> => {
-  const id: number = Number(req.params.id);
+  const { idPessoa, idIntermediario } = req.body;
 
   try {
-    await deletarPessoaPorId(id);
+    await deletarPessoaPorId(idPessoa, idIntermediario);
     return res.status(200).json({ message: 'Pessoa deletada com sucesso!' });
   } catch (error) {
     console.error('Erro ao deletar Pessoa por ID:', error);

@@ -27,19 +27,15 @@ export const cadastrarPessoa = async (
     throw new Error("E-mail já registrado em User ou Pessoa.");
   }
 
-  if (!pessoaData.dadosComuns.password) {
+  if (!pessoaData.password) {
     throw new Error("Senha não fornecida.");
   }
 
-  pessoaData.dadosComuns.password = await hashPassword(
-    pessoaData.dadosComuns.password
-  );
-
+  pessoaData.password = await hashPassword(pessoaData.password);
 
   const dadosComunsCriados = await PessoaIntermediariaRepository.save(
     pessoaData.dadosComuns
   );
-
 
   if (files && files.length) {
     for (const file of files) {
@@ -72,7 +68,7 @@ export const requeryPessoaPorId = async (id: number) => {
     .leftJoinAndSelect("fiador.imovelComoFianca", "imovelComoFianca")
     .where("pessoa.id = :id", { id });
 
-  const result = await queryBuilder.getOne(); 
+  const result = await queryBuilder.getOne();
 
   return result;
 };
@@ -81,8 +77,8 @@ export const requeryPessoas = async () => {
   const queryBuilder = PessoaRepository.createQueryBuilder("pessoa")
     .leftJoinAndSelect("pessoa.imoveisRelacionados", "proprietarioImovel")
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
-    .addSelect(["registroImovel.caracteristicas"]) 
-    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria"); 
+    .addSelect(["registroImovel.caracteristicas"])
+    .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria");
 
   const result = await queryBuilder.getMany();
 
@@ -118,7 +114,6 @@ export const findPessoaByEmail = async (
   });
 
   if (!pessoaFisica) {
-    // Aqui você pode também implementar a busca na tabela PessoaJuridica se necessário
     return null;
   }
 
@@ -152,16 +147,20 @@ export const obterPessoaPorId = async (
   return pessoaFisica || undefined;
 };
 
-export const deletarPessoaPorId = async (id: number): Promise<void> => {
-  const pessoa = await PessoaRepository.findOne({ where: { id: id } });
+export const deletarPessoaPorId = async (idPessoa: number, idIntermediario: number): Promise<void> => {
+  // Encontra a pessoa pelo ID em PessoaRepository
+  const pessoa = await PessoaRepository.findOne({ where: { id: idPessoa } });
   if (!pessoa) throw new Error("Pessoa não encontrada.");
 
-  await PessoaRepository.delete(id);
+  // Deleta a pessoa em PessoaRepository
+  await PessoaRepository.delete(idPessoa);
 
-  if (pessoa.dadosComuns && pessoa.dadosComuns.id) {
-    await PessoaIntermediariaRepository.delete(pessoa.dadosComuns.id);
+ 
+  if (idIntermediario) {
+    await PessoaIntermediariaRepository.delete(idIntermediario);
   }
 };
+
 
 export const atualizarPessoaPorId = async (
   id: number,
@@ -173,7 +172,6 @@ export const atualizarPessoaPorId = async (
   const dataCopy = { ...data }; // Faz uma cópia superficial do objeto
 
   if (dataCopy.dadosComuns && dataCopy.dadosComuns.id) {
-
     await PessoaIntermediariaRepository.update(
       dataCopy.dadosComuns.id,
       dataCopy.dadosComuns
@@ -182,5 +180,3 @@ export const atualizarPessoaPorId = async (
 
   await PessoaRepository.update(id, dataCopy);
 };
-
-
