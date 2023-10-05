@@ -51,12 +51,12 @@ export class Pessoa {
   @Column()
   nacionalidade: string;
 
-  @Column({ nullable: true })
-  password?: string;
+  @Column()
+  password: string;
 
   @Column({
     type: "enum",
-    enum: ["admin", "user"],
+    enum: ["admin", "user", "userjur"],
     default: "user",
     nullable: true,
   })
@@ -69,7 +69,7 @@ export class Pessoa {
   @JoinColumn({ name: "empresaId" })
   empresa: Empresa;
 
-  @Column() // Defina a coluna da chave estrangeira
+  @Column() 
   dadosComunsId: number;
 
   @OneToOne(() => PessoaIntermediaria)

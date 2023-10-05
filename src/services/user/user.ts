@@ -98,6 +98,8 @@ export const deleteUserById = async (id: number): Promise<void> => {
 
   await userRepository.remove(user);
 };
+
+
 /*
 export const createInvite = async (userData: any) => {
   const userRepository = AppDataSource.getRepository(User);

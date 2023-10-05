@@ -22,7 +22,7 @@ export class User {
 
   @Column({
     type: "enum",
-    enum: ["admin", "user", "Jurídica"],
+    enum: ["admin", "user", "userjur"],
     default: "user",
   })
   role: string;

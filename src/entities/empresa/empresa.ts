@@ -33,5 +33,4 @@ export class Empresa {
 
   @OneToMany(() => User, user => user.empresa)
   administradores: User[];
-  empresaId: null;
 }

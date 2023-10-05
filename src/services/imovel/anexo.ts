@@ -43,7 +43,6 @@ export const removerAnexoDoImovelPorId = async (
       throw new Error(`Anexo com ID ${anexoId} não encontrado`);
     }
 
-    // Remova o anexo do Amazon S3 usando a propriedade 'url' do anexo
     if (anexoParaRemover.url) {
       await deleteFileFromS3(anexoParaRemover.url);
     }

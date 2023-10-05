@@ -29,6 +29,15 @@ export class PessoaJuridica {
 
   @Column()
   razaoSocial: string;
+  
+  @Column({
+    type: "enum",
+    enum: ["admin", "user", "userjur"],
+    default: "userjur",
+    nullable: true,
+  })
+  role?: string;
+
 
   @Column()
   nomeFantasia: string;
@@ -39,8 +48,8 @@ export class PessoaJuridica {
   @OneToMany(() => Socio, (socio) => socio.pessoaJuridica, { cascade: true })
   socios: Socio[];
 
-  @Column({ nullable: true })
-  password?: string;
+  @Column()
+  password: string;
 
   @Column() 
   dadosComunsId: number;
