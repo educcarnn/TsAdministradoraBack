@@ -24,7 +24,9 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export const isAdminOuUser = (req: Request & { user?: User }, res: Response, next: NextFunction) => {
+
+
+export const isAdminOuUserOuUserJur = (req: Request & { user?: User }, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -35,7 +37,7 @@ export const isAdminOuUser = (req: Request & { user?: User }, res: Response, nex
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { role?: string };
 
-        if (decoded.role && decoded.role === "admin" || decoded.role === "user") {
+        if (decoded.role && decoded.role === "admin" || decoded.role === "user" || decoded.role === "userjur") {
             next();
         } else {
             res.status(403).json({ message: "Acesso negado. Permissão de admin necessária." });

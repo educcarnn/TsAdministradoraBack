@@ -62,6 +62,18 @@ export const requeryPessoaPorId = async (id: number) => {
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
 
+   
+    .leftJoinAndSelect("registroImovel.inquilinos", "inquilino")
+    .leftJoin("inquilino.pessoa", "pessoaInquilino")
+    .addSelect(["pessoaInquilino.nome", "pessoaInquilino.id"])
+    .leftJoin("inquilino.pessoaJuridica", "pessoaJuridicaInquilino")
+    .addSelect([
+      "pessoaJuridicaInquilino.id",
+      "pessoaJuridicaInquilino.razaoSocial",
+      "pessoaJuridicaInquilino.cnpj",
+    ])
+
+
     .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
     .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
     .leftJoinAndSelect("pessoa.fiador", "fiador")

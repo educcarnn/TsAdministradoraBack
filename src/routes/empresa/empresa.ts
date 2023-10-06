@@ -8,7 +8,7 @@ import {
   ExcluirEmpresa,
 } from "../../controllers/empresa/empresa"; // Atualize o caminho para o controlador correto
 import { isAuthenticated } from "../../middlewares/isAuth";
-import { isAdmin, isAdminOuUser } from "../../middlewares/ValidationStatusUser";
+import { isAdmin, isAdminOuUserOuUserJur } from "../../middlewares/ValidationStatusUser";
 
 const router = express.Router();
 
