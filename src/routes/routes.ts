@@ -32,7 +32,7 @@ import {
 } from "../controllers/user/authOrm";
 
 import { isAuthenticated } from "../middlewares/isAuth";
-import { isAdmin, isAdminOuUser} from "../middlewares/ValidationStatusUser";
+import { isAdmin, isAdminOuUserOuUserJur} from "../middlewares/ValidationStatusUser";
 import fisica from "../routes/pessoas/fisica"
 import juridica from "../routes/pessoas/juridica"
 import empresa from "../routes/empresa/empresa"
@@ -83,14 +83,14 @@ router.post("/cadastro-imovel",
     {name: 'contratos', maxCount: 10}
   ]),
   isAuthenticated,
-  isAdminOuUser,
+  isAdminOuUserOuUserJur,
   CadastrarImovel
 );
 
 router.get("/obter-imoveis-novo", isAuthenticated ,isAdmin, ObterTodosImoveis);
-router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUser, ObterImovelPorId);
+router.get("/obter-imovel/:id",  isAuthenticated, isAdminOuUserOuUserJur, ObterImovelPorId);
 router.delete("/imovel-delete/:id",  isAuthenticated ,isAdmin, ExcluirImovel);
-router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUser, AtualizarImovel);
+router.patch("/imovel-patch/:id", isAuthenticated, isAdminOuUserOuUserJur, AtualizarImovel);
 
 
 router.delete("/remover-anexos-imovel",removerAnexoDoImovelPorIdController )
@@ -104,8 +104,8 @@ router.delete("/remover-contratos-imovel", removerContratoDoImovelPorIdControlle
 
 // Rotas para Contratos
 router.post("/cadastro-contrato",  isAuthenticated ,isAdmin, CadastrarContrato);
-router.get("/obter-contratos-novo", isAuthenticated , isAdminOuUser, ObterTodosContratos);
-router.get("/obter-contrato/:id",  isAuthenticated, isAdminOuUser, ObterContratoPorId);
+router.get("/obter-contratos-novo", isAuthenticated , isAdminOuUserOuUserJur, ObterTodosContratos);
+router.get("/obter-contrato/:id",  isAuthenticated, isAdminOuUserOuUserJur, ObterContratoPorId);
 router.delete("/contrato-delete/:id",   isAuthenticated ,isAdmin,ExcluirContrato);
 router.patch("/contrato-patch/:id",  isAuthenticated ,isAdmin, AtualizarContrato);
 

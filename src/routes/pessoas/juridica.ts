@@ -8,7 +8,7 @@ import {
   DeletarPessoaJuridicaPorId,
 } from "../../controllers/pessoas/newJuridica";
 import { isAuthenticated } from "../../middlewares/isAuth";
-import { isAdmin, isAdminOuUser } from "../../middlewares/ValidationStatusUser";
+import { isAdmin, isAdminOuUserOuUserJur } from "../../middlewares/ValidationStatusUser";
 import multer from "multer";
 const router = express.Router();
 

@@ -156,6 +156,16 @@ export const requeryPessoaJuridicaPorId = async (id: number) => {
 
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
+    
+    .leftJoinAndSelect("registroImovel.inquilinos", "inquilino")
+    .leftJoin("inquilino.pessoa", "pessoaInquilino")
+    .addSelect(["pessoaInquilino.nome", "pessoaInquilino.id"])
+    .leftJoin("inquilino.pessoaJuridica", "pessoaJuridicaInquilino")
+    .addSelect([
+      "pessoaJuridicaInquilino.id",
+      "pessoaJuridicaInquilino.razaoSocial",
+      "pessoaJuridicaInquilino.cnpj",
+    ])
     .getOne();
 
   return pessoaJuridica;

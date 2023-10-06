@@ -21,80 +21,78 @@ export const registerUser = async (req: Request, res: Response) => {
 export const UserRepository: Repository<User> =
   AppDataSource.getRepository(User);
 
-  export const loginUser = async (req: Request, res: Response) => {
-    try {
-      let user: User | Pessoa | PessoaJuridica | null | undefined;
-  
-      // Tente encontrar um usuário com o email fornecido
-      user = await UserService.findUserByEmail(req.body.email);
-  
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    let user: User | Pessoa | PessoaJuridica | null | undefined;
+
+    user = await UserService.findUserByEmail(req.body.email);
+
+    if (!user) {
+      user = await PessoaService.findPessoaByEmail(req.body.email);
+
       if (!user) {
-        // Se não encontrar um usuário, tente encontrar uma pessoa física com o email fornecido
-        user = await PessoaService.findPessoaByEmail(req.body.email);
-  
+        user = await PessoaJuridicaService.findPessoaJuridicaByEmail(
+          req.body.email
+        );
+
         if (!user) {
-          // Se não encontrar uma pessoa física, tente encontrar uma pessoa jurídica com o email fornecido
-          user = await PessoaJuridicaService.findPessoaJuridicaByEmail(req.body.email);
-  
-          if (!user) {
-            return res.status(404).json({ message: "Usuário não encontrado." });
-          }
+          return res.status(404).json({ message: "Usuário não encontrado." });
         }
       }
-  
-      const isValidPassword =
-        user instanceof User
-          ? await UserService.checkPassword(
-              req.body.password,
-              user.password as string
-            )
-          : user instanceof Pessoa
-          ? await PessoaService.checkPassword(
-              req.body.password,
-              user.password as string
-            )
-          : await PessoaJuridicaService.checkPassword(
-              req.body.password,
-              user.password as string
-            );
-  
-      if (!isValidPassword) {
-        return res.status(401).json({ message: "Senha incorreta." });
-      }
-  
-      const tokenExpiration = 24 * 60 * 60;
-  
-      const token = jwt.sign(
-        {
-          userId: user.id,
-          role: user.role || "user",
-        },
-        process.env.JWT_SECRET as string,
-        { expiresIn: tokenExpiration }
-      );
-  
-      const expirationDate = new Date();
-      expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiration);
-  
-      const userData = await UserRepository.createQueryBuilder("user")
-        .where("user.id = :userId", { userId: user.id })
-        .leftJoinAndSelect("user.empresa", "empresa")
-        .getOne();
-  
-      const empresaId = userData?.empresa?.id || null;
-  
-      res.status(200).json({
-        message: "Login bem-sucedido!",
-        token: token,
-        role: user.role || "user",
-        empresaId: empresaId,
-        tokenExpiresAt: expirationDate,
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Erro no login" });
     }
-  };
-  
+
+    const isValidPassword =
+      user instanceof User
+        ? await UserService.checkPassword(
+            req.body.password,
+            user.password as string
+          )
+        : user instanceof Pessoa
+        ? await PessoaService.checkPassword(
+            req.body.password,
+            user.password as string
+          )
+        : await PessoaJuridicaService.checkPassword(
+            req.body.password,
+            user.password as string
+          );
+
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Senha incorreta." });
+    }
+
+    const tokenExpiration = 24 * 60 * 60;
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        role: user.role || "user",
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: tokenExpiration }
+    );
+
+    const expirationDate = new Date();
+    expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiration);
+
+    const userData = await UserRepository.createQueryBuilder("user")
+      .where("user.id = :userId", { userId: user.id })
+      .leftJoinAndSelect("user.empresa", "empresa")
+      .getOne();
+
+    const empresaId = userData?.empresa?.id || null;
+
+    res.status(200).json({
+      message: "Login bem-sucedido!",
+      token: token,
+      role: user.role || "user",
+      empresaId: empresaId,
+      tokenExpiresAt: expirationDate,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erro no login" });
+  }
+};
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
