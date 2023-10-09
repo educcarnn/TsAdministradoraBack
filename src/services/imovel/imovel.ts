@@ -30,9 +30,8 @@ export const cadastrarImovel = async (
     percentual: number;
     tipo: "Física" | "Jurídica";
   }[],
-
-  anexos?: Express.Multer.File[], // Lista de anexos
-  fotos?: Express.Multer.File[], // Lista de fotos
+  anexos?: Express.Multer.File[], 
+  fotos?: Express.Multer.File[],
   contratos?: Express.Multer.File[]
 ): Promise<RegistroImovel> => {
   const savedImovel = await imovelRepository.save(imovelData);
@@ -42,11 +41,11 @@ export const cadastrarImovel = async (
 
     if (propData.tipo === "Física") {
       proprietario = await pessoaRepository.findOne({
-        where: { id: propData.id }, // Use pessoaId em vez de id
+        where: { id: propData.id },
       });
     } else {
       proprietario = await pessoaJuridicaRepository.findOne({
-        where: { id: propData.id }, // Use pessoaId em vez de id
+        where: { id: propData.id }, 
       });
     }
 

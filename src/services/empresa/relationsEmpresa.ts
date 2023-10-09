@@ -14,20 +14,7 @@ export const UserRepository: Repository<User> =
 export const PessoaJuridicaRepository: Repository<PessoaJuridica> =
   AppDataSource.getRepository(PessoaJuridica);
 
-export const adicionarPessoaAEmpresa = async (
-  empresaId: number,
-  pessoaId: number
-): Promise<Pessoa> => {
-  const empresa = await EmpresaRepository.findOne({ where: { id: empresaId } });
-  if (!empresa) throw new Error("Empresa não encontrada.");
 
-  const pessoa = await PessoaRepository.findOne({ where: { id: pessoaId } });
-  if (!pessoa) throw new Error("Pessoa não encontrada.");
-
-  pessoa.empresa = empresa;
-
-  return await PessoaRepository.save(pessoa);
-};
 
 export const removerPessoaDaEmpresa = async (
   empresaId: number,
@@ -43,6 +30,20 @@ export const removerPessoaDaEmpresa = async (
   await PessoaRepository.delete(pessoaId);
 };
 
+export const adicionarPessoaAEmpresa = async (
+  empresaId: number,
+  pessoaId: number
+): Promise<Pessoa> => {
+  const empresa = await EmpresaRepository.findOne({ where: { id: empresaId } });
+  if (!empresa) throw new Error("Empresa não encontrada.");
+
+  const pessoa = await PessoaRepository.findOne({ where: { id: pessoaId } });
+  if (!pessoa) throw new Error("Pessoa não encontrada.");
+
+  pessoa.empresa = empresa;
+
+  return await PessoaRepository.save(pessoa);
+};
 export const associarAdminAEmpresa = async (
   empresaId: number,
   userId: number

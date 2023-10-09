@@ -7,8 +7,8 @@ export class PessoaIntermediaria {
   id: number;
 
   @Column({ nullable: true })
-  tipo: string; // comum entre ambas
-
+  tipo: string; 
+  
   @Column("text", { array: true, default: () => "ARRAY[]::text[]",  nullable: true })
   funcao: string[]; 
 

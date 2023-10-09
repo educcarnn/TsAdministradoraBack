@@ -5,8 +5,11 @@ import { isEmailInUse } from "../../utils/emailUtils";
 import { Pessoa } from "../../entities/pessoaFisica";
 import { PessoaRepository } from "../pessoas/pessoaFisica";
 import { PessoaIntermediariaRepository } from "../pessoas/pessoaFisica";
+import { Empresa } from "../../entities/empresa/empresa";
 
 export const userRepository = AppDataSource.getRepository(User);
+export const EmpresaRepository = AppDataSource.getRepository(Empresa)
+
 export const createUser = async (userData: Partial<User>): Promise<User> => {
   if (!userData.email) {
     throw new Error("E-mail não fornecido.");
@@ -21,18 +24,34 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
     throw new Error("Senha não fornecida.");
   }
 
-  if (userData.role === "admin") {
-    throw new Error("A criação de usuários 'admin' não é permitida aqui.");
+  if (userData.role === "admin" && !userData.empresa?.id) {
+    throw new Error("O campo 'empresa.id' é obrigatório para criar um administrador.");
   }
-
-  userData.password = await hashPassword(userData.password);
 
   const newUser = userRepository.create(userData);
 
+  if (userData.role === "admin") {
+    if (userData.empresa) {
+      const empresa = await EmpresaRepository.findOne({
+        where: { id: userData.empresa.id },
+      });
+  
+      if (!empresa) {
+        throw new Error("Empresa não encontrada.");
+      }
+      newUser.empresa = empresa;
+    }
+  }
+
+  // Hash da senha
+  newUser.password = await hashPassword(userData.password);
+
+  // Salvar o novo usuário
   await userRepository.save(newUser);
 
   return newUser;
 };
+
 
 export const findUserByEmail = async (
   email: string

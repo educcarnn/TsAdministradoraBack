@@ -181,7 +181,7 @@ export const atualizarPessoaPorId = async (
   const pessoa = await PessoaRepository.findOne({ where: { id: id } });
   if (!pessoa) throw new Error("Pessoa não encontrada.");
 
-  const dataCopy = { ...data }; // Faz uma cópia superficial do objeto
+  const dataCopy = { ...data };
 
   if (dataCopy.dadosComuns && dataCopy.dadosComuns.id) {
     await PessoaIntermediariaRepository.update(
