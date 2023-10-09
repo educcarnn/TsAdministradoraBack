@@ -8,11 +8,14 @@ export const inviteAdmin = async (req: Request, res: Response) => {
   try {
     const data = req.body;
 
-    const token = jwt.sign(
-      { role: data.role },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "3h" }
-    );
+    const conviteData = {
+      ...data,
+      empresaId: data.empresaId,
+    };
+
+    const token = jwt.sign(conviteData, process.env.JWT_SECRET as string, {
+      expiresIn: "3h",
+    });
 
     let baseActivationURL = "";
 
@@ -33,8 +36,8 @@ export const inviteAdmin = async (req: Request, res: Response) => {
         break;
     }
 
-    const activationLink = `${baseActivationURL}?token=${token}`;
-
+    const activationLink = `${baseActivationURL}?token=${token}&empresaId=${data.empresaId}`;
+    
     const msg = {
       to: data.email,
       from: "tsadmsistema@gmail.com",
@@ -43,14 +46,15 @@ export const inviteAdmin = async (req: Request, res: Response) => {
       html: `<p>Você foi convidado para se juntar à Ts Administradora. Clique no <a href="${activationLink}">link</a> a seguir para preencher seus dados. O link será válido por 3 horas.</p>`,
     };
 
-    
     await sgMail.send(msg);
 
-
     if (baseActivationURL) {
-
-      res.redirect(baseActivationURL);
-
+      res
+        .status(200)
+        .json({
+          message: "Convite enviado com sucesso",
+          empresaId: data.empresaId,
+        });
     } else {
       res.status(400).json({ message: "Tipo de pessoa inválido." });
     }
