@@ -109,7 +109,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const { id } = req.body;
     if (isNaN(id)) {
       return res.status(400).json({ message: "ID inválido" });
     }
