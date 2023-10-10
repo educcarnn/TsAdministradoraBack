@@ -7,6 +7,7 @@ import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 import { Anexo } from "../../entities/pessoas/anexo";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Socio } from "../../entities/pessoas/juridica/socio";
+import { Empresa } from "../../entities/empresa/empresa";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
@@ -16,6 +17,10 @@ export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
 export const SocioRepository: Repository<Socio> =
   AppDataSource.getRepository(Socio);
+
+  export const EmpresaRepository: Repository<Empresa> =
+  AppDataSource.getRepository(Empresa);
+
 
 export const hashPassword = async (password: string): Promise<string> => {
   const saltRounds = 10;
@@ -93,7 +98,20 @@ export const cadastrarPessoaJuridica = async (
     await SocioRepository.save(socio);
   }
 
-  // Se houver arquivos a serem salvos, faça isso depois de associar os sócios
+  
+  if (pessoaJuridicaData.role === "userjur") {
+    if (pessoaJuridicaData.empresa) {
+      const empresa = await EmpresaRepository.findOne({
+        where: { id: pessoaJuridicaData.empresa.id },
+      });
+
+      if (!empresa) {
+        throw new Error("Empresa não encontrada.");
+      }
+      pessoaJuridicaData.empresa = empresa;
+    }
+  }
+
   if (files && files.length) {
     for (const file of files) {
       const key = `anexosjuridica/${pessoaJuridicaData.dadosComuns.email}/${file.originalname}`;
@@ -197,7 +215,6 @@ export const deletarPessoaJuridicaPorId = async (
   });
   if (!pessoaJuridica) throw new Error("PessoaJuridica não encontrada.");
 
-  // Deleta a pessoa jurídica em PessoaJuridicaRepository
   await PessoaJuridicaRepository.delete(idPessoaJuridica);
 
   if (idIntermediario) {

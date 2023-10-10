@@ -109,11 +109,11 @@ router.get("/obter-contrato/:id",  isAuthenticated, isAdminOuUserOuUserJur, Obte
 router.delete("/contrato-delete/:id",   isAuthenticated ,isAdmin,ExcluirContrato);
 router.patch("/contrato-patch/:id",  isAuthenticated ,isAdmin, AtualizarContrato);
 
-// User
+// Userp
 router.post("/admin/register", registerUser)
 router.post("/users/login", loginUser);
 router.patch("/users/:id", updateUser);
-router.delete("/users/:id", deleteUser);
+router.delete("/users", deleteUser);
 
 
 export default router;

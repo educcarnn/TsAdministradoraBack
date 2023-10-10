@@ -6,6 +6,7 @@ import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Anexo } from "../../entities/pessoas/anexo";
+import { Empresa } from "../../entities/empresa/empresa";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
@@ -13,6 +14,9 @@ export const PessoaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
 export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
+  export const EmpresaRepository: Repository<Empresa> =
+  AppDataSource.getRepository(Empresa);
+
 
 export const cadastrarPessoa = async (
   pessoaData: Partial<Pessoa>,
@@ -36,6 +40,20 @@ export const cadastrarPessoa = async (
   const dadosComunsCriados = await PessoaIntermediariaRepository.save(
     pessoaData.dadosComuns
   );
+
+  if (pessoaData.role === "user") {
+    if (pessoaData.empresa) {
+      const empresa = await EmpresaRepository.findOne({
+        where: { id: pessoaData.empresa.id },
+      });
+
+      if (!empresa) {
+        throw new Error("Empresa não encontrada.");
+      }
+      pessoaData.empresa = empresa;
+    }
+  }
+
 
   if (files && files.length) {
     for (const file of files) {
@@ -120,7 +138,6 @@ export const findPessoaByEmail = async (
     return null;
   }
 
-  // Se encontrou, agora busca na tabela de PessoaFisica baseado na relação com a PessoaIntermediaria
   const pessoaFisica = await PessoaRepository.findOne({
     where: { dadosComunsId: pessoaIntermediaria.id },
   });
