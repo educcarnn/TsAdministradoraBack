@@ -4,20 +4,20 @@ import { cadastrarPessoa, obterPessoaPorId, deletarPessoaPorId, atualizarPessoaP
 import { requeryPessoas } from '../../services/pessoas/pessoaFisica';
 import { requeryPessoaPorId } from '../../services/pessoas/pessoaFisica';
 
-export const CadastrarPessoa = async (req: Request, res: Response): Promise<void> => {
-  const pessoaData: Partial<Pessoa> = req.body;
-  const empresaId: number = req.body;
+export const CadastrarPessoa = async (req: Request, res: Response): Promise<Response> => {
+  const data: Pessoa = req.body;
   const files = req.files as Express.Multer.File[]; // Obter os arquivos do request
 
   try {
-    const novaPessoa = await cadastrarPessoa(pessoaData, empresaId, files);
+    const novaPessoa = await cadastrarPessoa(data, files); // Passar os arquivos para a função
 
-    res.status(201).json({ message: 'Pessoa cadastrada com sucesso!', pessoa: novaPessoa });
+    return res.status(201).json({ message: 'Pessoa cadastrada com sucesso!', pessoa: novaPessoa });
   } catch (error) {
     console.error('Erro ao cadastrar Pessoa:', error);
-    res.status(500).json({ message: 'Erro ao cadastrar Pessoa' });
+    return res.status(500).json({ message: 'Erro ao cadastrar Pessoa' });
   }
 };
+
 
 export const ObterTodasPessoas = async (_req: Request, res: Response): Promise<Response> => {
   try {
