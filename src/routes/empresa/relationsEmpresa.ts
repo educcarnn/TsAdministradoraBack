@@ -2,6 +2,7 @@ import express from "express";
 import {
   adicionarPessoaController,
   removerPessoaController,
+  removerAdminController,
   associarAdminController, 
   associarPessoaJuridicaController
 } from "../../controllers/empresa/controllerEmpresa"; // Atualize o caminho para o controlador correto
@@ -15,6 +16,8 @@ router.post("/adicionar-pessoa-empresa", adicionarPessoaController);
 
 // Rota para remover uma pessoa de uma empresa específica
 router.delete("/deletar-pessoa-empresa", removerPessoaController);
+
+router.delete("/deletar-admin-empresa", removerAdminController);
 
 // Rota para associar um administrador a uma empresa específica
 router.post("/associar-admin-empresa", associarAdminController);

@@ -35,7 +35,7 @@ export const requeryEmpresas = async () => {
 
 export const requeryEmpresaPorId = async (empresaId: number) => {
   const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
-    .select(["empresa.id", "empresa.nome"])
+    .select(["empresa.id", "empresa.nome", "empresa.telefone", "empresa.endereco"])
     .leftJoinAndSelect("empresa.pessoas", "pessoa")
   
     .leftJoinAndSelect("empresa.pessoaJuridicas", "pessoaJuridica")
