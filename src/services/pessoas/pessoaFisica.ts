@@ -6,6 +6,7 @@ import { isEmailInUse } from "../../utils/emailUtils";
 import { PessoaIntermediaria } from "../../entities/pessoas/pessoa";
 import { uploadFileToS3 } from "../../config/awsconfig";
 import { Anexo } from "../../entities/pessoas/anexo";
+import { Empresa } from "../../entities/empresa/empresa";
 
 export const PessoaIntermediariaRepository: Repository<PessoaIntermediaria> =
   AppDataSource.getRepository(PessoaIntermediaria);
@@ -13,9 +14,12 @@ export const PessoaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
 export const AnexoRepository: Repository<Anexo> =
   AppDataSource.getRepository(Anexo);
+export const EmpresaRepository: Repository<Empresa> =
+  AppDataSource.getRepository(Empresa);
 
 export const cadastrarPessoa = async (
   pessoaData: Partial<Pessoa>,
+  empresaId: number, 
   files?: Express.Multer.File[]
 ): Promise<Pessoa> => {
   if (!pessoaData.dadosComuns || !pessoaData.dadosComuns.email) {
@@ -30,6 +34,15 @@ export const cadastrarPessoa = async (
   if (!pessoaData.password) {
     throw new Error("Senha não fornecida.");
   }
+
+  const empresa = await EmpresaRepository.findOne({ where: { id: empresaId } });
+
+  if (!empresa) {
+    throw new Error("Empresa não encontrada.");
+  }
+
+  // Associe a pessoa à empresa completa
+  pessoaData.empresa = empresa;
 
   pessoaData.password = await hashPassword(pessoaData.password);
 
@@ -62,7 +75,6 @@ export const requeryPessoaPorId = async (id: number) => {
     .leftJoinAndSelect("proprietarioImovel.registroImovel", "registroImovel")
     .addSelect(["registroImovel.caracteristicas"])
 
-   
     .leftJoinAndSelect("registroImovel.inquilinos", "inquilino")
     .leftJoin("inquilino.pessoa", "pessoaInquilino")
     .addSelect(["pessoaInquilino.nome", "pessoaInquilino.id"])
@@ -72,7 +84,6 @@ export const requeryPessoaPorId = async (id: number) => {
       "pessoaJuridicaInquilino.razaoSocial",
       "pessoaJuridicaInquilino.cnpj",
     ])
-
 
     .leftJoinAndSelect("pessoa.dadosComuns", "pessoaIntermediaria")
     .leftJoinAndSelect("pessoaIntermediaria.anexos", "anexos")
@@ -159,7 +170,10 @@ export const obterPessoaPorId = async (
   return pessoaFisica || undefined;
 };
 
-export const deletarPessoaPorId = async (idPessoa: number, idIntermediario: number): Promise<void> => {
+export const deletarPessoaPorId = async (
+  idPessoa: number,
+  idIntermediario: number
+): Promise<void> => {
   // Encontra a pessoa pelo ID em PessoaRepository
   const pessoa = await PessoaRepository.findOne({ where: { id: idPessoa } });
   if (!pessoa) throw new Error("Pessoa não encontrada.");
@@ -167,12 +181,10 @@ export const deletarPessoaPorId = async (idPessoa: number, idIntermediario: numb
   // Deleta a pessoa em PessoaRepository
   await PessoaRepository.delete(idPessoa);
 
- 
   if (idIntermediario) {
     await PessoaIntermediariaRepository.delete(idIntermediario);
   }
 };
-
 
 export const atualizarPessoaPorId = async (
   id: number,

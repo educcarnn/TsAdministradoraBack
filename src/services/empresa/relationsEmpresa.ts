@@ -30,6 +30,26 @@ export const removerPessoaDaEmpresa = async (
   await PessoaRepository.delete(pessoaId);
 };
 
+export const removerAdminDaEmpresa = async (
+  empresaId: number,
+  userId: number
+): Promise<void> => {
+  const empresa = await EmpresaRepository.findOne({
+    where: { id: empresaId },
+    relations: ['administradores'], 
+  });
+
+  if (!empresa) throw new Error('Empresa não encontrada.');
+
+  const adminIndex = empresa.administradores.findIndex((admin) => admin.id === userId);
+  if (adminIndex < 0) throw new Error('Administrador não encontrado na empresa.');
+
+  empresa.administradores.splice(adminIndex, 1); 
+
+  await EmpresaRepository.save(empresa);
+};
+
+
 export const adicionarPessoaAEmpresa = async (
   empresaId: number,
   pessoaId: number

@@ -8,7 +8,7 @@ import { PessoaIntermediariaRepository } from "../pessoas/pessoaFisica";
 import { Empresa } from "../../entities/empresa/empresa";
 
 export const userRepository = AppDataSource.getRepository(User);
-export const EmpresaRepository = AppDataSource.getRepository(Empresa)
+export const EmpresaRepository = AppDataSource.getRepository(Empresa);
 
 export const createUser = async (userData: Partial<User>): Promise<User> => {
   if (!userData.email) {
@@ -25,7 +25,9 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
   }
 
   if (userData.role === "admin" && !userData.empresa?.id) {
-    throw new Error("O campo 'empresa.id' é obrigatório para criar um administrador.");
+    throw new Error(
+      "O campo 'empresa.id' é obrigatório para criar um administrador."
+    );
   }
 
   const newUser = userRepository.create(userData);
@@ -35,7 +37,7 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
       const empresa = await EmpresaRepository.findOne({
         where: { id: userData.empresa.id },
       });
-  
+
       if (!empresa) {
         throw new Error("Empresa não encontrada.");
       }
@@ -43,15 +45,12 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
     }
   }
 
-  // Hash da senha
   newUser.password = await hashPassword(userData.password);
 
-  // Salvar o novo usuário
   await userRepository.save(newUser);
 
   return newUser;
 };
-
 
 export const findUserByEmail = async (
   email: string
@@ -117,7 +116,6 @@ export const deleteUserById = async (id: number): Promise<void> => {
 
   await userRepository.remove(user);
 };
-
 
 /*
 export const createInvite = async (userData: any) => {
