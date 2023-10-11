@@ -22,16 +22,16 @@ export const createBusiness = async (req: Request, res: Response) => {
     });
 
     let baseActivationURL =
-      "http://localhost:3001/clientes-pessoa-juridica";
+      "http://localhost:3001/cadastrar/empresa";
 
-    const activationLink = `${baseActivationURL}?token=${token}&empresa=${data.empresa}&endereco=${data.endereco}&email=${data.email}`;
+    const activationLink = `${baseActivationURL}?token=${token}&empresa=${data.empresa}&telefone=${data.telefone}&endereco=${data.endereco}&email=${data.email}`;
 
     const msg = {
       to: data.email,
       from: "tsadmsistema@gmail.com",
       subject: `Cadastro para ${data.empresa}`,
       text: `Cadastro de administração para empresa ${data.empresa}. Clique no link a seguir para preencher sua senha e confirmar o cadastro: ${activationLink}`,
-      html: `<p>Cadastro de administração para empresa ${data.empresa}. Clique no <a href="${activationLink}">link</a> para preencher sua senha e confirmar o cadastros. 
+      html: `<p>Cadastro de administração para empresa ${data.empresa}. Clique no <a href="${activationLink}">link</a> para preencher sua senha e confirmar o cadastro. 
       O link será válido por 3 horas, informações da empresa: ${data.empresa}, Endereço ${data.endereco}, Telefone: ${data.telefone}, E-mail do administrador principal ${data.email} </p>`,
     };
 

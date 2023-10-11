@@ -13,42 +13,48 @@ export const PessoaRepository: Repository<Pessoa> =
 export const UserRepository: Repository<User> =
   AppDataSource.getRepository(User);
 
-export const criarEmpresa = async (empresaUsuarioData: {
-  empresa: Partial<Empresa>;
-  usuario: Partial<User>;
-}): Promise<{ empresa: Empresa; usuario: User }> => {
-  const { empresa, usuario } = empresaUsuarioData;
-
-  if (!empresa.nome) {
-    throw new Error("Nome da empresa não fornecido.");
-  }
-
-  if (!usuario.email) {
-    throw new Error("E-mail não fornecido.");
-  }
-
-  const emailInUse = await isEmailInUse(usuario.email);
-  if (emailInUse) {
-    throw new Error("E-mail já registrado em User ou Pessoa.");
-  }
-
-  if (!usuario.password) {
-    throw new Error("Senha não fornecida.");
-  }
-
-  const novaEmpresa = new Empresa();
-  novaEmpresa.nome = empresa.nome;
-
-  const novoUsuario = new User();
-  novoUsuario.email = usuario.email;
-  novoUsuario.empresa = novaEmpresa;
-  novoUsuario.password = await hashPassword(usuario.password);
-
-  await EmpresaRepository.save(novaEmpresa);
-  await UserRepository.save(novoUsuario);
-
-  return { empresa: novaEmpresa, usuario: novoUsuario };
-};
+  export const criarEmpresa = async (dados: {
+    nome: string;
+    endereco: string;
+    telefone: string;
+    email: string;
+    senha: string;
+  }): Promise<{ empresa: Empresa; usuario: User }> => {
+    const { nome, endereco, telefone, email, senha } = dados;
+  
+    if (!nome) {
+      throw new Error("Nome da empresa não fornecido.");
+    }
+  
+    if (!email) {
+      throw new Error("E-mail não fornecido.");
+    }
+  
+    const emailEmUso = await isEmailInUse(email);
+    if (emailEmUso) {
+      throw new Error("E-mail já registrado em User ou Pessoa.");
+    }
+  
+    if (!senha) {
+      throw new Error("Senha não fornecida.");
+    }
+  
+    const novaEmpresa = new Empresa();
+    novaEmpresa.nome = nome;
+    novaEmpresa.endereco = endereco;
+    novaEmpresa.telefone = telefone;
+  
+    const novoUsuario = new User();
+    novoUsuario.email = email;
+    novoUsuario.empresa = novaEmpresa;
+    novoUsuario.password = await hashPassword(senha);
+    novoUsuario.role = "admin";
+  
+    await EmpresaRepository.save(novaEmpresa);
+    await UserRepository.save(novoUsuario);
+  
+    return { empresa: novaEmpresa, usuario: novoUsuario };
+  };
 
 export const requeryEmpresas = async () => {
   const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
