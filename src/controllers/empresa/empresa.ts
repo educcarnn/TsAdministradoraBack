@@ -9,12 +9,19 @@ import {
 } from '../../services/empresa/empresa'; // Atualize o caminho do import para o arquivo de serviço
 import { requeryEmpresas } from '../../services/empresa/empresa';
 import { requeryEmpresaPorId } from '../../services/empresa/empresa';
+import { AppDataSource } from '../../data-source';
+import { User } from '../../entities/user';
+export const EmpresaRepository = AppDataSource.getRepository(Empresa);
+
 export const CadastrarEmpresa = async (req: Request, res: Response): Promise<Response> => {
-  const data: Empresa = req.body as Empresa;
+  const data: {
+    empresa: Partial<Empresa>;
+    usuario: Partial<User>;
+  } = req.body;
 
   try {
-    await criarEmpresa(data);
-    return res.status(201).json({ message: 'Empresa cadastrada com sucesso!' });
+    const { empresa, usuario } = await criarEmpresa(data);
+    return res.status(201).json({ message: 'Empresa e usuário cadastrados com sucesso!', empresa, usuario });
   } catch (error) {
     console.error('Erro ao cadastrar Empresa:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Empresa' });
@@ -47,6 +54,8 @@ export const ObterEmpresaPorId = async (req: Request, res: Response): Promise<Re
     return res.status(500).json({ message: 'Erro ao obter Empresa por ID' });
   }
 };
+
+
 
 export const ExcluirEmpresa = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;
