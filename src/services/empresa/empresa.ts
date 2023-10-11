@@ -2,18 +2,54 @@ import { Repository } from "typeorm";
 import { Empresa } from "../../entities/empresa/empresa";
 import { AppDataSource } from "../../data-source";
 import { Pessoa } from "../../entities/pessoaFisica";
-
+import { User } from "../../entities/user";
+import { isEmailInUse } from "../../utils/emailUtils";
+import { hashPassword } from "../user/user";
 export const EmpresaRepository: Repository<Empresa> =
   AppDataSource.getRepository(Empresa);
 export const PessoaRepository: Repository<Pessoa> =
   AppDataSource.getRepository(Pessoa);
 
-export const criarEmpresa = async (
-  empresaData: Partial<Empresa>
-): Promise<Empresa> => {
-  const novaEmpresa = EmpresaRepository.create(empresaData);
-  return await EmpresaRepository.save(novaEmpresa);
+export const UserRepository: Repository<User> =
+  AppDataSource.getRepository(User);
+
+export const criarEmpresa = async (empresaUsuarioData: {
+  empresa: Partial<Empresa>;
+  usuario: Partial<User>;
+}): Promise<{ empresa: Empresa; usuario: User }> => {
+  const { empresa, usuario } = empresaUsuarioData;
+
+  if (!empresa.nome) {
+    throw new Error("Nome da empresa não fornecido.");
+  }
+
+  if (!usuario.email) {
+    throw new Error("E-mail não fornecido.");
+  }
+
+  const emailInUse = await isEmailInUse(usuario.email);
+  if (emailInUse) {
+    throw new Error("E-mail já registrado em User ou Pessoa.");
+  }
+
+  if (!usuario.password) {
+    throw new Error("Senha não fornecida.");
+  }
+
+  const novaEmpresa = new Empresa();
+  novaEmpresa.nome = empresa.nome;
+
+  const novoUsuario = new User();
+  novoUsuario.email = usuario.email;
+  novoUsuario.empresa = novaEmpresa;
+  novoUsuario.password = await hashPassword(usuario.password);
+
+  await EmpresaRepository.save(novaEmpresa);
+  await UserRepository.save(novoUsuario);
+
+  return { empresa: novaEmpresa, usuario: novoUsuario };
 };
+
 export const requeryEmpresas = async () => {
   const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
     .select(["empresa.id", "empresa.nome"])
@@ -35,9 +71,14 @@ export const requeryEmpresas = async () => {
 
 export const requeryEmpresaPorId = async (empresaId: number) => {
   const queryBuilder = EmpresaRepository.createQueryBuilder("empresa")
-    .select(["empresa.id", "empresa.nome", "empresa.telefone", "empresa.endereco"])
+    .select([
+      "empresa.id",
+      "empresa.nome",
+      "empresa.telefone",
+      "empresa.endereco",
+    ])
     .leftJoinAndSelect("empresa.pessoas", "pessoa")
-  
+
     .leftJoinAndSelect("empresa.pessoaJuridicas", "pessoaJuridica")
     .addSelect([
       "pessoaJuridica.id",

@@ -7,6 +7,7 @@ import { PessoaRepository } from "../pessoas/pessoaFisica";
 import { PessoaIntermediariaRepository } from "../pessoas/pessoaFisica";
 import { Empresa } from "../../entities/empresa/empresa";
 
+
 export const userRepository = AppDataSource.getRepository(User);
 export const EmpresaRepository = AppDataSource.getRepository(Empresa);
 
