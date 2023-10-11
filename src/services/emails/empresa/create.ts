@@ -22,7 +22,7 @@ export const createBusiness = async (req: Request, res: Response) => {
     });
 
     let baseActivationURL =
-      "http://localhost:3001/cadastrar/empresa";
+      "https://tsadministradoraback.onrender.com/cadastrar/empresa";
 
     const activationLink = `${baseActivationURL}?token=${token}&empresa=${data.empresa}&telefone=${data.telefone}&endereco=${data.endereco}&email=${data.email}`;
 
