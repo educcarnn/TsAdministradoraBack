@@ -13,21 +13,18 @@ import { AppDataSource } from '../../data-source';
 import { User } from '../../entities/user';
 export const EmpresaRepository = AppDataSource.getRepository(Empresa);
 
+
 export const CadastrarEmpresa = async (req: Request, res: Response): Promise<Response> => {
-  const data: {
-    empresa: Partial<Empresa>;
-    usuario: Partial<User>;
-  } = req.body;
+  const { nome, endereco, telefone, email, senha } = req.body;
 
   try {
-    const { empresa, usuario } = await criarEmpresa(data);
+    const { empresa, usuario } = await criarEmpresa({ nome, endereco, telefone, email, senha });
     return res.status(201).json({ message: 'Empresa e usuário cadastrados com sucesso!', empresa, usuario });
   } catch (error) {
     console.error('Erro ao cadastrar Empresa:', error);
     return res.status(500).json({ message: 'Erro ao cadastrar Empresa' });
   }
 };
-
 export const ObterTodasEmpresas = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const empresas = await requeryEmpresas();
